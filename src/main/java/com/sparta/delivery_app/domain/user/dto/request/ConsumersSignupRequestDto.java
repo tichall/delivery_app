@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.Length;
 @Getter
 @Builder
 @AllArgsConstructor
-public class UserSignupRequestDto {
+public class ConsumersSignupRequestDto {
 
     @Email(regexp = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$",
             message = "이메일 형식에 맞지 않습니다.")
