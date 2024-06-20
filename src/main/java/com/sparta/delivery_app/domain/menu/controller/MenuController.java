@@ -5,6 +5,7 @@ import com.sparta.delivery_app.common.status.StatusCode;
 import com.sparta.delivery_app.domain.menu.dto.request.MenuAddRequestDto;
 import com.sparta.delivery_app.domain.menu.dto.response.MenuAddResponseDto;
 import com.sparta.delivery_app.domain.menu.service.MenuService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class MenuController {
      */
     @PostMapping
     public ResponseEntity<RestApiResponse<MenuAddResponseDto>> menuAdd(
-            @RequestBody MenuAddRequestDto requestDto
+            @Valid @RequestBody MenuAddRequestDto requestDto
     ) {
         MenuAddResponseDto responseDto =  menuService.addMenu(requestDto);
 
