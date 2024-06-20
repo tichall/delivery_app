@@ -37,7 +37,7 @@ public class MenuController {
     /**
      * 메뉴 수정
      */
-    @PutMapping("/menuId")
+    @PutMapping("/{menuId}")
     public ResponseEntity<RestApiResponse<MenuModifyResponseDto>> menuModify(
             @PathVariable Long menuId,
             @Valid @RequestBody MenuModifyRequestDto requestDto
