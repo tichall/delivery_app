@@ -13,7 +13,7 @@ public class StoreAdaptor {
 
     private final StoreRepository storeRepository;
 
-    public Store getStore(Long storeId) {
+    public Store queryStoreById(Long storeId) {
         return storeRepository.findById(storeId).orElseThrow(() ->
                 new StoreNotFoundException(StoreErrorCode.INVALID_STORE));
     }

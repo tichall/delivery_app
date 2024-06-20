@@ -23,7 +23,7 @@ public class MenuService {
 
     public MenuAddResponseDto addMenu(MenuAddRequestDto requestDto) {
 
-        Store store = storeAdaptor.getStore(requestDto.getStoreId());
+        Store store = storeAdaptor.queryStoreById(requestDto.getStoreId());
 
         Menu menu = Menu.of(store, requestDto);
         menuAdaptor.saveMenu(menu);

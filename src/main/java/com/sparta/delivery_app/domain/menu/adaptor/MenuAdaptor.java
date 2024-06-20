@@ -1,5 +1,8 @@
 package com.sparta.delivery_app.domain.menu.adaptor;
 
+import com.sparta.delivery_app.common.exception.errorcode.CommonErrorCode;
+import com.sparta.delivery_app.common.exception.errorcode.MenuErrorCode;
+import com.sparta.delivery_app.common.globalcustomexception.MenuNotFoundException;
 import com.sparta.delivery_app.common.exception.errorcode.MenuErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.MenuNotFoundException;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
@@ -16,6 +19,11 @@ public class MenuAdaptor {
 
     public void saveMenu(Menu menu) {
         menuRepository.save(menu);
+    }
+
+    public Menu queryMenuById(Long menuId) {
+        return menuRepository.findById(menuId).orElseThrow(() ->
+                new MenuNotFoundException(MenuErrorCode.MENU_NOT_FOUND));
     }
 
     public Menu checkValidMenuByIdAndMenuStatus(Long menuId) {
