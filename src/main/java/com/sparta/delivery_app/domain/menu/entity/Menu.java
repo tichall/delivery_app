@@ -65,17 +65,6 @@ public class Menu extends BaseTimeEntity {
                 .build();
     }
 
-//    @Builder
-//    public static Menu updateMenu(MenuModifyRequestDto requestDto) {
-//        return Menu.builder()
-//                .menuName(requestDto.getMenuName())
-//                .menuPrice(requestDto.getMenuPrice())
-//                .menuInfo(requestDto.getMenuInfo())
-//                .menuImagePath(requestDto.getMenuImagePath())
-//                .menuStatus(MenuStatus.ENABLE)
-//                .build();
-//    }
-
     public void updateMenu(MenuModifyRequestDto requestDto) {
         this.menuName = requestDto.getMenuName();
         this.menuPrice = requestDto.getMenuPrice();

@@ -1,14 +1,11 @@
 package com.sparta.delivery_app.domain.menu.dto.request;
 
 
-import com.sparta.delivery_app.domain.store.entity.Store;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 public class MenuAddRequestDto {
 
     @NotBlank(message = "Store ID가 입력되지 않았습니다.")

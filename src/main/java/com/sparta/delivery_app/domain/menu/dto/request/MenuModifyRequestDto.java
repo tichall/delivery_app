@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 public class MenuModifyRequestDto {
 
     @NotBlank(message = "Store ID가 입력되지 않았습니다.")

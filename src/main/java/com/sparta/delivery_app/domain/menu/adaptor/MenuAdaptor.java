@@ -21,19 +21,22 @@ public class MenuAdaptor {
         menuRepository.save(menu);
     }
 
-    public Menu queryMenuById(Long menuId) {
-        return menuRepository.findById(menuId).orElseThrow(() ->
-                new MenuNotFoundException(MenuErrorCode.MENU_NOT_FOUND));
-    }
-
     public Menu checkValidMenuByIdAndMenuStatus(Long menuId) {
-        Menu menu = menuRepository.findById(menuId).orElseThrow(() ->
-                new MenuNotFoundException(MenuErrorCode.INVALID_MENU));
+        Menu menu = findById(menuId);
 
         if(menu.getMenuStatus().equals(MenuStatus.DISABLE)) {
-            throw new MenuNotFoundException(MenuErrorCode.INVALID_MENU);
+            throw new MenuNotFoundException(MenuErrorCode.DELETED_MENU);
         }
 
         return menu;
+    }
+
+    public Menu queryMenuById(Long menuId) {
+        return findById(menuId);
+    }
+
+    private Menu findById(Long menuId) {
+        return menuRepository.findById(menuId).orElseThrow(() ->
+                new MenuNotFoundException(MenuErrorCode.MENU_NOT_FOUND));
     }
 }
