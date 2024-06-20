@@ -6,7 +6,7 @@ import com.sparta.delivery_app.domain.review.entity.ManagerReviews;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -54,4 +54,15 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole userRole;
+
+    @Builder
+    public User(String email, String password, String name, String nickName, String userAddress, UserStatus userStatus, UserRole userRole) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.nickName = nickName;
+        this.userAddress = userAddress;
+        this.userStatus = userStatus;
+        this.userRole = userRole;
+    }
 }
