@@ -37,10 +37,9 @@ public class Order extends BaseTimeCreateEntity {
     private OrderStatus orderStatus;
 
     @Builder
-    public Order(User user, Store store, List<OrderItem> orderItemList, OrderStatus orderStatus) {
+    public Order(User user, Store store, OrderStatus orderStatus) {
         this.user = user;
         this.store = store;
-        this.orderItemList = orderItemList;
         this.orderStatus = orderStatus;
     }
 

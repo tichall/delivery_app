@@ -1,9 +1,10 @@
 package com.sparta.delivery_app.domain.order.service;
 
-import com.sparta.delivery_app.common.exception.errorcode.ErrorCode;
 import com.sparta.delivery_app.common.exception.errorcode.MenuErrorCode;
 import com.sparta.delivery_app.common.exception.errorcode.OrderErrorCode;
+import com.sparta.delivery_app.common.globalcustomexception.MenuNotFoundException;
 import com.sparta.delivery_app.common.globalcustomexception.MenuStatusException;
+import com.sparta.delivery_app.common.globalcustomexception.StoreMenuMismatchException;
 import com.sparta.delivery_app.common.globalcustomexception.TotalPriceException;
 import com.sparta.delivery_app.domain.menu.adaptor.MenuAdaptor;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
@@ -20,9 +21,7 @@ import com.sparta.delivery_app.domain.store.entity.Store;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -34,7 +33,7 @@ public class OrderService {
     private MenuAdaptor menuAdaptor;
 
     public OrderAddResponseDto addOrder(OrderAddRequestDto requestDto) {
-        Store store = storeAdaptor.getStore(requestDto.getStoreId());
+        Store store = storeAdaptor.queryStoreById(requestDto.getStoreId());
         Long totalPrice;
 
         Order currentOrder = Order.builder()
@@ -60,6 +59,10 @@ public class OrderService {
             Integer quantity = menuItemRequestDto.getQuantity();
 
             Menu menu = menuAdaptor.queryMenuById(menuId);
+
+            if (menu.getStore() != currentOrder.getStore()) {
+                throw new StoreMenuMismatchException(OrderErrorCode.STORE_MENU_MISMATCH);
+            }
 
             // Menu 쪽에 로직을 추가하고 불러다 쓰는 게 더 나아보임
             if (menu.getMenuStatus().equals(MenuStatus.DISABLE)) {
