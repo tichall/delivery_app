@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class MenuAddRequestDto {
 
     @NotBlank(message = "Store ID가 입력되지 않았습니다.")
-    private Store store;
+    private Long storeId;
 
     @NotBlank(message = "메뉴명이 입력되지 않았습니다.")
     @Size(max = 100)
