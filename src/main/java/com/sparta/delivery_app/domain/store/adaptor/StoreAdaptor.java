@@ -1,10 +1,8 @@
 package com.sparta.delivery_app.domain.store.adaptor;
 
 import com.sparta.delivery_app.common.exception.errorcode.StoreErrorCode;
-import com.sparta.delivery_app.common.globalcustomexception.StoreNotFoundException;
-import com.sparta.delivery_app.domain.store.entity.Store;
-import com.sparta.delivery_app.domain.store.repository.StoreRepository;
 import com.sparta.delivery_app.common.globalcustomexception.StoreDuplicatedException;
+import com.sparta.delivery_app.common.globalcustomexception.StoreNotFoundException;
 import com.sparta.delivery_app.domain.store.dto.request.RegisterStoreRequestDto;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.store.repository.StoreRepository;
@@ -13,9 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.sparta.delivery_app.common.exception.errorcode.StoreErrorCode.DUPLICATED_STORE;
-
 import java.util.Optional;
+
+import static com.sparta.delivery_app.common.exception.errorcode.StoreErrorCode.DUPLICATED_STORE;
 
 @Component
 @RequiredArgsConstructor
