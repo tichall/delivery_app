@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/menus")
 public class MenuController {
 
     private final MenuService menuService;
@@ -21,7 +21,7 @@ public class MenuController {
     /**
      * 메뉴 등록
      */
-    @PostMapping("/menus")
+    @PostMapping
     public MenuAddResponseDto menuAdd(
             @RequestBody MenuAddRequestDto requestDto
     ) {
