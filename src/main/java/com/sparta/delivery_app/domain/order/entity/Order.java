@@ -38,6 +38,5 @@ public class Order extends BaseTimeCreateEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus orderStatus;
-
 }
 
