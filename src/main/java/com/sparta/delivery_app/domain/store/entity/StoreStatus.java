@@ -9,6 +9,7 @@ public enum StoreStatus {
 
     ENABLE("ENABLE"),
     DISABLE("DISABLE");
+
     private final String storeStatusName;
 
 }
