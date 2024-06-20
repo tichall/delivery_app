@@ -1,6 +1,7 @@
 package com.sparta.delivery_app.domain.user.adaptor;
 
 import com.sparta.delivery_app.common.globalcustomexception.UserDuplicatedException;
+import com.sparta.delivery_app.domain.user.entity.User;
 import com.sparta.delivery_app.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,5 +20,9 @@ public class UserAdaptor {
                             throw new UserDuplicatedException(DUPLICATED_USER);
                         }
                 );
+    }
+
+    public User saveUser(User userData) {
+        return userRepository.save(userData);
     }
 }
