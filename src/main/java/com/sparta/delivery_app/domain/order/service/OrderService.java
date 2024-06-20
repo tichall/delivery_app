@@ -2,7 +2,6 @@ package com.sparta.delivery_app.domain.order.service;
 
 import com.sparta.delivery_app.common.exception.errorcode.MenuErrorCode;
 import com.sparta.delivery_app.common.exception.errorcode.OrderErrorCode;
-import com.sparta.delivery_app.common.globalcustomexception.MenuNotFoundException;
 import com.sparta.delivery_app.common.globalcustomexception.MenuStatusException;
 import com.sparta.delivery_app.common.globalcustomexception.StoreMenuMismatchException;
 import com.sparta.delivery_app.common.globalcustomexception.TotalPriceException;
@@ -42,7 +41,7 @@ public class OrderService {
                 .orderStatus(OrderStatus.ORDER_COMPLETED)
                 .build();
 
-        addValidatedMenuItemsToOrder(currentOrder, requestDto.getMenuItemRequestDtoList());
+        addValidatedMenuItemsToOrder(currentOrder, requestDto.getMenuList());
         totalPrice = calculateTotalPrice(currentOrder);
 
         if (totalPrice < store.getMinTotalPrice()) {
