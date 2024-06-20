@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "liked")
 public class Liked {
 
     @Id
