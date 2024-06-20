@@ -1,13 +1,14 @@
 package com.sparta.delivery_app.domain.user.service;
 
-import com.sparta.delivery_app.common.globalcustomexception.UserDuplicatedException;
 import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
-import com.sparta.delivery_app.domain.user.repository.UserRepository;
+import com.sparta.delivery_app.domain.user.dto.request.ConsumersSignupRequestDto;
+import com.sparta.delivery_app.domain.user.dto.response.ConsumersSignupResponseDto;
+import com.sparta.delivery_app.domain.user.entity.User;
+import com.sparta.delivery_app.domain.user.entity.UserRole;
+import com.sparta.delivery_app.domain.user.entity.UserStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import static com.sparta.delivery_app.common.exception.errorcode.UserErrorCode.DUPLICATED_USER;
 
 
 @Slf4j
@@ -15,25 +16,33 @@ import static com.sparta.delivery_app.common.exception.errorcode.UserErrorCode.D
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository; //방법1
-    private final UserAdaptor userAdaptor; //방법2
+    private final UserAdaptor userAdaptor;
 
+    public ConsumersSignupResponseDto ConsumersUserAdd(ConsumersSignupRequestDto requestDto) {
+        userAdaptor.checkDuplicateEmail(requestDto.getEmail());
 
-    /**
-     * 어댑터보다 더 많은 줄이 발생함. 또한 검증 로직은 다른 도메인에서도 사용하는 경우 의존성 주입의 문제도 생김.
-     */
-    public void signupAdd(String email) {
-        //방법1
-        userRepository.findByEmail(email).ifPresent(u ->
-                {
-                    throw new UserDuplicatedException(DUPLICATED_USER);
-                }
-        );
+        User userData = User.builder()
+                .email(requestDto.getEmail())
+                .password(requestDto.getPassword())
+                .userAddress(requestDto.getAddress())
+                .userStatus(UserStatus.ENABLE)
+                .userRole(UserRole.USER)
+                .build();
+        userAdaptor.saveUser(userData);
+        return ConsumersSignupResponseDto.of(userData);
+    }
 
-        //방법 2
-        //검증
-        userAdaptor.checkDuplicateEmail(email);
+    public ConsumersSignupResponseDto managersUserAdd(ConsumersSignupRequestDto requestDto) {
+        userAdaptor.checkDuplicateEmail(requestDto.getEmail());
 
-//        return UserSignupResponseDto.of(user ~~~~)
+        User userData = User.builder()
+                .email(requestDto.getEmail())
+                .password(requestDto.getPassword())
+                .userAddress(requestDto.getAddress())
+                .userStatus(UserStatus.ENABLE)
+                .userRole(UserRole.MANAGER)
+                .build();
+        userAdaptor.saveUser(userData);
+        return ConsumersSignupResponseDto.of(userData);
     }
 }

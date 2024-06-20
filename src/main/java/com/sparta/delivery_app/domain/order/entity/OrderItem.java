@@ -3,6 +3,7 @@ package com.sparta.delivery_app.domain.order.entity;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,4 +27,11 @@ public class OrderItem {
 
     @Column(name = "order_item_quantity", nullable = false)
     private Integer quantity;
+
+    @Builder
+    public OrderItem(Order order, Menu menu, Integer quantity) {
+        this.order = order;
+        this.menu = menu;
+        this.quantity = quantity;
+    }
 }

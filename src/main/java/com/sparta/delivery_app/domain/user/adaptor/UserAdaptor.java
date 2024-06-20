@@ -2,14 +2,12 @@ package com.sparta.delivery_app.domain.user.adaptor;
 
 import com.sparta.delivery_app.common.globalcustomexception.UnableOpenStoreException;
 import com.sparta.delivery_app.common.globalcustomexception.UserDuplicatedException;
-import com.sparta.delivery_app.common.globalcustomexception.UserNotExistException;
 import com.sparta.delivery_app.domain.user.entity.User;
+import com.sparta.delivery_app.common.globalcustomexception.UserNotExistException;
 import com.sparta.delivery_app.domain.user.entity.UserRole;
 import com.sparta.delivery_app.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 import static com.sparta.delivery_app.common.exception.errorcode.UserErrorCode.*;
 
@@ -26,7 +24,6 @@ public class UserAdaptor {
                         }
                 );
     }
-
     public User checkManagerRole(Long userId) {
 
         User user = userRepository.findById(userId).orElseThrow(
@@ -37,5 +34,9 @@ public class UserAdaptor {
         }
         return user;
 
+    }
+
+    public User saveUser(User userData) {
+        return userRepository.save(userData);
     }
 }
