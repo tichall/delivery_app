@@ -1,6 +1,9 @@
 package com.sparta.delivery_app.domain.menu.adaptor;
 
+import com.sparta.delivery_app.common.exception.errorcode.MenuErrorCode;
+import com.sparta.delivery_app.common.globalcustomexception.MenuNotFoundException;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
+import com.sparta.delivery_app.domain.menu.entity.MenuStatus;
 import com.sparta.delivery_app.domain.menu.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -13,5 +16,16 @@ public class MenuAdaptor {
 
     public void saveMenu(Menu menu) {
         menuRepository.save(menu);
+    }
+
+    public Menu checkValidMenuByIdAndMenuStatus(Long menuId) {
+        Menu menu = menuRepository.findById(menuId).orElseThrow(() ->
+                new MenuNotFoundException(MenuErrorCode.INVALID_MENU));
+
+        if(menu.getMenuStatus().equals(MenuStatus.DISABLE)) {
+            throw new MenuNotFoundException(MenuErrorCode.INVALID_MENU);
+        }
+
+        return menu;
     }
 }

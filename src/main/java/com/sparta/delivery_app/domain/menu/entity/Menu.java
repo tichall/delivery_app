@@ -2,7 +2,9 @@ package com.sparta.delivery_app.domain.menu.entity;
 
 import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
 import com.sparta.delivery_app.domain.menu.dto.request.MenuAddRequestDto;
+import com.sparta.delivery_app.domain.menu.dto.request.MenuModifyRequestDto;
 import com.sparta.delivery_app.domain.menu.dto.response.MenuAddResponseDto;
+import com.sparta.delivery_app.domain.menu.dto.response.MenuModifyResponseDto;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -61,5 +63,23 @@ public class Menu extends BaseTimeEntity {
                 .menuImagePath(requestDto.getMenuImagePath())
                 .menuStatus(MenuStatus.ENABLE)
                 .build();
+    }
+
+//    @Builder
+//    public static Menu updateMenu(MenuModifyRequestDto requestDto) {
+//        return Menu.builder()
+//                .menuName(requestDto.getMenuName())
+//                .menuPrice(requestDto.getMenuPrice())
+//                .menuInfo(requestDto.getMenuInfo())
+//                .menuImagePath(requestDto.getMenuImagePath())
+//                .menuStatus(MenuStatus.ENABLE)
+//                .build();
+//    }
+
+    public void updateMenu(MenuModifyRequestDto requestDto) {
+        this.menuName = requestDto.getMenuName();
+        this.menuPrice = requestDto.getMenuPrice();
+        this.menuInfo = requestDto.getMenuInfo();
+        this.menuImagePath = requestDto.getMenuImagePath();
     }
 }
