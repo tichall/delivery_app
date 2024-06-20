@@ -2,6 +2,8 @@ package com.sparta.delivery_app.domain.store.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.converter.json.GsonBuilderUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -10,4 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/stores")
 public class StoreController {
+
+    @GetMapping("/")
+    public void test() {
+        System.out.println("test");
+    }
 }
