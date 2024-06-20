@@ -1,6 +1,8 @@
 package com.sparta.delivery_app.domain.menu.entity;
 
 import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
+import com.sparta.delivery_app.domain.menu.dto.request.MenuAddRequestDto;
+import com.sparta.delivery_app.domain.menu.dto.response.MenuAddResponseDto;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -40,12 +42,24 @@ public class Menu extends BaseTimeEntity {
     private MenuStatus menuStatus;
 
     @Builder
-    public Menu(Store store, String menuName, Long menuPrice, String menuInfo, String menuImagePath, MenuStatus menuStatus) {
-        this.store = store;
+    public Menu(String menuName, Long menuPrice, String menuInfo, String menuImagePath, Store store, MenuStatus menuStatus) {
         this.menuName = menuName;
         this.menuPrice = menuPrice;
         this.menuInfo = menuInfo;
         this.menuImagePath = menuImagePath;
+        this.store = store;
         this.menuStatus = menuStatus;
+    }
+
+    @Builder
+    public static Menu of(Store store, MenuAddRequestDto requestDto) {
+        return Menu.builder()
+                .store(store)
+                .menuName(requestDto.getMenuName())
+                .menuPrice(requestDto.getMenuPrice())
+                .menuInfo(requestDto.getMenuInfo())
+                .menuImagePath(requestDto.getMenuImagePath())
+                .menuStatus(MenuStatus.ENABLE)
+                .build();
     }
 }
