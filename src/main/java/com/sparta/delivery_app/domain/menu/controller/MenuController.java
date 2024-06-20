@@ -1,10 +1,13 @@
 package com.sparta.delivery_app.domain.menu.controller;
 
+import com.sparta.delivery_app.common.globalResponse.RestApiResponse;
+import com.sparta.delivery_app.common.status.StatusCode;
 import com.sparta.delivery_app.domain.menu.dto.request.MenuAddRequestDto;
 import com.sparta.delivery_app.domain.menu.dto.response.MenuAddResponseDto;
 import com.sparta.delivery_app.domain.menu.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,10 +25,13 @@ public class MenuController {
      * 메뉴 등록
      */
     @PostMapping
-    public MenuAddResponseDto menuAdd(
+    public ResponseEntity<RestApiResponse<MenuAddResponseDto>> menuAdd(
             @RequestBody MenuAddRequestDto requestDto
     ) {
-        return menuService.addMenu(requestDto);
+        MenuAddResponseDto responseDto =  menuService.addMenu(requestDto);
+
+        return ResponseEntity.status(StatusCode.CREATED.code)
+                .body(RestApiResponse.of("메뉴 등록에 성공 했습니다.", responseDto));
     }
 
 }
