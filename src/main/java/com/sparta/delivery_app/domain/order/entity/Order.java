@@ -6,10 +6,7 @@ import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,5 +36,15 @@ public class Order extends BaseTimeCreateEntity {
     @Column(nullable = false)
     private OrderStatus orderStatus;
 
+    @Builder
+    public Order(User user, Store store, OrderStatus orderStatus) {
+        this.user = user;
+        this.store = store;
+        this.orderStatus = orderStatus;
+    }
+
+    public void addOrderItem(OrderItem orderItem) {
+        orderItemList.add(orderItem);
+    }
 }
 
