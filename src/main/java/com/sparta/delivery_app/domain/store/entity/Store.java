@@ -3,6 +3,7 @@ package com.sparta.delivery_app.domain.store.entity;
 import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
 import com.sparta.delivery_app.domain.order.entity.Order;
+import com.sparta.delivery_app.domain.store.dto.request.RegisterStoreRequestDto;
 import com.sparta.delivery_app.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -52,5 +53,14 @@ public class Store extends BaseTimeEntity {
     @Column(nullable = false)
     private StoreStatus status;
 
+    public Store(RegisterStoreRequestDto requestDto, User user) {
+        this.storeName = requestDto.getStoreName();
+        this.storeAddress = requestDto.getStoreAddress();
+        this.storeInfo = requestDto.getStoreInfo();
+        this.storeRegistrationNumber = requestDto.getStoreRegistrationNumber();
+        this.minTotalPrice = requestDto.getMinTotalPrice();
+        this.user = user;
+        this.status = StoreStatus.ENABLE;
+    }
 
 }
