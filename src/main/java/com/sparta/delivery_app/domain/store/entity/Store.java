@@ -3,10 +3,12 @@ package com.sparta.delivery_app.domain.store.entity;
 import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
 import com.sparta.delivery_app.domain.order.entity.Order;
+import com.sparta.delivery_app.domain.store.dto.request.ModifySotoreRequestDto;
 import com.sparta.delivery_app.domain.store.dto.request.RegisterStoreRequestDto;
 import com.sparta.delivery_app.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -62,5 +64,14 @@ public class Store extends BaseTimeEntity {
         this.user = user;
         this.status = StoreStatus.ENABLE;
     }
+
+    public void modifyStore(ModifySotoreRequestDto requestDto) {
+        this.storeName = requestDto.getStoreName();
+        this.storeAddress = requestDto.getStoreAddress();
+        this.storeRegistrationNumber = requestDto.getStoreRegistrationNumber();
+        this.minTotalPrice = requestDto.getMinTotalPrice();
+        this.storeInfo = requestDto.getStoreInfo();
+    }
+
 
 }

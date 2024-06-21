@@ -9,5 +9,5 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     Optional<Store> findByUserOrStoreRegistrationNumber(User user, String storeRegistrationNumber);
 
-    Optional<Store> findByStoreRegistrationNumber(String regiNum);
+    Optional<Store> findStoreByUser(User user);
 }
