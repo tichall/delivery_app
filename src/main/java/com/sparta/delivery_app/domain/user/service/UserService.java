@@ -8,6 +8,7 @@ import com.sparta.delivery_app.domain.user.entity.UserRole;
 import com.sparta.delivery_app.domain.user.entity.UserStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -17,16 +18,19 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserAdaptor userAdaptor;
+    private final PasswordEncoder passwordEncoder;
 
     public ConsumersSignupResponseDto ConsumersUserAdd(ConsumersSignupRequestDto requestDto) {
         userAdaptor.checkDuplicateEmail(requestDto.getEmail());
 
         User userData = User.builder()
                 .email(requestDto.getEmail())
-                .password(requestDto.getPassword())
+                .password(passwordEncoder.encode(requestDto.getPassword()))
+                .name(requestDto.getName())
+                .nickName(requestDto.getNickName())
                 .userAddress(requestDto.getAddress())
                 .userStatus(UserStatus.ENABLE)
-                .userRole(UserRole.USER)
+                .userRole(UserRole.CONSUMER)
                 .build();
         userAdaptor.saveUser(userData);
         return ConsumersSignupResponseDto.of(userData);
@@ -37,7 +41,9 @@ public class UserService {
 
         User userData = User.builder()
                 .email(requestDto.getEmail())
-                .password(requestDto.getPassword())
+                .password(passwordEncoder.encode(requestDto.getPassword()))
+                .name(requestDto.getName())
+                .nickName(requestDto.getNickName())
                 .userAddress(requestDto.getAddress())
                 .userStatus(UserStatus.ENABLE)
                 .userRole(UserRole.MANAGER)

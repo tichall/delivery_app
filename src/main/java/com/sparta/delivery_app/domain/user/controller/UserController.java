@@ -21,9 +21,9 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/consumers")
-    public ResponseEntity<RestApiResponse<ConsumersSignupResponseDto>> ConsumersSignupRequestDto(@Valid @RequestBody ConsumersSignupRequestDto requestDto) {
+    public ResponseEntity<RestApiResponse<ConsumersSignupResponseDto>> ConsumersSignupRequestDto(
+            @Valid @RequestBody ConsumersSignupRequestDto requestDto) {
         ConsumersSignupResponseDto responseDto = userService.ConsumersUserAdd(requestDto);
-
         return ResponseEntity.status(StatusCode.CREATED.code)
                 .body(RestApiResponse.of(
                         "회원가입에 성공했습니다.",
@@ -32,7 +32,8 @@ public class UserController {
     }
 
     @PostMapping("/managers")
-    public ResponseEntity<RestApiResponse<ConsumersSignupResponseDto>> managersSignupRequestDto(@Valid @RequestBody ConsumersSignupRequestDto requestDto) {
+    public ResponseEntity<RestApiResponse<ConsumersSignupResponseDto>> managersSignupRequestDto(
+            @Valid @RequestBody ConsumersSignupRequestDto requestDto) {
         ConsumersSignupResponseDto responseDto = userService.managersUserAdd(requestDto);
 
         return ResponseEntity.status(StatusCode.CREATED.code)

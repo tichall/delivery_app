@@ -1,15 +1,44 @@
 package com.sparta.delivery_app.domain.liked.controller;
 
+import com.sparta.delivery_app.common.globalResponse.RestApiResponse;
+import com.sparta.delivery_app.common.status.StatusCode;
+import com.sparta.delivery_app.domain.liked.service.LikedService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/users/liked/{storeId}")
+@RequestMapping("/api/v1/users/liked")
 public class LikedController {
 
+    private final LikedService likedService;
 
+    /**
+     * 좋아요 등록
+     */
+    @PostMapping("/{storeId}")
+    public ResponseEntity<RestApiResponse<Object>> create(
+            @PathVariable Long storeId
+    ) {
+
+        likedService.addLiked(storeId);
+        return ResponseEntity.status(StatusCode.OK.code)
+                .body(RestApiResponse.of("관심 매장으로 등록되었습니다."));
+    }
+
+    /**
+     * 좋아요 삭제
+     */
+    @DeleteMapping("/{storeId}")
+    public ResponseEntity<RestApiResponse<Object>> delete(
+            @PathVariable Long storeId
+    ) {
+        likedService.deleteLiked(storeId);
+        return ResponseEntity.status(StatusCode.OK.code)
+                .body(RestApiResponse.of("관심 매장 등록이 취소되었습니다."));
+
+    }
 }
