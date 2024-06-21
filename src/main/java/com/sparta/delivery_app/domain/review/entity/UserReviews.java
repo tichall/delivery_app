@@ -4,13 +4,9 @@ import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
 import com.sparta.delivery_app.domain.order.entity.Order;
 import com.sparta.delivery_app.domain.user.entity.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter

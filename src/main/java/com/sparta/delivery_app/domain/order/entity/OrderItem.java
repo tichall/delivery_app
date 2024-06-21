@@ -28,10 +28,14 @@ public class OrderItem {
     @Column(name = "order_item_quantity", nullable = false)
     private Integer quantity;
 
+    @Column(name = "price_at_time", nullable = false)
+    private Long priceAtTime;
+
     @Builder
     public OrderItem(Order order, Menu menu, Integer quantity) {
         this.order = order;
         this.menu = menu;
         this.quantity = quantity;
+        this.priceAtTime = menu.getMenuPrice();
     }
 }

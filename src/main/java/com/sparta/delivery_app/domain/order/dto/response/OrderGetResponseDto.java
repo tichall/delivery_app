@@ -8,18 +8,19 @@ import java.util.List;
 
 @Getter
 @Builder
-public class OrderAddResponseDto {
+public class OrderGetResponseDto {
     private String storeName;
     private List<MenuItemResponseDto> menuList;
     private Long totalPrice;
     private String orderStatus;
 
-    public static OrderAddResponseDto of(Order order, Long totalPrice) {
-        return OrderAddResponseDto.builder()
+    public static OrderGetResponseDto of(Order order) {
+        return OrderGetResponseDto.builder()
                 .storeName(order.getStore().getStoreName())
                 .menuList(order.getOrderItemList().stream().map(MenuItemResponseDto::of).toList())
-                .totalPrice(totalPrice)
+                .totalPrice(order.calculateTotalPrice())
                 .orderStatus(order.getOrderStatus().getOrderStatusName())
                 .build();
     }
+
 }
