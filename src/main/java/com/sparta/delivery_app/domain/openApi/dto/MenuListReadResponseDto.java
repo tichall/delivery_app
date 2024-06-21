@@ -1,4 +1,4 @@
-package com.sparta.delivery_app.domain.menu.dto.response;
+package com.sparta.delivery_app.domain.openApi.dto;
 
 
 import com.sparta.delivery_app.domain.menu.entity.Menu;

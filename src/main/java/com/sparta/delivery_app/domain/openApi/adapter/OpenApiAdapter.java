@@ -1,13 +1,14 @@
 package com.sparta.delivery_app.domain.openApi.adapter;
 
-import com.sparta.delivery_app.domain.menu.dto.response.MenuListReadResponseDto;
-import com.sparta.delivery_app.domain.menu.entity.MenuStatus;
-import com.sparta.delivery_app.domain.menu.repository.MenuRepository;
-import com.sparta.delivery_app.domain.store.dto.response.StoreListReadResponseDto;
+import com.sparta.delivery_app.domain.openApi.dto.StoreDetailsResponseDto;
+import com.sparta.delivery_app.domain.openApi.dto.StoreListReadResponseDto;
+import com.sparta.delivery_app.domain.store.adaptor.StoreAdaptor;
+import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.store.entity.StoreStatus;
 import com.sparta.delivery_app.domain.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
 import java.util.List;
 
 @Component
@@ -15,7 +16,7 @@ import java.util.List;
 public class OpenApiAdapter {
 
     private final StoreRepository storeRepository;
-    private final MenuRepository menuRepository;
+    private final StoreAdaptor storeAdaptor;
 
     /**
      * ENABLE 상태인 매장만 조회
@@ -25,5 +26,18 @@ public class OpenApiAdapter {
         return storeRepository.findAll().stream()
                 .filter(b -> b.getStatus().equals(StoreStatus.ENABLE))
                 .map(StoreListReadResponseDto::new).toList();
+    }
+
+    /**
+     * 특정 매장의 정보 조회
+     * @param storeId
+     * @return
+     */
+    public StoreDetailsResponseDto queryMenusByStoreId(Long storeId) {
+
+        Store store = storeAdaptor.queryStoreById(storeId);
+        StoreStatus.checkStoreStatus(store);
+
+        return new StoreDetailsResponseDto(store);
     }
 }
