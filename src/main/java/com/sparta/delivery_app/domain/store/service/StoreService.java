@@ -1,7 +1,9 @@
 package com.sparta.delivery_app.domain.store.service;
 
 import com.sparta.delivery_app.domain.store.adaptor.StoreAdaptor;
+import com.sparta.delivery_app.domain.store.dto.request.ModifySotoreRequestDto;
 import com.sparta.delivery_app.domain.store.dto.request.RegisterStoreRequestDto;
+import com.sparta.delivery_app.domain.store.dto.response.ModifyStoreResponseDto;
 import com.sparta.delivery_app.domain.store.dto.response.RegisterStoreResponseDto;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
@@ -18,12 +20,13 @@ public class StoreService {
     private final StoreAdaptor storeAdaptor;
     private final UserAdaptor userAdaptor;
 
-    //회원가입 후 로그인한 유저가 매장 등록 // 추후 필요 조건: 유효하지 않는 JWT 토큰입니다. 403 //이미 매장 삭제한 경우 valid
+    //회원가입 후 로그인한 유저가 매장 등록 // 추후 필요 조건: 유효하지 않는 JWT 토큰입니다. 403
     public RegisterStoreResponseDto registerStore(RegisterStoreRequestDto requestDto, User user) {
         Long userId = user.getId();
-        // 매장 등록권한 - User/Admin/Etc 확인과 매장목록에 해당 userId 있는지 확인/권한 검증
+        // 매장 등록권한 확인
         User checkedManager = userAdaptor.checkManagerRole(userId);
-        storeAdaptor.validByUserIdOrStoreRegistrationNumber(checkedManager, requestDto.getStoreRegistrationNumber());
+        storeAdaptor.checkStoreHistory(checkedManager);
+        storeAdaptor.validStoreRegistrationNumber(checkedManager, requestDto.getStoreRegistrationNumber());
         Store newStore = storeAdaptor.saveStore(requestDto, user);
 
         return RegisterStoreResponseDto.of(newStore);
