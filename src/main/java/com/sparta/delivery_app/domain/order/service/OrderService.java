@@ -38,8 +38,8 @@ public class OrderService {
     private StoreAdaptor storeAdaptor;
     private MenuAdaptor menuAdaptor;
 
-    public OrderAddResponseDto addOrder(OrderAddRequestDto requestDto) {
-        Store store = storeAdaptor.queryStoreById(requestDto.getStoreId());
+    public OrderAddResponseDto addOrder(final OrderAddRequestDto requestDto) {
+        Store store = storeAdaptor.queryStoreById(requestDto.storeId());
         Long totalPrice;
 
         Order currentOrder = Order.builder()
@@ -48,7 +48,7 @@ public class OrderService {
                 .orderStatus(OrderStatus.ORDER_COMPLETED)
                 .build();
 
-        addValidatedMenuItemsToOrder(currentOrder, requestDto.getMenuList());
+        addValidatedMenuItemsToOrder(currentOrder, requestDto.menuList());
         totalPrice = currentOrder.calculateTotalPrice();
 
         if (totalPrice < store.getMinTotalPrice()) {
@@ -79,8 +79,8 @@ public class OrderService {
 
     private void addValidatedMenuItemsToOrder(Order currentOrder, List<MenuItemRequestDto> menuItemRequestDtoList) {
         for (MenuItemRequestDto menuItemRequestDto : menuItemRequestDtoList) {
-            Long menuId = menuItemRequestDto.getMenuId();
-            Integer quantity = menuItemRequestDto.getQuantity();
+            Long menuId = menuItemRequestDto.menuId();
+            Integer quantity = menuItemRequestDto.quantity();
 
             Menu menu = menuAdaptor.queryMenuById(menuId);
 
