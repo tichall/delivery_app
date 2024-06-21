@@ -12,6 +12,7 @@ import com.sparta.delivery_app.domain.order.adaptor.OrderAdaptor;
 import com.sparta.delivery_app.domain.order.dto.request.MenuItemRequestDto;
 import com.sparta.delivery_app.domain.order.dto.request.OrderAddRequestDto;
 import com.sparta.delivery_app.domain.order.dto.response.OrderAddResponseDto;
+import com.sparta.delivery_app.domain.order.dto.response.OrderGetResponseDto;
 import com.sparta.delivery_app.domain.order.entity.Order;
 import com.sparta.delivery_app.domain.order.entity.OrderItem;
 import com.sparta.delivery_app.domain.order.entity.OrderStatus;
@@ -52,6 +53,14 @@ public class OrderService {
         return OrderAddResponseDto.of(currentOrder, totalPrice);
     }
 
+    public OrderGetResponseDto findOrder(Long orderId) {
+        // 해당 유저의 주문인지 검증 필요
+        Long userId = 0L;
+        Order order = orderAdaptor.queryOrderByIdAndUserID(userId, orderId);
+        Long totalPrice = calculateTotalPrice(order);
+        return OrderGetResponseDto.of(order, totalPrice);
+    }
+
     private void addValidatedMenuItemsToOrder(Order currentOrder, List<MenuItemRequestDto> menuItemRequestDtoList) {
         for (MenuItemRequestDto menuItemRequestDto : menuItemRequestDtoList) {
             Long menuId = menuItemRequestDto.getMenuId();
@@ -78,10 +87,10 @@ public class OrderService {
         }
     }
 
-    private Long calculateTotalPrice(Order currentOrder) {
+    private Long calculateTotalPrice(Order order) {
         Long totalPrice = 0L;
-        for (OrderItem orderItem : currentOrder.getOrderItemList()) {
-            Long menuPrice = orderItem.getMenu().getMenuPrice();
+        for (OrderItem orderItem : order.getOrderItemList()) {
+            Long menuPrice = orderItem.getPriceAtTime();
             Integer quantity = orderItem.getQuantity();
 
             totalPrice += (menuPrice * quantity);
