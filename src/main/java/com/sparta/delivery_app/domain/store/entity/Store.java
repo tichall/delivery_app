@@ -8,6 +8,7 @@ import com.sparta.delivery_app.domain.store.dto.request.RegisterStoreRequestDto;
 import com.sparta.delivery_app.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
