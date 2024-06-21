@@ -55,7 +55,7 @@ public class OrderService {
 
     public OrderGetResponseDto findOrder(Long orderId) {
         // 해당 유저의 주문인지 검증 필요
-        Long userId = 0L;
+        Long userId = 0L; // 임시
         Order order = orderAdaptor.queryOrderByIdAndUserID(userId, orderId);
         Long totalPrice = calculateTotalPrice(order);
         return OrderGetResponseDto.of(order, totalPrice);

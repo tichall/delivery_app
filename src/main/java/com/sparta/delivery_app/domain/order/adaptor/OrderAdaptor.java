@@ -1,8 +1,8 @@
 package com.sparta.delivery_app.domain.order.adaptor;
 
 import com.sparta.delivery_app.common.exception.errorcode.OrderErrorCode;
+import com.sparta.delivery_app.common.globalcustomexception.OrderAccessDeniedException;
 import com.sparta.delivery_app.common.globalcustomexception.OrderNotFoundException;
-import com.sparta.delivery_app.common.globalcustomexception.UserOrderMismatchException;
 import com.sparta.delivery_app.domain.order.entity.Order;
 import com.sparta.delivery_app.domain.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class OrderAdaptor {
     public Order queryOrderByIdAndUserID(Long userId, Long orderId) {
         Order order = queryOrderById(orderId);
         if (!order.getUser().getId().equals(userId)) {
-            throw new UserOrderMismatchException(OrderErrorCode.USER_ORDER_MISMATCH);
+            throw new OrderAccessDeniedException(OrderErrorCode.ORDER_ACCESS_DENIED);
         }
         return order;
     }
