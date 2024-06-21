@@ -21,15 +21,16 @@ public class MenuAdaptor {
     public Menu checkValidMenuByIdAndMenuStatus(Long menuId) {
         Menu menu = findById(menuId);
 
-        if(menu.getMenuStatus().equals(MenuStatus.DISABLE)) {
-            throw new MenuNotFoundException(MenuErrorCode.DELETED_MENU);
-        }
+        queryMenuStatus(menu);
 
         return menu;
     }
 
     public void deleteMenu(Long menuId) {
         Menu menu = findById(menuId);
+
+        queryMenuStatus(menu);
+
         menuRepository.delete(menu);
     }
 
@@ -40,6 +41,12 @@ public class MenuAdaptor {
     private Menu findById(Long menuId) {
         return menuRepository.findById(menuId).orElseThrow(() ->
                 new MenuNotFoundException(MenuErrorCode.MENU_NOT_FOUND));
+    }
+
+    private void queryMenuStatus(Menu menu) {
+        if(menu.getMenuStatus().equals(MenuStatus.DISABLE)) {
+            throw new MenuNotFoundException(MenuErrorCode.DELETED_MENU);
+        }
     }
 
 }
