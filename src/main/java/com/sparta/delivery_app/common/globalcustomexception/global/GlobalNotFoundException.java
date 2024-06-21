@@ -1,13 +1,13 @@
-package com.sparta.delivery_app.common.globalcustomexception;
+package com.sparta.delivery_app.common.globalcustomexception.global;
 
 import com.sparta.delivery_app.common.exception.errorcode.ErrorCode;
 import lombok.Getter;
 
 @Getter
-public class GlobalStatusException extends RuntimeException {
+public class GlobalNotFoundException extends RuntimeException {
     private final ErrorCode errorCode;
 
-    public GlobalStatusException(ErrorCode errorCode) {
+    public GlobalNotFoundException(ErrorCode errorCode) {
         super(errorCode.getDescription());
         this.errorCode = errorCode;
     }
