@@ -41,4 +41,8 @@ public class MenuService {
         return new MenuModifyResponseDto(menu.getId(), menu.getMenuName(),
                 menu.getMenuPrice(), menu.getMenuInfo(), menu.getMenuImagePath());
     }
+
+    public void deleteMenu(Long menuId) {
+        menuAdaptor.deleteMenu(menuId);
+    }
 }

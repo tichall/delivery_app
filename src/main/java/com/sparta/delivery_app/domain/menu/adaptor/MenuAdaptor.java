@@ -1,8 +1,5 @@
 package com.sparta.delivery_app.domain.menu.adaptor;
 
-import com.sparta.delivery_app.common.exception.errorcode.CommonErrorCode;
-import com.sparta.delivery_app.common.exception.errorcode.MenuErrorCode;
-import com.sparta.delivery_app.common.globalcustomexception.MenuNotFoundException;
 import com.sparta.delivery_app.common.exception.errorcode.MenuErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.MenuNotFoundException;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
@@ -31,6 +28,11 @@ public class MenuAdaptor {
         return menu;
     }
 
+    public void deleteMenu(Long menuId) {
+        Menu menu = findById(menuId);
+        menuRepository.delete(menu);
+    }
+
     public Menu queryMenuById(Long menuId) {
         return findById(menuId);
     }
@@ -39,4 +41,5 @@ public class MenuAdaptor {
         return menuRepository.findById(menuId).orElseThrow(() ->
                 new MenuNotFoundException(MenuErrorCode.MENU_NOT_FOUND));
     }
+
 }

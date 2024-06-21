@@ -23,6 +23,7 @@ public class MenuController {
 
     /**
      * 메뉴 등록
+     * @return 성공 메시지 및 등록된 메뉴 정보
      */
     @PostMapping
     public ResponseEntity<RestApiResponse<MenuAddResponseDto>> menuAdd(
@@ -30,12 +31,14 @@ public class MenuController {
     ) {
         MenuAddResponseDto responseDto =  menuService.addMenu(requestDto);
 
-        return ResponseEntity.status(StatusCode.CREATED.code)
+        return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("메뉴 등록에 성공 했습니다.", responseDto));
     }
 
     /**
      * 메뉴 수정
+     * @param menuId 메뉴 ID
+     * @return 성공 메시지 및 수정된 메뉴 정보
      */
     @PutMapping("/{menuId}")
     public ResponseEntity<RestApiResponse<MenuModifyResponseDto>> menuModify(
@@ -44,8 +47,22 @@ public class MenuController {
     ) {
         MenuModifyResponseDto responseDto = menuService.modifyMenu(menuId, requestDto);
 
-        return ResponseEntity.status(StatusCode.CREATED.code)
+        return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("메뉴 수정에 성공 했습니다.", responseDto));
+    }
+
+    /**
+     * 메뉴 삭제
+     * @param menuId 메뉴 ID
+     */
+    @DeleteMapping("/{menuId}")
+    public ResponseEntity<RestApiResponse<Void>> menuDelete(
+            @PathVariable Long menuId
+    ) {
+        menuService.deleteMenu(menuId);
+
+        return ResponseEntity.status(StatusCode.OK.code)
+                .body(RestApiResponse.of("메뉴 삭제가 완료되었습니다."));
     }
 
 }
