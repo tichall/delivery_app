@@ -77,6 +77,13 @@ public class SecurityConfig {
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
+        //로그아웃
+        http.logout(logout ->
+                logout.logoutUrl("/api/v1/user/logout")
+                        .addLogoutHandler(jwtLogoutHandler)
+                        .logoutSuccessHandler(jwtLogoutSuccessHandler)
+        );
+
         //예외 검증
         http.exceptionHandling(exceptionHandling ->
                 exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint)
