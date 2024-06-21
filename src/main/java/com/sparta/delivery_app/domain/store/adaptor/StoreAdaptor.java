@@ -1,13 +1,10 @@
 package com.sparta.delivery_app.domain.store.adaptor;
 
 import com.sparta.delivery_app.common.exception.errorcode.StoreErrorCode;
+import com.sparta.delivery_app.common.globalcustomexception.StoreDuplicatedException;
 import com.sparta.delivery_app.common.globalcustomexception.StoreHistoryException;
 import com.sparta.delivery_app.common.globalcustomexception.StoreNotFoundException;
 import com.sparta.delivery_app.domain.store.dto.request.ModifySotoreRequestDto;
-import com.sparta.delivery_app.domain.store.entity.Store;
-import com.sparta.delivery_app.domain.store.repository.StoreRepository;
-import com.sparta.delivery_app.common.globalcustomexception.StoreDuplicatedException;
-import com.sparta.delivery_app.common.globalcustomexception.StoreNotFoundException;
 import com.sparta.delivery_app.domain.store.dto.request.RegisterStoreRequestDto;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.store.repository.StoreRepository;
@@ -18,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.sparta.delivery_app.common.exception.errorcode.StoreErrorCode.DUPLICATED_STORE;
+import static com.sparta.delivery_app.common.exception.errorcode.StoreErrorCode.DUPLICATED_STORE_BUSINESS_NUMBER;
 
 @Component
 @RequiredArgsConstructor
@@ -61,6 +58,12 @@ public class StoreAdaptor {
         return newStore;
     }
 
+    @Transactional
+    public Store modifyStore(ModifySotoreRequestDto requestDto, Store ownedStore) {
+        ownedStore.modifyStore(requestDto);
+        storeRepository.save(ownedStore);
+        return ownedStore;
+    }
 
     public Store findById(Long storeId) {
         Optional<Store> store = storeRepository.findById(storeId);
@@ -70,11 +73,5 @@ public class StoreAdaptor {
         }
 
         return store.get();
-    }
-    @Transactional
-    public Store modifyStore(ModifySotoreRequestDto requestDto, Store ownedStore) {
-        ownedStore.modifyStore(requestDto);
-        storeRepository.save(ownedStore);
-        return ownedStore;
     }
 }
