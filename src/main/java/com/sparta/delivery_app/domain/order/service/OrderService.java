@@ -88,10 +88,7 @@ public class OrderService {
                 throw new StoreMenuMismatchException(OrderErrorCode.STORE_MENU_MISMATCH);
             }
 
-            // Menu 쪽에 로직을 추가하고 불러다 쓰는 게 더 나아보임
-            if (menu.getMenuStatus().equals(MenuStatus.DISABLE)) {
-                throw new MenuStatusException(MenuErrorCode.MENU_STATUS_ERROR);
-            }
+            MenuStatus.checkMenuStatus(menu);
 
             OrderItem orderItem = OrderItem.builder()
                     .order(currentOrder)
