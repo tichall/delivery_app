@@ -1,7 +1,6 @@
 package com.sparta.delivery_app.common.exceptionhandler;
 
-import com.sparta.delivery_app.common.exception.errorcode.CommonErrorCode;
-import com.sparta.delivery_app.common.globalcustomexception.GlobalDuplicatedException;
+import com.sparta.delivery_app.common.globalcustomexception.global.GlobalDuplicatedException;
 import com.sparta.delivery_app.common.exception.errorcode.ErrorCode;
 import com.sparta.delivery_app.common.globalResponse.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -25,16 +24,5 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(errorCode.getHttpStatusCode())
                 .body(ErrorResponse.of(errorCode));
     }
-
-    /**
-     * IllegalArgumentException
-     * @@@@@@@@@@
-     */
-//    @ExceptionHandler(IllegalArgumentException.class)
-//    protected ResponseEntity<ErrorResponse> apiException(IllegalArgumentException e) {
-//        e.getMessage() //
-//        return ResponseEntity.status()
-//                .body(ErrorResponse.of());
-//    }
 
 }
