@@ -1,8 +1,5 @@
 package com.sparta.delivery_app.domain.menu.adaptor;
 
-import com.sparta.delivery_app.common.exception.errorcode.CommonErrorCode;
-import com.sparta.delivery_app.common.exception.errorcode.MenuErrorCode;
-import com.sparta.delivery_app.common.globalcustomexception.MenuNotFoundException;
 import com.sparta.delivery_app.common.exception.errorcode.MenuErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.MenuNotFoundException;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
@@ -17,26 +14,42 @@ public class MenuAdaptor {
 
     private final MenuRepository menuRepository;
 
+    /**
+     * 메뉴 등록
+     * @param menu
+     */
     public void saveMenu(Menu menu) {
         menuRepository.save(menu);
     }
 
-    public Menu checkValidMenuByIdAndMenuStatus(Long menuId) {
+    /**
+     * 메뉴 id, 상태 검증
+     * @param menuId
+     * @return menu
+     */
+    public Menu queryMenuByIdAndMenuStatus(Long menuId) {
         Menu menu = findById(menuId);
-
-        if(menu.getMenuStatus().equals(MenuStatus.DISABLE)) {
-            throw new MenuNotFoundException(MenuErrorCode.DELETED_MENU);
-        }
-
+        MenuStatus.checkMenuStatus(menu);
         return menu;
     }
 
+    /**
+     * 메뉴 id 검증
+     * @param menuId
+     * @return menu
+     */
     public Menu queryMenuById(Long menuId) {
         return findById(menuId);
     }
 
+    /**
+     * 메뉴 id 검증
+     * @param menuId
+     * @return menu
+     */
     private Menu findById(Long menuId) {
         return menuRepository.findById(menuId).orElseThrow(() ->
                 new MenuNotFoundException(MenuErrorCode.MENU_NOT_FOUND));
     }
+
 }

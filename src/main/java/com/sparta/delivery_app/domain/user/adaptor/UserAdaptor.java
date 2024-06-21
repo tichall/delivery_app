@@ -30,9 +30,12 @@ public class UserAdaptor {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotExistException(NOT_SIGNED_UP_USER)
         );
-        if (!user.getUserRole().equals(UserRole.CONSUMER) || (!user.getUserRole().equals(UserRole.ADMIN))) {
-            throw new UnableOpenStoreException(NOT_USER);
-        }
+
+        //MANAGER 이면서 ENABLE 상태인지 확인
+        if (!(user.getUserRole().equals(UserRole.MANAGER) &&
+                user.getUserStatus().equals(UserStatus.ENABLE))) {
+            throw new UnableOpenStoreException(NOT_AUTHORITY_TO_REGISTER_STORE);
+
         return user;
 
     }
