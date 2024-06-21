@@ -22,10 +22,12 @@ public class AdminUserController {
     //회원 목록 전체 조회
 //    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping ///페이지 바꾸고 싶을 땐 api/admin/users?page=6&size=20 등으로 접속
-    public ResponseEntity<RestApiResponse<Page<AdminUserResponseDto>>> allUserList(
+    public ResponseEntity<RestApiResponse<List<AdminUserResponseDto>>> allUserList(
+
             @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value ="size", defaultValue = "10") int size) {
-        Page<AdminUserResponseDto> allUserList = adminUserService.getAllUserList(page-1, size);
+            @RequestParam(value ="size", defaultValue = "15") int size) {
+
+        List<AdminUserResponseDto> allUserList = adminUserService.getAllUserList(page-1, size);
         return ResponseEntity.status(StatusCode.CREATED.code)
                 .body(RestApiResponse.of("조회 성공", allUserList));
     }

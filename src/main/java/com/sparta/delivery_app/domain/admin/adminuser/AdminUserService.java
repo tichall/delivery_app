@@ -1,8 +1,7 @@
 package com.sparta.delivery_app.domain.admin.adminuser;
 
-import com.sparta.delivery_app.common.globalcustomexception.UserNotExistException;
 import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
-import jakarta.persistence.EntityNotFoundException;
+import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -10,7 +9,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import static com.sparta.delivery_app.common.exception.errorcode.UserErrorCode.NOT_FOUND_USER;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -19,19 +19,19 @@ public class AdminUserService {
 
     private final UserAdaptor userAdaptor;
 
-    public Page<AdminUserResponseDto> getAllUserList(int page, int size) {
+    //admin 검증 필요
+    public List<AdminUserResponseDto> getAllUserList(int page, int size) {
 
-//        if (!isAdmin) {
-//            throw new AccessDeniedException("관리자 권한이 필요합니다.");
-//        }
+        //페이지 정보 추출
         Pageable pageable = PageRequest.of(page, size);
-        Page<AdminUserResponseDto> allUserList = userAdaptor.queryAllUser(pageable);
+        Page<User> userPage = userAdaptor.queryAllUserPage(pageable);
+        String pageInfo = userPage.getNumber() + "/" + userPage.getTotalPages();
 
-        if (allUserList.getTotalElements() == 0) {
-            throw new UserNotExistException(NOT_FOUND_USER);
-        }
+        //user 정보 추출
+        List<AdminUserResponseDto> responseDtoList = userPage.getContent().stream()
+                .map(user -> new AdminUserResponseDto(user, pageInfo))
+                .collect(Collectors.toList());
 
-
-        return allUserList;
+        return responseDtoList;
     }
 }

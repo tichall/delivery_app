@@ -60,8 +60,13 @@ public class UserAdaptor {
         return null;
     }
 
-    public Page<AdminUserResponseDto> queryAllUser(Pageable pageable) {
-        return userRepository.findAll(pageable).map(AdminUserResponseDto::new);
+//    public List<AdminUserResponseDto> queryAllUser() {
+//        return userRepository.findAll().stream().map(AdminUserResponseDto::new).toList();
+//    }
+
+    public Page<User> queryAllUserPage(Pageable pageable) {
+        Page<User> userPage = userRepository.findAll(pageable);
+        return userPage;
     }
 
 }

@@ -7,7 +7,10 @@ import com.sparta.delivery_app.domain.user.entity.UserRole;
 import com.sparta.delivery_app.domain.user.entity.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import org.springframework.data.domain.Page;
 
+@Getter
 @Builder
 @AllArgsConstructor
 public class AdminUserResponseDto {
@@ -20,6 +23,7 @@ public class AdminUserResponseDto {
     private String userAddress;
     private UserStatus userStatus;
     private UserRole userRole;
+    private String pageInfo;
 
     public static AdminUserResponseDto of (User user) {
         return AdminUserResponseDto.builder()
@@ -43,6 +47,18 @@ public class AdminUserResponseDto {
         this.userAddress = user.getUserAddress();
         this.userStatus = user.getUserStatus();
         this.userRole = user.getUserRole();
+    }
+
+    public AdminUserResponseDto(User user, String pageInfo) {
+        this.id = user.getId();
+        this.email = user.getEmail();
+        this.password = user.getPassword();
+        this.name = user.getName();
+        this.nickName = user.getNickName();
+        this.userAddress = user.getUserAddress();
+        this.userStatus = user.getUserStatus();
+        this.userRole = user.getUserRole();
+        this.pageInfo = pageInfo;
     }
 
 }
