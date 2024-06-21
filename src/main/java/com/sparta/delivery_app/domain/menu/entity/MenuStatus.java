@@ -1,5 +1,7 @@
 package com.sparta.delivery_app.domain.menu.entity;
 
+import com.sparta.delivery_app.common.exception.errorcode.MenuErrorCode;
+import com.sparta.delivery_app.common.globalcustomexception.MenuNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -10,4 +12,15 @@ public enum MenuStatus {
     DISABLE("DISABLE");
 
     private final String menuStatusName;
+
+    /**
+     * 메뉴 상태 검증
+     * @param menu
+     */
+    public static void checkMenuStatus(Menu menu) {
+        if(menu.getMenuStatus().equals(MenuStatus.DISABLE)) {
+
+            throw new MenuNotFoundException(MenuErrorCode.DELETED_MENU);
+        }
+    }
 }

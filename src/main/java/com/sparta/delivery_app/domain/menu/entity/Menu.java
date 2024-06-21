@@ -52,21 +52,25 @@ public class Menu extends BaseTimeEntity {
     }
 
     @Builder
-    public static Menu of(Store store, MenuAddRequestDto requestDto) {
+    public static Menu of(Store store, final MenuAddRequestDto requestDto) {
         return Menu.builder()
                 .store(store)
-                .menuName(requestDto.getMenuName())
-                .menuPrice(requestDto.getMenuPrice())
-                .menuInfo(requestDto.getMenuInfo())
-                .menuImagePath(requestDto.getMenuImagePath())
+                .menuName(requestDto.menuName())
+                .menuPrice(requestDto.menuPrice())
+                .menuInfo(requestDto.menuInfo())
+                .menuImagePath(requestDto.menuImagePath())
                 .menuStatus(MenuStatus.ENABLE)
                 .build();
     }
 
-    public void updateMenu(MenuModifyRequestDto requestDto) {
-        this.menuName = requestDto.getMenuName();
-        this.menuPrice = requestDto.getMenuPrice();
-        this.menuInfo = requestDto.getMenuInfo();
-        this.menuImagePath = requestDto.getMenuImagePath();
+    public void updateMenu(final MenuModifyRequestDto requestDto) {
+        this.menuName = requestDto.menuName();
+        this.menuPrice = requestDto.menuPrice();
+        this.menuInfo = requestDto.menuInfo();
+        this.menuImagePath = requestDto.menuImagePath();
+    }
+
+    public void deleteMenu() {
+        this.menuStatus = MenuStatus.DISABLE;
     }
 }
