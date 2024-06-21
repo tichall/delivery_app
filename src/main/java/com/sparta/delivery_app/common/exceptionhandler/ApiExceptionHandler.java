@@ -4,6 +4,7 @@ import com.sparta.delivery_app.common.exception.errorcode.ErrorCode;
 import com.sparta.delivery_app.common.globalResponse.ErrorResponse;
 import com.sparta.delivery_app.common.globalcustomexception.GlobalDuplicatedException;
 import com.sparta.delivery_app.common.globalcustomexception.GlobalNotFoundException;
+import com.sparta.delivery_app.common.globalcustomexception.GlobalNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,14 @@ public class ApiExceptionHandler {
                 .body(ErrorResponse.of(errorCode));
     }
 
+    @ExceptionHandler(GlobalNotFoundException.class)
+    protected ResponseEntity<ErrorResponse> globalNotFoundException(GlobalNotFoundException e) {
+        ErrorCode errorCode = e.getErrorCode();
+
+        return ResponseEntity.status(errorCode.getHttpStatusCode())
+                .body(ErrorResponse.of(errorCode));
+    }
+
     /**
      * IllegalArgumentException
      * @@@@@@@@@@
@@ -44,5 +53,6 @@ public class ApiExceptionHandler {
 //        return ResponseEntity.status()
 //                .body(ErrorResponse.of());
 //    }
+
 
 }

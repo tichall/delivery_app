@@ -12,7 +12,7 @@ public enum UserErrorCode implements ErrorCode {
 
     NOT_SIGNED_UP_USER(StatusCode.NOT_FOUND.getCode(), "회원가입 후 이용해 주세요."),
 
-    NOT_USER(StatusCode.UNAUTHORIZED.getCode(), "매장 등록 권한이 없습니다.")
+    NOT_AUTHORITY_TO_REGISTER_STORE(StatusCode.UNAUTHORIZED.getCode(), "매장 등록 권한이 없습니다.")
     ;
 
     private final Integer httpStatusCode;
