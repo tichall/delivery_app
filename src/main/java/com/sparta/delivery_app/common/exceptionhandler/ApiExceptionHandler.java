@@ -35,14 +35,6 @@ public class ApiExceptionHandler {
                 .body(ErrorResponse.of(errorCode));
     }
 
-    @ExceptionHandler(GlobalNotFoundException.class)
-    protected ResponseEntity<ErrorResponse> globalNotFoundException(GlobalNotFoundException e) {
-        ErrorCode errorCode = e.getErrorCode();
-
-        return ResponseEntity.status(errorCode.getHttpStatusCode())
-                .body(ErrorResponse.of(errorCode));
-    }
-
     /**
      * IllegalArgumentException
      * @@@@@@@@@@

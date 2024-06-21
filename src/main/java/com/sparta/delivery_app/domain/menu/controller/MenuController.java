@@ -33,7 +33,7 @@ public class MenuController {
     ) {
         final MenuAddResponseDto responseDto =  menuService.addMenu(requestDto);
 
-        return ResponseEntity.status(StatusCode.OK.code)
+        return ResponseEntity.status(StatusCode.CREATED.code)
                 .body(RestApiResponse.of("메뉴 등록에 성공 했습니다.", responseDto));
     }
 
