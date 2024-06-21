@@ -5,6 +5,7 @@ import com.sparta.delivery_app.common.exception.errorcode.OrderErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.MenuStatusException;
 import com.sparta.delivery_app.common.globalcustomexception.StoreMenuMismatchException;
 import com.sparta.delivery_app.common.globalcustomexception.TotalPriceException;
+import com.sparta.delivery_app.domain.commen.page.util.PageUtil;
 import com.sparta.delivery_app.domain.menu.adaptor.MenuAdaptor;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
 import com.sparta.delivery_app.domain.menu.entity.MenuStatus;
@@ -13,6 +14,7 @@ import com.sparta.delivery_app.domain.order.dto.request.MenuItemRequestDto;
 import com.sparta.delivery_app.domain.order.dto.request.OrderAddRequestDto;
 import com.sparta.delivery_app.domain.order.dto.response.OrderAddResponseDto;
 import com.sparta.delivery_app.domain.order.dto.response.OrderGetResponseDto;
+import com.sparta.delivery_app.domain.order.dto.response.OrderPageResponseDto;
 import com.sparta.delivery_app.domain.order.entity.Order;
 import com.sparta.delivery_app.domain.order.entity.OrderItem;
 import com.sparta.delivery_app.domain.order.entity.OrderStatus;
@@ -20,6 +22,10 @@ import com.sparta.delivery_app.domain.store.adaptor.StoreAdaptor;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,7 +49,7 @@ public class OrderService {
                 .build();
 
         addValidatedMenuItemsToOrder(currentOrder, requestDto.getMenuList());
-        totalPrice = calculateTotalPrice(currentOrder);
+        totalPrice = currentOrder.calculateTotalPrice();
 
         if (totalPrice < store.getMinTotalPrice()) {
             throw new TotalPriceException(OrderErrorCode.TOTAL_PRICE_ERROR);
@@ -57,8 +63,18 @@ public class OrderService {
         // 해당 유저의 주문인지 검증 필요
         Long userId = 0L; // 임시
         Order order = orderAdaptor.queryOrderByIdAndUserID(userId, orderId);
-        Long totalPrice = calculateTotalPrice(order);
-        return OrderGetResponseDto.of(order, totalPrice);
+        return OrderGetResponseDto.of(order);
+    }
+
+    public OrderPageResponseDto findOrders(Integer pageNum, String sortBy, Boolean isDesc) {
+        Long userId = 0L; // 임시
+
+        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, sortBy, isDesc);
+
+        Page<Order> orderPage = orderAdaptor.queryOrdersByUserId(pageable, userId);
+
+        PageUtil.validatePage(pageNum, orderPage);
+        return OrderPageResponseDto.of(pageNum, orderPage);
     }
 
     private void addValidatedMenuItemsToOrder(Order currentOrder, List<MenuItemRequestDto> menuItemRequestDtoList) {
@@ -87,14 +103,4 @@ public class OrderService {
         }
     }
 
-    private Long calculateTotalPrice(Order order) {
-        Long totalPrice = 0L;
-        for (OrderItem orderItem : order.getOrderItemList()) {
-            Long menuPrice = orderItem.getPriceAtTime();
-            Integer quantity = orderItem.getQuantity();
-
-            totalPrice += (menuPrice * quantity);
-        }
-        return totalPrice;
-    }
 }

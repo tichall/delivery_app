@@ -2,7 +2,6 @@ package com.sparta.delivery_app.domain.order.entity;
 
 
 import com.sparta.delivery_app.domain.commen.BaseTimeCreateEntity;
-import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -45,6 +44,17 @@ public class Order extends BaseTimeCreateEntity {
 
     public void addOrderItem(OrderItem orderItem) {
         orderItemList.add(orderItem);
+    }
+
+    public Long calculateTotalPrice() {
+        Long totalPrice = 0L;
+        for (OrderItem orderItem : this.orderItemList) {
+            Long menuPrice = orderItem.getPriceAtTime();
+            Integer quantity = orderItem.getQuantity();
+
+            totalPrice += (menuPrice * quantity);
+        }
+        return totalPrice;
     }
 }
 

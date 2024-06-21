@@ -3,8 +3,6 @@ package com.sparta.delivery_app.domain.menu.entity;
 import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
 import com.sparta.delivery_app.domain.menu.dto.request.MenuAddRequestDto;
 import com.sparta.delivery_app.domain.menu.dto.request.MenuModifyRequestDto;
-import com.sparta.delivery_app.domain.menu.dto.response.MenuAddResponseDto;
-import com.sparta.delivery_app.domain.menu.dto.response.MenuModifyResponseDto;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

@@ -14,11 +14,11 @@ public class OrderGetResponseDto {
     private Long totalPrice;
     private String orderStatus;
 
-    public static OrderGetResponseDto of(Order order, Long totalPrice) {
+    public static OrderGetResponseDto of(Order order) {
         return OrderGetResponseDto.builder()
                 .storeName(order.getStore().getStoreName())
                 .menuList(order.getOrderItemList().stream().map(MenuItemResponseDto::of).toList())
-                .totalPrice(totalPrice)
+                .totalPrice(order.calculateTotalPrice())
                 .orderStatus(order.getOrderStatus().getOrderStatusName())
                 .build();
     }
