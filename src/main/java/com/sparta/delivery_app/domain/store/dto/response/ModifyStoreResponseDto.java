@@ -2,11 +2,9 @@ package com.sparta.delivery_app.domain.store.dto.response;
 
 import com.sparta.delivery_app.domain.store.entity.Store;
 import lombok.Builder;
-import lombok.Getter;
 
-@Getter
 @Builder
-public class RegisterStoreResponseDto {
+public class ModifyStoreResponseDto {
 
     private String storeName;
     private String storeAddress;
@@ -14,8 +12,8 @@ public class RegisterStoreResponseDto {
     private Long minTotalPrice;
     private String storeInfo;
 
-    public static RegisterStoreResponseDto of (Store store){
-        return RegisterStoreResponseDto.builder()
+    public static ModifyStoreResponseDto of (Store store){
+        return ModifyStoreResponseDto.builder()
                 .storeName(store.getStoreName())
                 .storeAddress(store.getStoreAddress())
                 .storeRegistrationNumber(store.getStoreRegistrationNumber())
@@ -23,5 +21,8 @@ public class RegisterStoreResponseDto {
                 .storeInfo(store.getStoreInfo())
                 .build();
     }
+
 }
+
+
 

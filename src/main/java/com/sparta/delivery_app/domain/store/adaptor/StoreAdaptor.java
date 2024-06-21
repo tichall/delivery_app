@@ -1,10 +1,10 @@
 package com.sparta.delivery_app.domain.store.adaptor;
 
 import com.sparta.delivery_app.common.exception.errorcode.StoreErrorCode;
-import com.sparta.delivery_app.common.globalcustomexception.StoreNotFoundException;
-import com.sparta.delivery_app.domain.store.entity.Store;
-import com.sparta.delivery_app.domain.store.repository.StoreRepository;
 import com.sparta.delivery_app.common.globalcustomexception.StoreDuplicatedException;
+import com.sparta.delivery_app.common.globalcustomexception.StoreNotFoundException;
+import com.sparta.delivery_app.common.globalcustomexception.StoreRegisteredHistoryException;
+import com.sparta.delivery_app.domain.store.dto.request.ModifySotoreRequestDto;
 import com.sparta.delivery_app.domain.store.dto.request.RegisterStoreRequestDto;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.store.repository.StoreRepository;
@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.sparta.delivery_app.common.exception.errorcode.StoreErrorCode.DUPLICATED_STORE;
+import java.util.Optional;
+
+import static com.sparta.delivery_app.common.exception.errorcode.StoreErrorCode.DUPLICATED_STORE_BUSINESS_NUMBER;
 
 @Component
 @RequiredArgsConstructor
@@ -26,21 +28,48 @@ public class StoreAdaptor {
                 new StoreNotFoundException(StoreErrorCode.INVALID_STORE));
     }
 
-    public void validByUserIdOrStoreRegistrationNumber(User user, String storeRegistrationNumber ) {
+    public void checkStoreHistory(User user) {
+        storeRepository.findStoreByUser(user)
+                .ifPresent(s -> {
+                    throw new StoreRegisteredHistoryException(StoreErrorCode.STORE_REGISTERED_HISTORY);
+                });
+    }
+
+    public void validStoreRegistrationNumber(User user, String storeRegistrationNumber) {
         storeRepository.findByUserOrStoreRegistrationNumber(user, storeRegistrationNumber)
                 .ifPresent(s -> {
-                            throw new StoreDuplicatedException(DUPLICATED_STORE);
+                            throw new StoreDuplicatedException(DUPLICATED_STORE_BUSINESS_NUMBER);
                         }
                 );
     }
 
-    //동일한 사업자 번호 / 주소지 확인 -> 저장
+    public Store checkStoreId(User user) {
+        return storeRepository.findStoreByUser(user).orElseThrow(() ->
+                new StoreNotFoundException(StoreErrorCode.INVALID_STORE)
+        );
+    }
+
     @Transactional
     public Store saveStore(RegisterStoreRequestDto requestDto, User user) {
 
         Store newStore = new Store(requestDto, user);
         storeRepository.save(newStore);
+
         return newStore;
     }
 
+    @Transactional
+    public void saveStore(Store store) {
+        storeRepository.save(store);
+    }
+
+    public Store findById(Long storeId) {
+        Optional<Store> store = storeRepository.findById(storeId);
+
+        if (!store.isEmpty()) {
+            throw new StoreNotFoundException(StoreErrorCode.INVALID_STORE);
+        }
+
+        return store.get();
+    }
 }
