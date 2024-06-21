@@ -7,6 +7,7 @@ import com.sparta.delivery_app.domain.store.dto.request.ModifySotoreRequestDto;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.store.repository.StoreRepository;
 import com.sparta.delivery_app.common.globalcustomexception.StoreDuplicatedException;
+import com.sparta.delivery_app.common.globalcustomexception.StoreNotFoundException;
 import com.sparta.delivery_app.domain.store.dto.request.RegisterStoreRequestDto;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.store.repository.StoreRepository;
@@ -18,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 import static com.sparta.delivery_app.common.exception.errorcode.StoreErrorCode.DUPLICATED_STORE;
-import static com.sparta.delivery_app.common.exception.errorcode.StoreErrorCode.DUPLICATED_STORE_BUSINESS_NUMBER;
 
 @Component
 @RequiredArgsConstructor
@@ -61,6 +61,16 @@ public class StoreAdaptor {
         return newStore;
     }
 
+
+    public Store findById(Long storeId) {
+        Optional<Store> store = storeRepository.findById(storeId);
+
+        if (!store.isEmpty()) {
+            throw new StoreNotFoundException(StoreErrorCode.INVALID_STORE);
+        }
+
+        return store.get();
+    }
     @Transactional
     public Store modifyStore(ModifySotoreRequestDto requestDto, Store ownedStore) {
         ownedStore.modifyStore(requestDto);

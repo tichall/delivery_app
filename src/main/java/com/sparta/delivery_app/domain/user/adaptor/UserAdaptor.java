@@ -43,6 +43,10 @@ public class UserAdaptor {
     public User saveUser(User userData) {
         return userRepository.save(userData);
     }
+
+    public User getCurrentUser() {
+        return null;
+    }
 }
 
 
