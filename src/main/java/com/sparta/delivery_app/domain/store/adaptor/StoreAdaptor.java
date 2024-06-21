@@ -2,6 +2,7 @@ package com.sparta.delivery_app.domain.store.adaptor;
 
 import com.sparta.delivery_app.common.exception.errorcode.StoreErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.StoreNotFoundException;
+import com.sparta.delivery_app.domain.store.dto.request.ModifySotoreRequestDto;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.store.repository.StoreRepository;
 import com.sparta.delivery_app.common.globalcustomexception.StoreDuplicatedException;
@@ -34,7 +35,12 @@ public class StoreAdaptor {
                 );
     }
 
-    //동일한 사업자 번호 / 주소지 확인 -> 저장
+    public Store checkStoreId(User user) {
+        return storeRepository.findStoreByUser(user).orElseThrow(() ->
+                new StoreNotFoundException(StoreErrorCode.INVALID_STORE)
+        );
+    }
+
     @Transactional
     public Store saveStore(RegisterStoreRequestDto requestDto, User user) {
 
@@ -43,4 +49,10 @@ public class StoreAdaptor {
         return newStore;
     }
 
+    @Transactional
+    public Store modifyStore(ModifySotoreRequestDto requestDto, Store ownedStore) {
+        ownedStore.modifyStore(requestDto);
+        storeRepository.save(ownedStore);
+        return ownedStore;
+    }
 }

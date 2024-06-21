@@ -26,8 +26,18 @@ public class StoreService {
         storeAdaptor.validByUserIdOrStoreRegistrationNumber(checkedManager, requestDto.getStoreRegistrationNumber());
         Store newStore = storeAdaptor.saveStore(requestDto, user);
 
-        RegisterStoreResponseDto responseDto = new RegisterStoreResponseDto(newStore);
-        return responseDto;
+        return RegisterStoreResponseDto.of(newStore);
+    }
+
+    public ModifyStoreResponseDto modifyStore(ModifySotoreRequestDto requestDto, User user) {
+
+        // ENABLE 상태의 MANAGER 소유의 Store 확인하여 수정
+        Long userId = user.getId();
+        User checkStoreOwner = userAdaptor.checkManagerRole(userId);
+        Store ownedStore = storeAdaptor.checkStoreId(checkStoreOwner);
+        Store modifiedStore = storeAdaptor.modifyStore(requestDto, ownedStore);
+
+        return ModifyStoreResponseDto.of(modifiedStore);
     }
 }
 
