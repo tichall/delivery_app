@@ -1,12 +1,16 @@
 package com.sparta.delivery_app.domain.admin.adminuser;
 
+import com.sparta.delivery_app.common.globalcustomexception.UserNotExistException;
 import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import static com.sparta.delivery_app.common.exception.errorcode.UserErrorCode.NOT_FOUND_USER;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -15,12 +19,18 @@ public class AdminUserService {
 
     private final UserAdaptor userAdaptor;
 
-    public List<AdminUserResponseDto> getAllUserList() {
+    public Page<AdminUserResponseDto> getAllUserList(int page, int size) {
 
-        List<AdminUserResponseDto> allUserList = userAdaptor.queryAllUser();
-        if (allUserList.isEmpty()) {
-            throw new EntityNotFoundException("등록된 사용자가 없습니다.");
+//        if (!isAdmin) {
+//            throw new AccessDeniedException("관리자 권한이 필요합니다.");
+//        }
+        Pageable pageable = PageRequest.of(page, size);
+        Page<AdminUserResponseDto> allUserList = userAdaptor.queryAllUser(pageable);
+
+        if (allUserList.getTotalElements() == 0) {
+            throw new UserNotExistException(NOT_FOUND_USER);
         }
+
 
         return allUserList;
     }

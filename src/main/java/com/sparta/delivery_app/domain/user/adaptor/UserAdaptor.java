@@ -9,6 +9,8 @@ import com.sparta.delivery_app.domain.user.entity.UserRole;
 import com.sparta.delivery_app.domain.user.entity.UserStatus;
 import com.sparta.delivery_app.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -58,10 +60,10 @@ public class UserAdaptor {
         return null;
     }
 
-    public List<AdminUserResponseDto> queryAllUser() {
-        return userRepository.findAll().stream()
-                .map(AdminUserResponseDto::new).toList();
+    public Page<AdminUserResponseDto> queryAllUser(Pageable pageable) {
+        return userRepository.findAll(pageable).map(AdminUserResponseDto::new);
     }
+
 }
 
 
