@@ -66,18 +66,4 @@ public class MenuController {
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("메뉴 삭제가 완료되었습니다."));
     }
-
-//    @GetMapping
-//    public ResponseEntity<String> test(
-//            HttpServletRequest http
-//    ) {
-//        String s = http.getRemoteAddr();
-//        http.getRequestURL();
-//        http.getRequestURI();
-//        http.getContextPath();
-//        http.getServerName();
-//        http.getServerPort();
-//        return ResponseEntity.ok(http.getServerName());
-//    }
-
 }
