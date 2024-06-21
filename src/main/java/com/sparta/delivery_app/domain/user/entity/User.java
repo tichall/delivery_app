@@ -38,13 +38,13 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String userAddress;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user")
     private List<Liked> likedList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user")
     private List<UserReviews> userReviewsList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user")
     private List<ManagerReviews> managerReviewsList = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
