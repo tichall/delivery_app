@@ -21,7 +21,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<RestApiResponse<OrderAddResponseDto>> orderAdd(@Valid  @RequestBody OrderAddRequestDto requestDto) {
+    public ResponseEntity<RestApiResponse<OrderAddResponseDto>> orderAdd(@Valid @RequestBody final OrderAddRequestDto requestDto) {
         OrderAddResponseDto responseDto = orderService.addOrder(requestDto);
 
         return ResponseEntity.status(StatusCode.CREATED.getCode())
