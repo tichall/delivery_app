@@ -22,7 +22,7 @@ public class StoreController {
 
     private final StoreService storeService;
 
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity<RestApiResponse<RegisterStoreResponseDto>> registerStore(@Valid @RequestBody RegisterStoreRequestDto requestDto,
                                                                                    User user) {
         RegisterStoreResponseDto responseDto = storeService.registerStore(requestDto, user);
@@ -32,7 +32,7 @@ public class StoreController {
 
     }
 
-    @PutMapping("")
+    @PutMapping
     public ResponseEntity<RestApiResponse<ModifyStoreResponseDto>> modifyStore(@Valid @RequestBody ModifySotoreRequestDto requestDto,
                                                                                User user) {
         ModifyStoreResponseDto responseDto = storeService.modifyStore(requestDto, user);

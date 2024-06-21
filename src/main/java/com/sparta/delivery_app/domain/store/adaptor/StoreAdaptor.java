@@ -2,8 +2,8 @@ package com.sparta.delivery_app.domain.store.adaptor;
 
 import com.sparta.delivery_app.common.exception.errorcode.StoreErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.StoreDuplicatedException;
-import com.sparta.delivery_app.common.globalcustomexception.StoreHistoryException;
 import com.sparta.delivery_app.common.globalcustomexception.StoreNotFoundException;
+import com.sparta.delivery_app.common.globalcustomexception.StoreRegisteredHistoryException;
 import com.sparta.delivery_app.domain.store.dto.request.ModifySotoreRequestDto;
 import com.sparta.delivery_app.domain.store.dto.request.RegisterStoreRequestDto;
 import com.sparta.delivery_app.domain.store.entity.Store;
@@ -31,7 +31,7 @@ public class StoreAdaptor {
     public void checkStoreHistory(User user) {
         storeRepository.findStoreByUser(user)
                 .ifPresent(s -> {
-                    throw new StoreHistoryException(StoreErrorCode.STORE_HISTORY);
+                    throw new StoreRegisteredHistoryException(StoreErrorCode.STORE_REGISTERED_HISTORY);
                 });
     }
 
@@ -59,10 +59,8 @@ public class StoreAdaptor {
     }
 
     @Transactional
-    public Store modifyStore(ModifySotoreRequestDto requestDto, Store ownedStore) {
-        ownedStore.modifyStore(requestDto);
-        storeRepository.save(ownedStore);
-        return ownedStore;
+    public void saveStore(Store store) {
+        storeRepository.save(store);
     }
 
     public Store findById(Long storeId) {

@@ -2,9 +2,9 @@ package com.sparta.delivery_app.common.globalcustomexception;
 
 import com.sparta.delivery_app.common.exception.errorcode.ErrorCode;
 
-public class StoreHistoryException extends GlobalDuplicatedException {
+public class StoreRegisteredHistoryException extends GlobalDuplicatedException {
 
-    public StoreHistoryException(ErrorCode errorCode) {
+    public StoreRegisteredHistoryException(ErrorCode errorCode) {
         super(errorCode);
     }
 }

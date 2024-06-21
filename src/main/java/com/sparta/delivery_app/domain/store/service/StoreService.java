@@ -11,6 +11,7 @@ import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -32,15 +33,17 @@ public class StoreService {
         return RegisterStoreResponseDto.of(newStore);
     }
 
+    @Transactional
     public ModifyStoreResponseDto modifyStore(ModifySotoreRequestDto requestDto, User user) {
 
-        // ENABLE 상태의 MANAGER 소유의 Store 확인하여 수정
+        // ENABLE 상태인 MANAGER 소유의 Store 확인하여 수정
         Long userId = user.getId();
         User checkStoreOwner = userAdaptor.checkManagerRole(userId);
         Store ownedStore = storeAdaptor.checkStoreId(checkStoreOwner);
-        Store modifiedStore = storeAdaptor.modifyStore(requestDto, ownedStore);
+        ownedStore.modifyStore(requestDto);
+        storeAdaptor.saveStore(ownedStore);
 
-        return ModifyStoreResponseDto.of(modifiedStore);
+        return ModifyStoreResponseDto.of(ownedStore);
     }
 }
 
