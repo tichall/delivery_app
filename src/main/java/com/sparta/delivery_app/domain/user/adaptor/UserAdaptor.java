@@ -5,6 +5,7 @@ import com.sparta.delivery_app.common.globalcustomexception.UserDuplicatedExcept
 import com.sparta.delivery_app.domain.user.entity.User;
 import com.sparta.delivery_app.common.globalcustomexception.UserNotExistException;
 import com.sparta.delivery_app.domain.user.entity.UserRole;
+import com.sparta.delivery_app.domain.user.entity.UserStatus;
 import com.sparta.delivery_app.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -35,9 +36,8 @@ public class UserAdaptor {
         if (!(user.getUserRole().equals(UserRole.MANAGER) &&
                 user.getUserStatus().equals(UserStatus.ENABLE))) {
             throw new UnableOpenStoreException(NOT_AUTHORITY_TO_REGISTER_STORE);
-
+        }
         return user;
-
     }
 
     public User queryUserByEmail(String email) {
