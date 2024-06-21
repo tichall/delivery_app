@@ -18,7 +18,7 @@ public class OrderPageResponseDto {
         return OrderPageResponseDto.builder()
                 .currentPage(currentPage)
                 .totalOrder(orderPage.getTotalElements())
-                .orderList(orderPage.stream().map(OrderGetResponseDto::of).toList())
+                .orderList(orderPage.getContent().stream().map(OrderGetResponseDto::of).toList())
                 .build();
     }
 }
