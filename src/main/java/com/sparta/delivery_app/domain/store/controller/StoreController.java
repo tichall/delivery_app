@@ -2,7 +2,7 @@ package com.sparta.delivery_app.domain.store.controller;
 
 import com.sparta.delivery_app.common.globalResponse.RestApiResponse;
 import com.sparta.delivery_app.common.status.StatusCode;
-import com.sparta.delivery_app.domain.store.dto.request.ModifySotoreRequestDto;
+import com.sparta.delivery_app.domain.store.dto.request.ModifyStoreRequestDto;
 import com.sparta.delivery_app.domain.store.dto.response.ModifyStoreResponseDto;
 import com.sparta.delivery_app.domain.store.dto.request.RegisterStoreRequestDto;
 import com.sparta.delivery_app.domain.store.dto.response.RegisterStoreResponseDto;
@@ -23,7 +23,7 @@ public class StoreController {
     private final StoreService storeService;
 
     @PostMapping
-    public ResponseEntity<RestApiResponse<RegisterStoreResponseDto>> registerStore(@Valid @RequestBody RegisterStoreRequestDto requestDto,
+    public ResponseEntity<RestApiResponse<RegisterStoreResponseDto>> registerStore(@Valid @RequestBody final RegisterStoreRequestDto requestDto,
                                                                                    User user) {
         RegisterStoreResponseDto responseDto = storeService.registerStore(requestDto, user);
 
@@ -33,7 +33,7 @@ public class StoreController {
     }
 
     @PutMapping
-    public ResponseEntity<RestApiResponse<ModifyStoreResponseDto>> modifyStore(@Valid @RequestBody ModifySotoreRequestDto requestDto,
+    public ResponseEntity<RestApiResponse<ModifyStoreResponseDto>> modifyStore(@Valid @RequestBody final ModifyStoreRequestDto requestDto,
                                                                                User user) {
         ModifyStoreResponseDto responseDto = storeService.modifyStore(requestDto, user);
 
