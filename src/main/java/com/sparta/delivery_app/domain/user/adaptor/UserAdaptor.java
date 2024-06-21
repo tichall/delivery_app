@@ -24,16 +24,22 @@ public class UserAdaptor {
                         }
                 );
     }
+
     public User checkManagerRole(Long userId) {
 
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotExistException(NOT_SIGNED_UP_USER)
         );
-        if (!user.getUserRole().equals(UserRole.USER) || (!user.getUserRole().equals(UserRole.ADMIN))) {
+        if (!user.getUserRole().equals(UserRole.CONSUMER) || (!user.getUserRole().equals(UserRole.ADMIN))) {
             throw new UnableOpenStoreException(NOT_USER);
         }
         return user;
 
+    }
+
+    public User queryUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotExistException(NOT_SIGNED_UP_USER));
     }
 
     public User saveUser(User userData) {
