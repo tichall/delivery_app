@@ -14,39 +14,42 @@ public class MenuAdaptor {
 
     private final MenuRepository menuRepository;
 
+    /**
+     * 메뉴 등록
+     * @param menu
+     */
     public void saveMenu(Menu menu) {
         menuRepository.save(menu);
     }
 
-    public Menu checkValidMenuByIdAndMenuStatus(Long menuId) {
+    /**
+     * 메뉴 id, 상태 검증
+     * @param menuId
+     * @return menu
+     */
+    public Menu queryMenuByIdAndMenuStatus(Long menuId) {
         Menu menu = findById(menuId);
-
-        queryMenuStatus(menu);
-
+        MenuStatus.checkMenuStatus(menu);
         return menu;
     }
 
-    public void deleteMenu(Long menuId) {
-        Menu menu = findById(menuId);
-
-        queryMenuStatus(menu);
-
-        menuRepository.delete(menu);
-    }
-
+    /**
+     * 메뉴 id 검증
+     * @param menuId
+     * @return menu
+     */
     public Menu queryMenuById(Long menuId) {
         return findById(menuId);
     }
 
+    /**
+     * 메뉴 id 검증
+     * @param menuId
+     * @return menu
+     */
     private Menu findById(Long menuId) {
         return menuRepository.findById(menuId).orElseThrow(() ->
                 new MenuNotFoundException(MenuErrorCode.MENU_NOT_FOUND));
-    }
-
-    private void queryMenuStatus(Menu menu) {
-        if(menu.getMenuStatus().equals(MenuStatus.DISABLE)) {
-            throw new MenuNotFoundException(MenuErrorCode.DELETED_MENU);
-        }
     }
 
 }

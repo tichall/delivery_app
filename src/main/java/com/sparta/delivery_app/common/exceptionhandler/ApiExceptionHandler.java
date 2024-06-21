@@ -1,9 +1,9 @@
 package com.sparta.delivery_app.common.exceptionhandler;
 
-import com.sparta.delivery_app.common.exception.errorcode.CommonErrorCode;
-import com.sparta.delivery_app.common.globalcustomexception.GlobalDuplicatedException;
 import com.sparta.delivery_app.common.exception.errorcode.ErrorCode;
 import com.sparta.delivery_app.common.globalResponse.ErrorResponse;
+import com.sparta.delivery_app.common.globalcustomexception.GlobalDuplicatedException;
+import com.sparta.delivery_app.common.globalcustomexception.GlobalNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,15 @@ public class ApiExceptionHandler {
      * Api 요청에 동작 중 예외가 발생한 경우
      */
     @ExceptionHandler(GlobalDuplicatedException.class)
-    protected ResponseEntity<ErrorResponse> apiException(GlobalDuplicatedException e) {
+    protected ResponseEntity<ErrorResponse> globalDuplicatedException(GlobalDuplicatedException e) {
+        ErrorCode errorCode = e.getErrorCode();
+
+        return ResponseEntity.status(errorCode.getHttpStatusCode())
+                .body(ErrorResponse.of(errorCode));
+    }
+
+    @ExceptionHandler(GlobalNotFoundException.class)
+    protected ResponseEntity<ErrorResponse> globalNotFoundException(GlobalNotFoundException e) {
         ErrorCode errorCode = e.getErrorCode();
 
         return ResponseEntity.status(errorCode.getHttpStatusCode())

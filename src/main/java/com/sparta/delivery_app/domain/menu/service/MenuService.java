@@ -21,9 +21,14 @@ public class MenuService {
     private final MenuAdaptor menuAdaptor;
     private final StoreAdaptor storeAdaptor;
 
-    public MenuAddResponseDto addMenu(MenuAddRequestDto requestDto) {
+    /**
+     * 메뉴 등록
+     * @param requestDto
+     * @return responseDto
+     */
+    public MenuAddResponseDto addMenu(final MenuAddRequestDto requestDto) {
 
-        Store store = storeAdaptor.queryStoreById(requestDto.getStoreId());
+        Store store = storeAdaptor.queryStoreById(requestDto.storeId());
 
         Menu menu = Menu.of(store, requestDto);
         menuAdaptor.saveMenu(menu);
@@ -31,18 +36,28 @@ public class MenuService {
         return MenuAddResponseDto.of(menu);
     }
 
+    /**
+     * 메뉴 수정
+     * @param menuId
+     * @param requestDto
+     * @return responseDto
+     */
     @Transactional
-    public MenuModifyResponseDto modifyMenu(Long menuId, MenuModifyRequestDto requestDto) {
+    public MenuModifyResponseDto modifyMenu(Long menuId, final MenuModifyRequestDto requestDto) {
 
-        Menu menu = menuAdaptor.checkValidMenuByIdAndMenuStatus(menuId);
-
+        Menu menu = menuAdaptor.queryMenuByIdAndMenuStatus(menuId);
         menu.updateMenu(requestDto);
 
-        return new MenuModifyResponseDto(menu.getId(), menu.getMenuName(),
-                menu.getMenuPrice(), menu.getMenuInfo(), menu.getMenuImagePath());
+        return MenuModifyResponseDto.of(menu);
     }
 
+    /**
+     * 메뉴 삭제
+     * @param menuId
+     */
+    @Transactional
     public void deleteMenu(Long menuId) {
-        menuAdaptor.deleteMenu(menuId);
+        Menu menu = menuAdaptor.queryMenuByIdAndMenuStatus(menuId);
+        menu.deleteMenu();
     }
 }

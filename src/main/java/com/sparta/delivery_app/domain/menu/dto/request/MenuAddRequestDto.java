@@ -7,21 +7,21 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter
-public class MenuAddRequestDto {
+public record MenuAddRequestDto(
+        @NotNull(message = "Store ID가 입력되지 않았습니다.")
+        Long storeId,
 
-    @NotNull(message = "Store ID가 입력되지 않았습니다.")
-    private Long storeId;
+        @NotBlank(message = "메뉴명이 입력되지 않았습니다.")
+        @Size(max = 100)
+        String menuName,
 
-    @NotBlank(message = "메뉴명이 입력되지 않았습니다.")
-    @Size(max = 100)
-    private String menuName;
+        @NotNull(message = "가격이 입력되지 않았습니다.")
+        Long menuPrice,
 
-    @NotNull(message = "가격이 입력되지 않았습니다.")
-    private Long menuPrice;
+        @NotBlank(message = "메뉴 정보가 입력되지 않았습니다.")
+        @Size(max = 255)
+        String menuInfo,
 
-    @NotBlank(message = "메뉴 정보가 입력되지 않았습니다.")
-    @Size(max = 255)
-    private String menuInfo;
-
-    private String menuImagePath;
+        String menuImagePath
+) {
 }
