@@ -75,8 +75,7 @@ public class SecurityConfig {
 
         //security filter
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
-
-
+        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         //예외 검증
         http.exceptionHandling(exceptionHandling ->
