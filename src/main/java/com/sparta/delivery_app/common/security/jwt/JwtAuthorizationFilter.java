@@ -42,15 +42,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(accessTokenValue) && jwtUtil.validateToken(req, accessTokenValue)) {
             log.info("refresh token 검증");
 
-            String refreshTokenValue = jwtUtil.getRefreshTokenFromHeader(req);
-            if (StringUtils.hasText(refreshTokenValue) && jwtUtil.validateToken(req, refreshTokenValue)) {
-                String email = jwtUtil.getUserInfoFromToken(refreshTokenValue).getSubject();
-                userAdaptor.checkDuplicateEmail(email);
-
+            String email = jwtUtil.getUserInfoFromToken(accessTokenValue).getSubject();
+            String refreshToken = userAdaptor.queryUserByEmail(email).getRefreshToken();
+            if (!refreshToken.isBlank()) {
                 User user = userAdaptor.queryUserByEmail(email);
 
-                if (isValidateUserAndToken(email, user, refreshTokenValue)) {
-                    //access token 및 refresh token 검증 완료
+                if (isValidateUserAndToken(email, user, refreshToken)) {
+
                     log.info("Token 인증 완료");
                     Claims info = jwtUtil.getUserInfoFromToken(accessTokenValue);
                     setAuthentication(info.getSubject());
@@ -64,11 +62,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     private boolean isValidateUserAndToken(String email, User findUser, String refreshTokenValue) {
-        if (email.equals(findUser.getEmail())
-                && refreshTokenValue.equals(findUser.getRefreshToken())) {
-            return true;
-        }
-        return false;
+        return email.equals(findUser.getEmail());
     }
 
 
