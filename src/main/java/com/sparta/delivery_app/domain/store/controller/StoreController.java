@@ -21,10 +21,13 @@ import org.springframework.web.bind.annotation.*;
 public class StoreController {
 
     private final StoreService storeService;
-
+    /*
+     * Manager(Status.ENABLE)가 매장 등록(계정 당 1개)
+     */
     @PostMapping
     public ResponseEntity<RestApiResponse<RegisterStoreResponseDto>> registerStore(@Valid @RequestBody final RegisterStoreRequestDto requestDto,
                                                                                    User user) {
+        log.info("controller-registerStore");
         RegisterStoreResponseDto responseDto = storeService.registerStore(requestDto, user);
 
         return ResponseEntity.status(StatusCode.CREATED.code)
@@ -35,6 +38,7 @@ public class StoreController {
     @PutMapping
     public ResponseEntity<RestApiResponse<ModifyStoreResponseDto>> modifyStore(@Valid @RequestBody final ModifyStoreRequestDto requestDto,
                                                                                User user) {
+        log.info("controller-modifyStore");
         ModifyStoreResponseDto responseDto = storeService.modifyStore(requestDto, user);
 
     return ResponseEntity.status(StatusCode.CREATED.code)

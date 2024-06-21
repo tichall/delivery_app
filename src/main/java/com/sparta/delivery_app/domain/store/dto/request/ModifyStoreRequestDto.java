@@ -3,7 +3,6 @@ package com.sparta.delivery_app.domain.store.dto.request;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 
-@Getter
 public record ModifyStoreRequestDto (
         @NotBlank(message = "매장 이름이 입력되지 않았습니다.")
         @Size(max = 20, message = "매장명은 20자를 초과할 수 없습니다.")
