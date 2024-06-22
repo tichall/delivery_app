@@ -1,7 +1,6 @@
 package com.sparta.delivery_app.domain.review.adaptor;
 
 import com.sparta.delivery_app.common.exception.errorcode.ReviewErrorCode;
-import com.sparta.delivery_app.common.globalcustomexception.ReviewNotFoundException;
 import com.sparta.delivery_app.common.globalcustomexception.ReviewStatusException;
 import com.sparta.delivery_app.domain.review.entity.ReviewStatus;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
@@ -27,8 +26,9 @@ public class UserReviewsAdaptor {
      */
     public UserReviews findById(Long reviewId) {
         return userReviewsRepository.findById(reviewId).orElseThrow(() ->
-                new ReviewNotFoundException(ReviewErrorCode.INVALID_REVIEW));
+                new ReviewStatusException(ReviewErrorCode.INVALID_REVIEW));
     }
+
 
     /**
      * 메뉴 id, 상태 검증
