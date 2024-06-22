@@ -3,12 +3,11 @@ package com.sparta.delivery_app.domain.store.entity;
 import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
 import com.sparta.delivery_app.domain.order.entity.Order;
-import com.sparta.delivery_app.domain.store.dto.request.ModifySotoreRequestDto;
+import com.sparta.delivery_app.domain.store.dto.request.ModifyStoreRequestDto;
 import com.sparta.delivery_app.domain.store.dto.request.RegisterStoreRequestDto;
 import com.sparta.delivery_app.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -55,23 +54,21 @@ public class Store extends BaseTimeEntity {
     @Column(nullable = false)
     private StoreStatus status;
 
-    public Store(RegisterStoreRequestDto requestDto, User user) {
-        this.storeName = requestDto.getStoreName();
-        this.storeAddress = requestDto.getStoreAddress();
-        this.storeInfo = requestDto.getStoreInfo();
-        this.storeRegistrationNumber = requestDto.getStoreRegistrationNumber();
-        this.minTotalPrice = requestDto.getMinTotalPrice();
+    public Store(final RegisterStoreRequestDto requestDto, User user) {
+        this.storeName = requestDto.storeName();
+        this.storeAddress = requestDto.storeAddress();
+        this.storeInfo = requestDto.storeInfo();
+        this.storeRegistrationNumber = requestDto.storeRegistrationNumber();
+        this.minTotalPrice = requestDto.minTotalPrice();
         this.user = user;
         this.status = StoreStatus.ENABLE;
     }
 
-    public void modifyStore(ModifySotoreRequestDto requestDto) {
-        this.storeName = requestDto.getStoreName();
-        this.storeAddress = requestDto.getStoreAddress();
-        this.storeRegistrationNumber = requestDto.getStoreRegistrationNumber();
-        this.minTotalPrice = requestDto.getMinTotalPrice();
-        this.storeInfo = requestDto.getStoreInfo();
+    public void modifyStore(final ModifyStoreRequestDto requestDto) {
+        this.storeName = requestDto.storeName();
+        this.storeAddress = requestDto.storeAddress();
+        this.storeRegistrationNumber = requestDto.storeRegistrationNumber();
+        this.minTotalPrice = requestDto.minTotalPrice();
+        this.storeInfo = requestDto.storeInfo();
     }
-
-
 }

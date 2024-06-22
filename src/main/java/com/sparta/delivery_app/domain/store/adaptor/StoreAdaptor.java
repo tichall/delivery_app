@@ -4,9 +4,10 @@ import com.sparta.delivery_app.common.exception.errorcode.StoreErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.StoreDuplicatedException;
 import com.sparta.delivery_app.common.globalcustomexception.StoreNotFoundException;
 import com.sparta.delivery_app.common.globalcustomexception.StoreRegisteredHistoryException;
-import com.sparta.delivery_app.domain.store.dto.request.ModifySotoreRequestDto;
+import com.sparta.delivery_app.common.globalcustomexception.StoreStatusException;
 import com.sparta.delivery_app.domain.store.dto.request.RegisterStoreRequestDto;
 import com.sparta.delivery_app.domain.store.entity.Store;
+import com.sparta.delivery_app.domain.store.entity.StoreStatus;
 import com.sparta.delivery_app.domain.store.repository.StoreRepository;
 import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -28,14 +29,14 @@ public class StoreAdaptor {
                 new StoreNotFoundException(StoreErrorCode.INVALID_STORE));
     }
 
-    public void checkStoreHistory(User user) {
+    public void queryStoreHistory(User user) {
         storeRepository.findStoreByUser(user)
                 .ifPresent(s -> {
                     throw new StoreRegisteredHistoryException(StoreErrorCode.STORE_REGISTERED_HISTORY);
                 });
     }
 
-    public void validStoreRegistrationNumber(User user, String storeRegistrationNumber) {
+    public void queryStoreRegistrationNumber(User user, String storeRegistrationNumber) {
         storeRepository.findByUserOrStoreRegistrationNumber(user, storeRegistrationNumber)
                 .ifPresent(s -> {
                             throw new StoreDuplicatedException(DUPLICATED_STORE_BUSINESS_NUMBER);
@@ -43,14 +44,20 @@ public class StoreAdaptor {
                 );
     }
 
-    public Store checkStoreId(User user) {
+    public Store queryStoreId(User user) {
         return storeRepository.findStoreByUser(user).orElseThrow(() ->
                 new StoreNotFoundException(StoreErrorCode.INVALID_STORE)
         );
     }
 
+    public void queryStoreStatus(Store store) {
+        if (!store.getStatus().equals(StoreStatus.ENABLE)) {
+            throw new StoreStatusException(StoreErrorCode.INVALID_STORE);
+        }
+    }
+
     @Transactional
-    public Store saveStore(RegisterStoreRequestDto requestDto, User user) {
+    public Store saveNewStore(final RegisterStoreRequestDto requestDto, User user) {
 
         Store newStore = new Store(requestDto, user);
         storeRepository.save(newStore);
@@ -59,7 +66,7 @@ public class StoreAdaptor {
     }
 
     @Transactional
-    public void saveStore(Store store) {
+    public void saveModifiedStore(Store store) {
         storeRepository.save(store);
     }
 
