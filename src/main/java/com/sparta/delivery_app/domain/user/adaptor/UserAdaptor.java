@@ -52,6 +52,11 @@ public class UserAdaptor {
         }
     }
 
+    public User queryUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotExistException(NOT_SIGNED_UP_USER));
+    }
+
     public User saveUser(User userData) {
         return userRepository.save(userData);
     }
@@ -70,5 +75,3 @@ public class UserAdaptor {
     }
 
 }
-
-

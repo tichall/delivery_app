@@ -1,4 +1,4 @@
-package com.sparta.delivery_app.common;
+package com.sparta.delivery_app.common.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
