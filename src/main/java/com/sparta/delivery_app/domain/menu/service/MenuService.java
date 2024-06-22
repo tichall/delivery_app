@@ -57,7 +57,7 @@ public class MenuService {
         Store store = storeAdaptor.queryStoreId(findUser);
         Menu menu = menuAdaptor.queryMenuByIdAndMenuStatus(menuId);
 
-        checkMenuIdAndStoreId(menu.getStore().getId(), store.getId());
+        checkMenuIdAndStoreId(menu, store.getId());
         menu.updateMenu(requestDto);
 
         return MenuModifyResponseDto.of(menu);
@@ -75,17 +75,17 @@ public class MenuService {
         Store store = storeAdaptor.queryStoreId(findUser);
         Menu menu = menuAdaptor.queryMenuByIdAndMenuStatus(menuId);
 
-        checkMenuIdAndStoreId(menu.getStore().getId(), store.getId());
+        checkMenuIdAndStoreId(menu, store.getId());
         menu.deleteMenu();
     }
 
     /**
      * 해당 메뉴가 사용자의 매장에 등록된 메뉴가 맞는지 검증
-     * @param menuId
+     * @param menu
      * @param storeId
      */
-    private void checkMenuIdAndStoreId(Long menuId, Long storeId) {
-        if(!menuId.equals(storeId)) {
+    private void checkMenuIdAndStoreId(Menu menu, Long storeId) {
+        if(!menu.getStore().getId().equals(storeId)) {
             throw new StoreMenuMismatchException(OrderErrorCode.STORE_MENU_MISMATCH);
         }
     }
