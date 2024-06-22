@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum ReviewStatus {
-
     ENABLE("ENABLE"),
     DISABLE("DISABLE");
+
     private final String reviewStatusName;
 }
