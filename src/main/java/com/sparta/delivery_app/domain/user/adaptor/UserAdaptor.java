@@ -52,26 +52,31 @@ public class UserAdaptor {
         }
     }
 
+    /**
+     * 특정 email 조회
+     * Status
+     */
     public User queryUserByEmail(String email) {
-        return userRepository.findByEmail(email)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotExistException(NOT_SIGNED_UP_USER));
+        UserStatus.checkUserStatus(user.getUserStatus());
+        return user;
     }
 
-    public User saveUser(User userData) {
-        return userRepository.save(userData);
+    public Page<User> queryAllUserPage(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
     public User getCurrentUser() {
         return null;
     }
 
+    public User saveUser(User userData) {
+        return userRepository.save(userData);
+    }
+
 //    public List<AdminUserResponseDto> queryAllUser() {
 //        return userRepository.findAll().stream().map(AdminUserResponseDto::new).toList();
 //    }
-
-    public Page<User> queryAllUserPage(Pageable pageable) {
-        Page<User> userPage = userRepository.findAll(pageable);
-        return userPage;
-    }
 
 }

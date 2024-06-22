@@ -80,7 +80,7 @@ public class SecurityConfig {
 
         //로그아웃
         http.logout(logout ->
-                logout.logoutUrl("/api/v1/user/logout")
+                logout.logoutUrl("/api/v1/users/logout")
                         .addLogoutHandler(jwtLogoutHandler)
                         .logoutSuccessHandler(jwtLogoutSuccessHandler)
         );

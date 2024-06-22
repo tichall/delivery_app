@@ -17,6 +17,7 @@ public enum UserErrorCode implements ErrorCode {
     NOT_FOUND_USER(StatusCode.NOT_FOUND.getCode(), "아이디 또는 비밀번호를 잘못 입력했습니다."),
     PASSWORD_NOT_MATCH(StatusCode.BAD_REQUEST.getCode(), "비밀번호가 일치하지 않습니다."),
     USER_STATUS_DISABLE(StatusCode.BAD_REQUEST.getCode(), "이미 탈퇴한 사용자입니다."),
+    PASSWORD_MATCH(StatusCode.BAD_REQUEST.getCode(), "최근 사용한 4개의 비밀번호를 사용할 수 없습니다."),
     ;
 
     private final Integer httpStatusCode;

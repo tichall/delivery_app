@@ -42,10 +42,13 @@ public class User extends BaseTimeEntity {
     private List<Liked> likedList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<UserReviews> userReviewsList = new ArrayList<>();
+    private List<UserReviews> userReviewList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<ManagerReviews> managerReviewsList = new ArrayList<>();
+    private List<ManagerReviews> managerReviewList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<PasswordHistory> passwordHistoryList = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -57,9 +60,6 @@ public class User extends BaseTimeEntity {
 
     @Column(columnDefinition = "TEXT")
     private String refreshToken;
-
-    @OneToMany(mappedBy = "user")
-    private List<PasswordHistory> passwordHistoriList = new ArrayList<>();
 
     @Builder
     public User(String email, String name, String nickName, String userAddress, UserStatus userStatus, UserRole userRole) {
@@ -109,6 +109,6 @@ public class User extends BaseTimeEntity {
     }
 
     public void updatePassword(PasswordHistory passwordHistory) {
-        this.passwordHistoriList.add(passwordHistory);
+        this.passwordHistoryList.add(passwordHistory);
     }
 }
