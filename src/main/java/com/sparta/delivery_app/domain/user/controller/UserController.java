@@ -3,9 +3,10 @@ package com.sparta.delivery_app.domain.user.controller;
 import com.sparta.delivery_app.common.globalResponse.RestApiResponse;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.common.status.StatusCode;
-import com.sparta.delivery_app.domain.user.dto.request.ConsumersSignupRequestDto;
-import com.sparta.delivery_app.domain.user.dto.request.UserResignRequestDto;
+import com.sparta.delivery_app.domain.user.dto.request.*;
 import com.sparta.delivery_app.domain.user.dto.response.ConsumersSignupResponseDto;
+import com.sparta.delivery_app.domain.user.dto.response.ManagersSignupResponseDto;
+import com.sparta.delivery_app.domain.user.dto.response.UserProfileModifyResponseDto;
 import com.sparta.delivery_app.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class UserController {
     @PostMapping("/consumers")
     public ResponseEntity<RestApiResponse<ConsumersSignupResponseDto>> ConsumersSignupRequestDto(
             @Valid @RequestBody ConsumersSignupRequestDto requestDto) {
-        ConsumersSignupResponseDto responseDto = userService.ConsumersUserAdd(requestDto);
+        ConsumersSignupResponseDto responseDto = userService.consumersUserAdd(requestDto);
         return ResponseEntity.status(StatusCode.CREATED.code)
                 .body(RestApiResponse.of(
                         "회원가입에 성공했습니다.",
@@ -34,9 +35,9 @@ public class UserController {
     }
 
     @PostMapping("/managers")
-    public ResponseEntity<RestApiResponse<ConsumersSignupResponseDto>> managersSignupRequestDto(
-            @Valid @RequestBody ConsumersSignupRequestDto requestDto) {
-        ConsumersSignupResponseDto responseDto = userService.managersUserAdd(requestDto);
+    public ResponseEntity<RestApiResponse<ManagersSignupResponseDto>> managersSignupRequestDto(
+            @Valid @RequestBody ManagersSignupRequestDto requestDto) {
+        ManagersSignupResponseDto responseDto = userService.managersUserAdd(requestDto);
 
         return ResponseEntity.status(StatusCode.CREATED.code)
                 .body(RestApiResponse.of(
@@ -46,7 +47,7 @@ public class UserController {
     }
 
     @DeleteMapping("/resign")
-    public ResponseEntity<RestApiResponse<Object>> resign(
+    public ResponseEntity<RestApiResponse<String>> resign(
             @AuthenticationPrincipal AuthenticationUser user,
             @Valid @RequestBody UserResignRequestDto userResignRequestDto
     ) {
@@ -55,4 +56,26 @@ public class UserController {
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("탈퇴 되었습니다."));
     }
+
+    @PutMapping("/profile")
+    public ResponseEntity<RestApiResponse<UserProfileModifyResponseDto>> profileModify(
+            @AuthenticationPrincipal AuthenticationUser user,
+            @Valid @RequestBody UserProfileModifyRequestDto requestDto
+    ) {
+        UserProfileModifyResponseDto responseDto = userService.modifyProfileUser(user, requestDto);
+        return ResponseEntity.status(StatusCode.OK.code)
+                .body(RestApiResponse.of(responseDto));
+    }
+
+    @PatchMapping("/password")
+    public ResponseEntity<RestApiResponse<String>> passwordModify(
+            @AuthenticationPrincipal AuthenticationUser user,
+            @Valid @RequestBody UserPasswordModifyRequestDto requestDto
+    ) {
+        userService.modifyPasswordUser(user, requestDto);
+        return ResponseEntity.status(StatusCode.OK.code)
+                .body(RestApiResponse.of("비밀번호가 수정되었습니다."));
+    }
+
+
 }

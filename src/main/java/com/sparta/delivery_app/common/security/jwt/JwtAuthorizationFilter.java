@@ -47,7 +47,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             if (!refreshToken.isBlank()) {
                 User user = userAdaptor.queryUserByEmail(email);
 
-                if (isValidateUserAndToken(email, user, refreshToken)) {
+                if (isValidateUserAndToken(email, user)) {
 
                     log.info("Token 인증 완료");
                     Claims info = jwtUtil.getUserInfoFromToken(accessTokenValue);
@@ -61,7 +61,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         filterChain.doFilter(req, res);
     }
 
-    private boolean isValidateUserAndToken(String email, User findUser, String refreshTokenValue) {
+    private boolean isValidateUserAndToken(String email, User findUser) {
         return email.equals(findUser.getEmail());
     }
 

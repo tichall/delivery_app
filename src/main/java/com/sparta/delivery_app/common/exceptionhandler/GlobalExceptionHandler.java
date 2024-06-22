@@ -26,14 +26,4 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.of(errorCode));
     }
 
-    @ExceptionHandler(AuthenticationException.class)
-    protected void AuthenticationException(AuthenticationException e) {
-        String message = e.getMessage();
-        log.info(message);
-        log.info("asdfasfasfasdfasfasfasf");
-
-//        return ResponseEntity.status(errorCode.getHttpStatusCode())
-//                .body(ErrorResponse.of(errorCode));
-    }
-
 }
