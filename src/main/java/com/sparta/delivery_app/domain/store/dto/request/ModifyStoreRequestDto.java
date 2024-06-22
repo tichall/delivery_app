@@ -1,8 +1,9 @@
 package com.sparta.delivery_app.domain.store.dto.request;
 
 import jakarta.validation.constraints.*;
+import lombok.Getter;
 
-public record RegisterStoreRequestDto(
+public record ModifyStoreRequestDto (
         @NotBlank(message = "매장 이름이 입력되지 않았습니다.")
         @Size(max = 20, message = "매장명은 20자를 초과할 수 없습니다.")
         String storeName,
@@ -16,11 +17,11 @@ public record RegisterStoreRequestDto(
         String storeRegistrationNumber,
 
         @NotNull(message = "최소주문 금액이 입력되지 않았습니다.")
-        @Max(value = 1000000, message = "최소주문금액은 100만 원을 넘길 수 없습니다")
+        @Max(value = 1000000, message = "최소주문금액은 100만 원을 초과할 수 없습니다")
         Long minTotalPrice,
 
         @Size(max = 255, message = "입력 가능한 글자 수를 초과하였습니다.")
-        String storeInfo) {
-
+        String storeInfo
+) {
 
 }
