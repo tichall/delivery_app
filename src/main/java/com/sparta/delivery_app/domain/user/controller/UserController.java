@@ -1,15 +1,17 @@
 package com.sparta.delivery_app.domain.user.controller;
 
 import com.sparta.delivery_app.common.globalResponse.RestApiResponse;
+import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.common.status.StatusCode;
 import com.sparta.delivery_app.domain.user.dto.request.ConsumersSignupRequestDto;
+import com.sparta.delivery_app.domain.user.dto.request.UserResignRequestDto;
 import com.sparta.delivery_app.domain.user.dto.response.ConsumersSignupResponseDto;
 import com.sparta.delivery_app.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.Manager;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -21,9 +23,9 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/consumers")
-    public ResponseEntity<RestApiResponse<ConsumersSignupResponseDto>> ConsumersSignupRequestDto(@Valid @RequestBody ConsumersSignupRequestDto requestDto) {
+    public ResponseEntity<RestApiResponse<ConsumersSignupResponseDto>> ConsumersSignupRequestDto(
+            @Valid @RequestBody ConsumersSignupRequestDto requestDto) {
         ConsumersSignupResponseDto responseDto = userService.ConsumersUserAdd(requestDto);
-
         return ResponseEntity.status(StatusCode.CREATED.code)
                 .body(RestApiResponse.of(
                         "회원가입에 성공했습니다.",
@@ -32,7 +34,8 @@ public class UserController {
     }
 
     @PostMapping("/managers")
-    public ResponseEntity<RestApiResponse<ConsumersSignupResponseDto>> managersSignupRequestDto(@Valid @RequestBody ConsumersSignupRequestDto requestDto) {
+    public ResponseEntity<RestApiResponse<ConsumersSignupResponseDto>> managersSignupRequestDto(
+            @Valid @RequestBody ConsumersSignupRequestDto requestDto) {
         ConsumersSignupResponseDto responseDto = userService.managersUserAdd(requestDto);
 
         return ResponseEntity.status(StatusCode.CREATED.code)
@@ -42,4 +45,14 @@ public class UserController {
                 );
     }
 
+    @DeleteMapping("/resign")
+    public ResponseEntity<RestApiResponse<Object>> resign(
+            @AuthenticationPrincipal AuthenticationUser user,
+            @Valid @RequestBody UserResignRequestDto userResignRequestDto
+    ) {
+        userService.resignUser(user, userResignRequestDto);
+
+        return ResponseEntity.status(StatusCode.OK.code)
+                .body(RestApiResponse.of("탈퇴 되었습니다."));
+    }
 }
