@@ -1,4 +1,4 @@
-package com.sparta.delivery_app.common.globalcustomexception;
+package com.sparta.delivery_app.common.globalcustomexception.global;
 
 import com.sparta.delivery_app.common.exception.errorcode.ErrorCode;
 import lombok.Getter;

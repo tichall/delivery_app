@@ -2,7 +2,7 @@ package com.sparta.delivery_app.common.exceptionhandler;
 
 import com.sparta.delivery_app.common.exception.errorcode.ErrorCode;
 import com.sparta.delivery_app.common.globalResponse.ErrorResponse;
-import com.sparta.delivery_app.common.globalcustomexception.*;
+import com.sparta.delivery_app.common.globalcustomexception.global.GlobalAccessDeniedException;
 import com.sparta.delivery_app.common.globalcustomexception.global.GlobalDuplicatedException;
 import com.sparta.delivery_app.common.globalcustomexception.global.GlobalMismatchException;
 import com.sparta.delivery_app.common.globalcustomexception.global.GlobalNotFoundException;
