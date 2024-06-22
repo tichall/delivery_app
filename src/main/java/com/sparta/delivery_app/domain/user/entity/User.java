@@ -71,7 +71,7 @@ public class User extends BaseTimeEntity {
         this.userRole = userRole;
     }
 
-    public static User saveUser(ConsumersSignupRequestDto requestDto) {
+    public static User saveUser(final ConsumersSignupRequestDto requestDto) {
         return User.builder()
                 .email(requestDto.email())
                 .name(requestDto.name())
@@ -82,7 +82,7 @@ public class User extends BaseTimeEntity {
                 .build();
     }
 
-    public static User saveUser(ManagersSignupRequestDto requestDto) {
+    public static User saveUser(final ManagersSignupRequestDto requestDto) {
         return User.builder()
                 .email(requestDto.email())
                 .name(requestDto.name())
@@ -93,22 +93,18 @@ public class User extends BaseTimeEntity {
                 .build();
     }
 
-    public User updateUser(UserProfileModifyRequestDto requestDto) {
+    public User updateUser(final UserProfileModifyRequestDto requestDto) {
         this.nickName = requestDto.nickName();
         this.name = requestDto.name();
         this.userAddress = requestDto.address();
         return this;
     }
 
-    public void updateRefreshToken(String newRefreshToken) {
+    public void updateRefreshToken(final String newRefreshToken) {
         this.refreshToken = newRefreshToken;
     }
 
     public void updateUserStatus() {
         this.userStatus = UserStatus.DISABLE;
-    }
-
-    public void updatePassword(PasswordHistory passwordHistory) {
-        this.passwordHistoryList.add(passwordHistory);
     }
 }
