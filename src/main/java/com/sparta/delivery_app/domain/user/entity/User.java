@@ -61,9 +61,6 @@ public class User extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT")
     private String refreshToken;
 
-    @OneToMany(mappedBy = "user")
-    private List<PasswordHistory> passwordHistoriList = new ArrayList<>();
-
     @Builder
     public User(String email, String name, String nickName, String userAddress, UserStatus userStatus, UserRole userRole) {
         this.email = email;

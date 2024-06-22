@@ -64,6 +64,7 @@ public class UserService {
         PasswordHistory passwordHistory = passwordHistoryAdaptor.queryPasswordHistoryTop1ByUser(findUser);
 
         if (!passwordEncoder.matches(userResignRequestDto.password(), passwordHistory.getPassword())) {
+            log.error("기존 비밀번호와 불일치");
             throw new UserPasswordMismatchException(UserErrorCode.PASSWORD_NOT_MATCH);
         }
 
@@ -71,8 +72,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserProfileModifyResponseDto modifyProfileUser(AuthenticationUser user, UserProfileModifyRequestDto
-            requestDto) {
+    public UserProfileModifyResponseDto modifyProfileUser(AuthenticationUser user, UserProfileModifyRequestDto requestDto) {
         User findUser = userAdaptor.queryUserByEmail(user.getUsername());
         PasswordHistory passwordHistory = passwordHistoryAdaptor.queryPasswordHistoryTop1ByUser(findUser);
 
@@ -105,5 +105,3 @@ public class UserService {
         passwordHistoryAdaptor.savePasswordHistory(passwordHistory);
     }
 }
-
-
