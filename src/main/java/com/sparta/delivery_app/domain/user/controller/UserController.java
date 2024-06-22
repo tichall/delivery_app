@@ -4,8 +4,10 @@ import com.sparta.delivery_app.common.globalResponse.RestApiResponse;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.common.status.StatusCode;
 import com.sparta.delivery_app.domain.user.dto.request.ConsumersSignupRequestDto;
+import com.sparta.delivery_app.domain.user.dto.request.UserModifyRequestDto;
 import com.sparta.delivery_app.domain.user.dto.request.UserResignRequestDto;
 import com.sparta.delivery_app.domain.user.dto.response.ConsumersSignupResponseDto;
+import com.sparta.delivery_app.domain.user.dto.response.UserModifyResponseDto.UserModifyResponseDto;
 import com.sparta.delivery_app.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +27,7 @@ public class UserController {
     @PostMapping("/consumers")
     public ResponseEntity<RestApiResponse<ConsumersSignupResponseDto>> ConsumersSignupRequestDto(
             @Valid @RequestBody ConsumersSignupRequestDto requestDto) {
-        ConsumersSignupResponseDto responseDto = userService.ConsumersUserAdd(requestDto);
+        ConsumersSignupResponseDto responseDto = userService.consumersUserAdd(requestDto);
         return ResponseEntity.status(StatusCode.CREATED.code)
                 .body(RestApiResponse.of(
                         "회원가입에 성공했습니다.",
@@ -46,7 +48,7 @@ public class UserController {
     }
 
     @DeleteMapping("/resign")
-    public ResponseEntity<RestApiResponse<Object>> resign(
+    public ResponseEntity<RestApiResponse<String>> resign(
             @AuthenticationPrincipal AuthenticationUser user,
             @Valid @RequestBody UserResignRequestDto userResignRequestDto
     ) {
@@ -55,4 +57,15 @@ public class UserController {
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("탈퇴 되었습니다."));
     }
+
+    @PutMapping("/profile")
+    public ResponseEntity<RestApiResponse<?>> profileModify(
+            @AuthenticationPrincipal AuthenticationUser user,
+            @Valid @RequestBody UserModifyRequestDto requestDto
+    ) {
+        UserModifyResponseDto responseDto = userService.modifyProfile(requestDto, user);
+        return ResponseEntity.status(StatusCode.OK.code)
+                .body(RestApiResponse.of(responseDto));
+    }
+
 }
