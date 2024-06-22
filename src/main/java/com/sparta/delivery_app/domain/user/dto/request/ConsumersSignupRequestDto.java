@@ -26,10 +26,10 @@ public class ConsumersSignupRequestDto {
     private String password;
 
     @NotBlank(message = "이름을 입력해 주세요")
-    @Length(min = 2, max = 10, message = "이 회원가입 조건에 맞지 않습니다.")
+    @Length(min = 2, max = 10, message = "성함이 회원가입 조건에 맞지 않습니다.")
     private String name;
     @NotBlank(message = "닉네임을 입력해 주세요")
-    @Length(min = 2, max = 20, message = "이 회원가입 조건에 맞지 않습니다.")
+    @Length(min = 3, max = 20, message = "닉네임이 회원가입 조건에 맞지 않습니다.")
     private String nickName;
 
     @NotBlank(message = "주소를 입력해 주세요")
