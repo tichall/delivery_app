@@ -25,8 +25,7 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<RestApiResponse<OrderAddResponseDto>> orderAdd(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
-            @Valid @RequestBody final OrderAddRequestDto requestDto)
-    {
+            @Valid @RequestBody final OrderAddRequestDto requestDto) {
         OrderAddResponseDto responseDto = orderService.addOrder(authenticationUser, requestDto);
 
         return ResponseEntity.status(StatusCode.CREATED.getCode())
@@ -36,8 +35,7 @@ public class OrderController {
     @GetMapping("/{orderId}")
     public ResponseEntity<RestApiResponse<OrderGetResponseDto>> orderDetails(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
-            @PathVariable Long orderId)
-    {
+            @PathVariable Long orderId) {
         OrderGetResponseDto responseDto = orderService.findOrder(authenticationUser, orderId);
 
         return ResponseEntity.status(StatusCode.OK.getCode())
@@ -49,8 +47,7 @@ public class OrderController {
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
             @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") String sortBy,
-            @RequestParam(value = "isDesc", required = false, defaultValue = "true") Boolean isDesc)
-    {
+            @RequestParam(value = "isDesc", required = false, defaultValue = "true") Boolean isDesc) {
 
         OrderPageResponseDto responseDto = orderService.findOrders(authenticationUser,pageNum, sortBy, isDesc);
 

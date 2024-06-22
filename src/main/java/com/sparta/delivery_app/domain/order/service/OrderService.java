@@ -45,12 +45,12 @@ public class OrderService {
      * @return OrderAddResponseDto 생성된 주문 정보
      */
     public OrderAddResponseDto addOrder(AuthenticationUser authenticationUser, final OrderAddRequestDto requestDto) {
-        User user = userAdaptor.queryUserByEmail(authenticationUser.getUsername());
+        User findUser = userAdaptor.queryUserByEmail(authenticationUser.getUsername());
         Store store = storeAdaptor.queryStoreById(requestDto.storeId());
         Long totalPrice;
 
         Order currentOrder = Order.builder()
-                .user(user)
+                .user(findUser)
                 .store(store)
                 .orderStatus(OrderStatus.ORDER_COMPLETED)
                 .build();
@@ -73,8 +73,8 @@ public class OrderService {
      * @return OrderGetResponseDto 조회된 주문 정보
      */
     public OrderGetResponseDto findOrder(AuthenticationUser authenticationUser, Long orderId) {
-        User user = userAdaptor.queryUserByEmail(authenticationUser.getUsername());
-        Order order = orderAdaptor.queryOrderByIdAndUserID(user.getId(), orderId);
+        User findUser = userAdaptor.queryUserByEmail(authenticationUser.getUsername());
+        Order order = orderAdaptor.queryOrderByIdAndUserID(findUser.getId(), orderId);
         return OrderGetResponseDto.of(order);
     }
 
@@ -92,11 +92,11 @@ public class OrderService {
             String sortBy,
             Boolean isDesc
     ) {
-        User user = userAdaptor.queryUserByEmail(authenticationUser.getUsername());
+        User findUser = userAdaptor.queryUserByEmail(authenticationUser.getUsername());
 
         Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, sortBy, isDesc);
 
-        Page<Order> orderPage = orderAdaptor.queryOrdersByUserId(pageable, user.getId());
+        Page<Order> orderPage = orderAdaptor.queryOrdersByUserId(pageable, findUser.getId());
 
         PageUtil.validatePage(pageNum, orderPage);
         return OrderPageResponseDto.of(pageNum, orderPage);
