@@ -5,8 +5,10 @@ import com.sparta.delivery_app.common.globalcustomexception.UserPasswordMismatch
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
 import com.sparta.delivery_app.domain.user.dto.request.ConsumersSignupRequestDto;
+import com.sparta.delivery_app.domain.user.dto.request.UserModifyRequestDto;
 import com.sparta.delivery_app.domain.user.dto.request.UserResignRequestDto;
 import com.sparta.delivery_app.domain.user.dto.response.ConsumersSignupResponseDto;
+import com.sparta.delivery_app.domain.user.dto.response.UserModifyResponseDto.UserModifyResponseDto;
 import com.sparta.delivery_app.domain.user.entity.User;
 import com.sparta.delivery_app.domain.user.entity.UserRole;
 import com.sparta.delivery_app.domain.user.entity.UserStatus;
@@ -25,7 +27,7 @@ public class UserService {
     private final UserAdaptor userAdaptor;
     private final PasswordEncoder passwordEncoder;
 
-    public ConsumersSignupResponseDto ConsumersUserAdd(ConsumersSignupRequestDto requestDto) {
+    public ConsumersSignupResponseDto consumersUserAdd(ConsumersSignupRequestDto requestDto) {
         userAdaptor.checkDuplicateEmail(requestDto.getEmail());
 
         User userData = User.builder()
@@ -70,5 +72,17 @@ public class UserService {
         UserStatus.checkUserStatus(findUser.getUserStatus());
 
         findUser.updateUserStatus();
+    }
+
+    @Transactional
+    public UserModifyResponseDto modifyProfile(final UserModifyRequestDto requestDto, AuthenticationUser user) {
+        User findUser = userAdaptor.queryUserByEmail(user.getUsername());
+
+        if (!passwordEncoder.matches(requestDto.password(), findUser.getPassword())) {
+            throw new UserPasswordMismatchException(UserErrorCode.PASSWORD_NOT_MATCH);
+        }
+
+        User updateUser = findUser.updateUser(requestDto);
+        return UserModifyResponseDto.of(updateUser);
     }
 }
