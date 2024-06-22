@@ -23,7 +23,7 @@ public class OpenApiService {
      * @return
      */
     public List<StoreListReadResponseDto> findStores(String remoteAddr) {
-        return openApiAdapter.queryStores();
+        return openApiAdapter.queryStores(remoteAddr);
     }
 
     /**

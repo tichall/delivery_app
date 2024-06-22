@@ -5,6 +5,7 @@ import com.sparta.delivery_app.common.status.StatusCode;
 import com.sparta.delivery_app.domain.openApi.dto.StoreDetailsResponseDto;
 import com.sparta.delivery_app.domain.openApi.service.OpenApiService;
 import com.sparta.delivery_app.domain.openApi.dto.StoreListReadResponseDto;
+import io.github.bucket4j.Bucket;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import java.util.List;
 public class OpenApiController {
 
     private final OpenApiService openApiService;
+    private final Bucket bucket;
 
     /**
      * 전체 매장 조회
@@ -33,6 +35,11 @@ public class OpenApiController {
     public ResponseEntity<RestApiResponse<List<StoreListReadResponseDto>>> storeList(
             HttpServletRequest http
     ) {
+
+        if(!bucket.tryConsume(1)) {
+            throw new IllegalArgumentException("비정상적인 접근입니다!");
+        }
+
         List<StoreListReadResponseDto> storeList = openApiService.findStores(http.getRemoteAddr());
 
         return ResponseEntity.status(StatusCode.OK.code)
