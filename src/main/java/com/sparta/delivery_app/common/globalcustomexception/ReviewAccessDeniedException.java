@@ -1,0 +1,9 @@
+package com.sparta.delivery_app.common.globalcustomexception;
+
+import com.sparta.delivery_app.common.exception.errorcode.ErrorCode;
+
+public class ReviewAccessDeniedException extends GlobalAccessDeniedException{
+    public ReviewAccessDeniedException(ErrorCode errorCode) {
+        super(errorCode);
+    }
+}
