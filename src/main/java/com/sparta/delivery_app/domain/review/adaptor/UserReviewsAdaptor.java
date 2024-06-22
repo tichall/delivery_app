@@ -27,8 +27,9 @@ public class UserReviewsAdaptor {
      */
     public UserReviews findById(Long reviewId) {
         return userReviewsRepository.findById(reviewId).orElseThrow(() ->
-                new ReviewNotFoundException(ReviewErrorCode.INVALID_REVIEW));
+                new ReviewStatusException(ReviewErrorCode.INVALID_REVIEW));
     }
+
 
     /**
      * 메뉴 id, 상태 검증
