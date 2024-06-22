@@ -2,6 +2,7 @@ package com.sparta.delivery_app.domain.review.service;
 
 import com.sparta.delivery_app.common.exception.errorcode.ReviewErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.ReviewAccessDeniedException;
+import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.domain.order.adaptor.OrderAdaptor;
 import com.sparta.delivery_app.domain.order.entity.Order;
 import com.sparta.delivery_app.domain.review.adaptor.UserReviewsAdaptor;
@@ -24,10 +25,10 @@ public class UserReviewsService {
     private final OrderAdaptor orderAdaptor;
     private final UserAdaptor userAdaptor;
 
-    public UserReviewResponseDto addReview(Long orderId, UserReviewRequestDto requestDto) {
+    public UserReviewResponseDto addReview(Long orderId, UserReviewRequestDto requestDto, AuthenticationUser user) {
         Order order = orderAdaptor.queryOrderById(orderId);
-        User user = userAdaptor.getCurrentUser();
-        UserReviews userReviews = UserReviews.of(order, user, requestDto);
+        User userData = userAdaptor.queryUserByEmail(user.getUsername());
+        UserReviews userReviews = UserReviews.of(order, userData, requestDto);
 
         userReviewsAdaptor.saveReview(userReviews);
 
@@ -35,12 +36,12 @@ public class UserReviewsService {
     }
 
     @Transactional
-    public UserReviewResponseDto modifyReview(Long reviewId, UserReviewRequestDto requestDto) {
+    public UserReviewResponseDto modifyReview(Long reviewId, UserReviewRequestDto requestDto, AuthenticationUser user) {
 
         UserReviews userReviews = userReviewsAdaptor.checkValidReviewByIdAndReviewStatus(reviewId);
-        User user = userAdaptor.getCurrentUser();
+        User userData = userAdaptor.queryUserByEmail(user.getUsername());
 
-        if (!userReviews.getUser().getId().equals(user.getId())) {
+        if (!userReviews.getUser().getId().equals(userData.getId())) {
             throw new ReviewAccessDeniedException(ReviewErrorCode.NOT_AUTHORITY_TO_UPDATE_REVIEW);
         }
 
@@ -54,12 +55,12 @@ public class UserReviewsService {
     }
 
     @Transactional
-    public void deleteReview(Long reviewId) {
+    public void deleteReview(Long reviewId, AuthenticationUser user) {
+
         UserReviews userReviews = userReviewsAdaptor.checkValidReviewByIdAndReviewStatus(reviewId);
+        User userData = userAdaptor.queryUserByEmail(user.getUsername());
 
-        User user = userAdaptor.getCurrentUser();
-
-        if (!userReviews.getUser().getId().equals(user.getId())) {
+        if (!userReviews.getUser().getId().equals(userData.getId())) {
             throw new ReviewAccessDeniedException(ReviewErrorCode.NOT_AUTHORITY_TO_DELETE_REVIEW);
         }
 
