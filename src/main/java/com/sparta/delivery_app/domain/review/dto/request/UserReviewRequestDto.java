@@ -1,12 +1,10 @@
 package com.sparta.delivery_app.domain.review.dto.request;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import org.hibernate.validator.constraints.Length;
 
 @Getter
 public class UserReviewRequestDto {

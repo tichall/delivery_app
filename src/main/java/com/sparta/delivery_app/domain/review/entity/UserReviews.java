@@ -1,10 +1,8 @@
 package com.sparta.delivery_app.domain.review.entity;
 
 import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
-import com.sparta.delivery_app.domain.menu.entity.MenuStatus;
 import com.sparta.delivery_app.domain.order.entity.Order;
 import com.sparta.delivery_app.domain.review.dto.request.UserReviewRequestDto;
-import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
