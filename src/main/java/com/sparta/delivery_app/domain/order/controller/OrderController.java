@@ -24,9 +24,9 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<RestApiResponse<OrderAddResponseDto>> orderAdd(
-            @AuthenticationPrincipal AuthenticationUser authenticationUser,
+            @AuthenticationPrincipal AuthenticationUser user,
             @Valid @RequestBody final OrderAddRequestDto requestDto) {
-        OrderAddResponseDto responseDto = orderService.addOrder(authenticationUser, requestDto);
+        OrderAddResponseDto responseDto = orderService.addOrder(user, requestDto);
 
         return ResponseEntity.status(StatusCode.CREATED.getCode())
                 .body(RestApiResponse.of(StatusCode.CREATED.getCode(),"주문이 완료되었습니다.", responseDto));
@@ -34,9 +34,9 @@ public class OrderController {
 
     @GetMapping("/{orderId}")
     public ResponseEntity<RestApiResponse<OrderGetResponseDto>> orderDetails(
-            @AuthenticationPrincipal AuthenticationUser authenticationUser,
+            @AuthenticationPrincipal AuthenticationUser user,
             @PathVariable Long orderId) {
-        OrderGetResponseDto responseDto = orderService.findOrder(authenticationUser, orderId);
+        OrderGetResponseDto responseDto = orderService.findOrder(user, orderId);
 
         return ResponseEntity.status(StatusCode.OK.getCode())
                 .body(RestApiResponse.of(responseDto));
@@ -44,12 +44,12 @@ public class OrderController {
 
     @GetMapping
     public ResponseEntity<RestApiResponse<OrderPageResponseDto>> orderPage(
-            @AuthenticationPrincipal AuthenticationUser authenticationUser,
+            @AuthenticationPrincipal AuthenticationUser user,
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
             @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") String sortBy,
             @RequestParam(value = "isDesc", required = false, defaultValue = "true") Boolean isDesc) {
 
-        OrderPageResponseDto responseDto = orderService.findOrders(authenticationUser,pageNum, sortBy, isDesc);
+        OrderPageResponseDto responseDto = orderService.findOrders(user,pageNum, sortBy, isDesc);
 
         return ResponseEntity.status(StatusCode.OK.getCode())
                 .body(RestApiResponse.of(responseDto));

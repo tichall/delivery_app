@@ -40,12 +40,12 @@ public class OrderService {
 
     /**
      * 주문 생성
-     * @param authenticationUser 인증된 유저 정보
+     * @param user 인증된 유저 정보
      * @param requestDto 주문 정보
      * @return OrderAddResponseDto 생성된 주문 정보
      */
-    public OrderAddResponseDto addOrder(AuthenticationUser authenticationUser, final OrderAddRequestDto requestDto) {
-        User findUser = userAdaptor.queryUserByEmail(authenticationUser.getUsername());
+    public OrderAddResponseDto addOrder(AuthenticationUser user, final OrderAddRequestDto requestDto) {
+        User findUser = userAdaptor.queryUserByEmail(user.getUsername());
         Store store = storeAdaptor.queryStoreById(requestDto.storeId());
         Long totalPrice;
 
@@ -68,31 +68,31 @@ public class OrderService {
 
     /**
      * 주문 단건 조회
-     * @param authenticationUser 인증된 유저 정보
+     * @param user 인증된 유저 정보
      * @param orderId 조회할 주문 아이디
      * @return OrderGetResponseDto 조회된 주문 정보
      */
-    public OrderGetResponseDto findOrder(AuthenticationUser authenticationUser, Long orderId) {
-        User findUser = userAdaptor.queryUserByEmail(authenticationUser.getUsername());
-        Order order = orderAdaptor.queryOrderByIdAndUserID(findUser.getId(), orderId);
-        return OrderGetResponseDto.of(order);
+    public OrderGetResponseDto findOrder(AuthenticationUser user, Long orderId) {
+        User findUser = userAdaptor.queryUserByEmail(user.getUsername());
+        Order findOrder = orderAdaptor.queryOrderByIdAndUserID(findUser.getId(), orderId);
+        return OrderGetResponseDto.of(findOrder);
     }
 
     /**
      * 주문 전체 조회 (페이징)
-     * @param authenticationUser 인증된 유저 정보
+     * @param user 인증된 유저 정보
      * @param pageNum 접근할 페이지 번호
      * @param sortBy 정렬 조건
      * @param isDesc 내림차순 여부
      * @return OrderPageResponseDto 조회된 페이지
      */
     public OrderPageResponseDto findOrders(
-            AuthenticationUser authenticationUser,
+            AuthenticationUser user,
             Integer pageNum,
             String sortBy,
             Boolean isDesc
     ) {
-        User findUser = userAdaptor.queryUserByEmail(authenticationUser.getUsername());
+        User findUser = userAdaptor.queryUserByEmail(user.getUsername());
 
         Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, sortBy, isDesc);
 
