@@ -58,4 +58,20 @@ public class OrderController {
         return ResponseEntity.status(StatusCode.OK.getCode())
                 .body(RestApiResponse.of(responseDto));
     }
+
+    @PreAuthorize("hasRole('MANAGER')")
+    @PostMapping("/{orderId}/prepare")
+    public ResponseEntity<RestApiResponse<Void>> orderPrepare(@PathVariable Long orderId, @AuthenticationPrincipal AuthenticationUser user) {
+        orderService.changeStatusPrepare(orderId, user);
+        return ResponseEntity.status(StatusCode.OK.getCode())
+                .body(RestApiResponse.of("주문을 조리 중입니다."));
+    }
+
+    @PreAuthorize("hasRole('MANAGER')")
+    @PostMapping("/{orderId}/delivered")
+    public ResponseEntity<RestApiResponse<Void>> orderDelivered(@PathVariable Long orderId, @AuthenticationPrincipal AuthenticationUser user) {
+        orderService.changeStatusDelivered(orderId, user);
+        return ResponseEntity.status(StatusCode.OK.getCode())
+                .body(RestApiResponse.of("주문이 배달 완료되었습니다."));
+    }
 }
