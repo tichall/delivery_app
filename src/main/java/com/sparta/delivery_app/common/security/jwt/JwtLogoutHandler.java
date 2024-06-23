@@ -1,5 +1,7 @@
 package com.sparta.delivery_app.common.security.jwt;
 
+import com.sparta.delivery_app.common.security.errorcode.SecurityErrorCode;
+import com.sparta.delivery_app.common.security.exception.CustomSecurityException;
 import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
 import com.sparta.delivery_app.domain.user.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,13 +37,18 @@ public class JwtLogoutHandler implements LogoutHandler {
         String refreshTokenFromHeader = jwtUtil.getRefreshTokenFromHeader(request);
         if (accessTokenFromHeader == null || refreshTokenFromHeader == null) {
             log.error("찾을 수 없는 토큰");
-            //TODO
+            CustomSecurityException e = new CustomSecurityException(SecurityErrorCode.NOT_FOUND_TOKEN);
+            request.setAttribute("exception", e);
+            throw e;
         }
         String email = jwtUtil.getUserInfoFromToken(refreshTokenFromHeader).getSubject();
         User findUser = userAdaptor.queryUserByEmailAndStatus(email);
-        if (findUser.getRefreshToken() != null || Objects.equals(refreshTokenFromHeader, findUser.getRefreshToken())) {
+
+        if (!Objects.equals(refreshTokenFromHeader, findUser.getRefreshToken())) {
             log.error("일치하지 않는 토큰");
-            //TODO
+            CustomSecurityException e = new CustomSecurityException(SecurityErrorCode.MISMATCH_TOKEN);
+            request.setAttribute("exception", e);
+            throw e;
         }
         findUser.updateRefreshToken(null);
         userAdaptor.saveUser(findUser);
