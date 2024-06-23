@@ -1,8 +1,8 @@
 package com.sparta.delivery_app.common.security.jwt;
 
-import com.sparta.delivery_app.common.exception.errorcode.JwtPropertiesErrorCode;
-import com.sparta.delivery_app.common.globalcustomexception.TokenNotFoundException;
 import com.sparta.delivery_app.common.security.AuthenticationUserService;
+import com.sparta.delivery_app.common.security.errorcode.SecurityErrorCode;
+import com.sparta.delivery_app.common.security.exception.CustomSecurityException;
 import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
 import com.sparta.delivery_app.domain.user.entity.User;
 import io.jsonwebtoken.Claims;
@@ -54,7 +54,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 }
             } else {
                 log.error("유효하지 않는 Refersh Token");
-                throw new TokenNotFoundException(JwtPropertiesErrorCode.TOKEN_NOT_FOUND);
+                throw new CustomSecurityException(SecurityErrorCode.EXPIRED_JWT_TOKEN);
             }
         }
         filterChain.doFilter(req, res);
