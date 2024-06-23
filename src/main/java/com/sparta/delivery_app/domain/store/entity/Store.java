@@ -34,7 +34,7 @@ public class Store extends BaseTimeEntity {
     @Column
     private String storeInfo;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 12)
     private String storeRegistrationNumber;
 
     @Column(nullable = false)
