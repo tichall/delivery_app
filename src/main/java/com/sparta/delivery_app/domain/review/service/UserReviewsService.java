@@ -27,7 +27,7 @@ public class UserReviewsService {
 
     public UserReviewResponseDto addReview(Long orderId, UserReviewRequestDto requestDto, AuthenticationUser user) {
         Order order = orderAdaptor.queryOrderById(orderId);
-        User userData = userAdaptor.queryUserByEmail(user.getUsername());
+        User userData = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
         UserReviews userReviews = UserReviews.of(order, userData, requestDto);
 
         userReviewsAdaptor.saveReview(userReviews);
@@ -39,7 +39,7 @@ public class UserReviewsService {
     public UserReviewResponseDto modifyReview(Long reviewId, UserReviewRequestDto requestDto, AuthenticationUser user) {
 
         UserReviews userReviews = userReviewsAdaptor.checkValidReviewByIdAndReviewStatus(reviewId);
-        User userData = userAdaptor.queryUserByEmail(user.getUsername());
+        User userData = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
 
         if (!userReviews.getUser().getId().equals(userData.getId())) {
             throw new ReviewAccessDeniedException(ReviewErrorCode.NOT_AUTHORITY_TO_UPDATE_REVIEW);
@@ -58,7 +58,7 @@ public class UserReviewsService {
     public void deleteReview(Long reviewId, AuthenticationUser user) {
 
         UserReviews userReviews = userReviewsAdaptor.checkValidReviewByIdAndReviewStatus(reviewId);
-        User userData = userAdaptor.queryUserByEmail(user.getUsername());
+        User userData = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
 
         if (!userReviews.getUser().getId().equals(userData.getId())) {
             throw new ReviewAccessDeniedException(ReviewErrorCode.NOT_AUTHORITY_TO_DELETE_REVIEW);

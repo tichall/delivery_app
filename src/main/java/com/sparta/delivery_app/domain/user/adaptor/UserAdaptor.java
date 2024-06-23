@@ -2,9 +2,8 @@ package com.sparta.delivery_app.domain.user.adaptor;
 
 import com.sparta.delivery_app.common.globalcustomexception.UnableOpenStoreException;
 import com.sparta.delivery_app.common.globalcustomexception.UserDuplicatedException;
-import com.sparta.delivery_app.domain.admin.adminuser.AdminUserResponseDto;
-import com.sparta.delivery_app.domain.user.entity.User;
 import com.sparta.delivery_app.common.globalcustomexception.UserNotExistException;
+import com.sparta.delivery_app.domain.user.entity.User;
 import com.sparta.delivery_app.domain.user.entity.UserRole;
 import com.sparta.delivery_app.domain.user.entity.UserStatus;
 import com.sparta.delivery_app.domain.user.repository.UserRepository;
@@ -12,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 import static com.sparta.delivery_app.common.exception.errorcode.UserErrorCode.*;
 
@@ -52,26 +49,37 @@ public class UserAdaptor {
         }
     }
 
+    /**
+     * 특정 email 조회
+     * Status
+     */
+    public User queryUserByEmailAndStatus(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotExistException(NOT_SIGNED_UP_USER));
+        UserStatus.checkUserStatus(user.getUserStatus());
+        return user;
+    }
+
     public User queryUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotExistException(NOT_SIGNED_UP_USER));
+
     }
 
-    public User saveUser(User userData) {
-        return userRepository.save(userData);
+    public Page<User> queryAllUserPage(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
     public User getCurrentUser() {
         return null;
     }
 
+    public User saveUser(User userData) {
+        return userRepository.save(userData);
+    }
+
 //    public List<AdminUserResponseDto> queryAllUser() {
 //        return userRepository.findAll().stream().map(AdminUserResponseDto::new).toList();
 //    }
-
-    public Page<User> queryAllUserPage(Pageable pageable) {
-        Page<User> userPage = userRepository.findAll(pageable);
-        return userPage;
-    }
 
 }

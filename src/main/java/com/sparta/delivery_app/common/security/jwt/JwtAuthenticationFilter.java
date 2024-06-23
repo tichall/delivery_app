@@ -54,13 +54,18 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         } catch (IOException e) {
             log.error("attemptAuthentication 예외 발생 {} ", e.getMessage());
             throw new RuntimeException(e.getMessage());
+//            throw new SecurityFilterException();
         }
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
         log.info("로그인 성공 및 JWT 토큰 발행");
+
         User user = userAdaptor.queryUserByEmail(authResult.getName());
+//        if (user.getUserStatus() == UserStatus.DISABLE) {
+//            throw new SecurityException(SecurityErrorCode.LOGIN_FAIL);
+//        }
 
         TokenDto tokenDto = jwtUtil.generateAccessTokenAndRefreshToken(user.getEmail(), user.getUserRole());
         String refreshTokenValue = tokenDto.getRefreshToken().substring(7);
