@@ -7,6 +7,7 @@ import com.sparta.delivery_app.domain.review.adaptor.ManagerReviewsAdaptor;
 import com.sparta.delivery_app.domain.review.adaptor.UserReviewsAdaptor;
 import com.sparta.delivery_app.domain.review.dto.request.ManagerReviewRequestDto;
 import com.sparta.delivery_app.domain.review.dto.response.ManagerReviewResponseDto;
+import com.sparta.delivery_app.domain.review.dto.response.UserReviewResponseDto;
 import com.sparta.delivery_app.domain.review.entity.ManagerReviews;
 import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
 import com.sparta.delivery_app.domain.user.entity.User;
@@ -56,10 +57,11 @@ public class ManagerReviewsService {
         Long userReviewId = orderAdaptor.queryReviewIdByOrderId(orderData.getId());
 
         // 판매자 리뷰가 존재하지않는지 확인
-        userReviewsAdaptor.validateManagerReviewDoesNotExistByReviewId(userReviewId);
+        Long managerReviewId = userReviewsAdaptor.validateManagerReviewDoesNotExistByReviewId(userReviewId);
 
+        ManagerReviews managerReviews = ManagerReviews.of(managerReviewId, requestDto);
 
-        return null;
+        return ManagerReviewResponseDto.of(managerReviews);
     }
 
 }

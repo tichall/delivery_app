@@ -44,20 +44,15 @@ public class UserReviewsAdaptor {
         return userReviews;
     }
 
-    public Long validateManagerReviewExistsByReviewId(Long reviewId) {
+    public void validateManagerReviewExistsByReviewId(Long reviewId) {
         if (!userReviewsRepository.findManagerReviewIdById(reviewId).isEmpty()) {
             throw new ReviewDuplicatedException(ReviewErrorCode.REVIEW_ALREADY_REGISTERED_ERROR);
         }
-
-        return userReviewsRepository.findManagerReviewIdById(reviewId).get();
     }
 
     public Long validateManagerReviewDoesNotExistByReviewId(Long reviewId) {
-        if (userReviewsRepository.findManagerReviewIdById(reviewId).isEmpty()) {
-            throw new ReviewNotFoundException(ReviewErrorCode.INVALID_REVIEW);
-        }
-
-        return userReviewsRepository.findManagerReviewIdById(reviewId).get();
+        return userReviewsRepository.findManagerReviewIdById(reviewId).orElseThrow(() ->
+                new ReviewNotFoundException(ReviewErrorCode.INVALID_REVIEW));
     }
 
 }

@@ -35,13 +35,14 @@ public class ManagerReviewsController {
 
 
     @PutMapping("/{orderId}")
-    public void update(
+    public ResponseEntity<RestApiResponse<ManagerReviewResponseDto>> update(
             @PathVariable Long orderId,
             @RequestBody ManagerReviewRequestDto RequestDto,
             @AuthenticationPrincipal AuthenticationUser user
     ) {
         ManagerReviewResponseDto responseDto = managerReviewsService.modifyReview(orderId, RequestDto, user);
 
-
+        return ResponseEntity.status(StatusCode.OK.code)
+                .body(RestApiResponse.of("리뷰가 수정되었습니다.", responseDto));
     }
 }
