@@ -2,6 +2,7 @@ package com.sparta.delivery_app.domain.review.adaptor;
 
 import com.sparta.delivery_app.common.exception.errorcode.ReviewErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.ReviewDuplicatedException;
+import com.sparta.delivery_app.common.globalcustomexception.ReviewNotFoundException;
 import com.sparta.delivery_app.common.globalcustomexception.ReviewStatusException;
 import com.sparta.delivery_app.domain.review.entity.ReviewStatus;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
@@ -27,7 +28,7 @@ public class UserReviewsAdaptor {
      */
     public UserReviews findById(Long reviewId) {
         return userReviewsRepository.findById(reviewId).orElseThrow(() ->
-                new ReviewStatusException(ReviewErrorCode.INVALID_REVIEW));
+                new ReviewNotFoundException(ReviewErrorCode.INVALID_REVIEW));
     }
 
     /**
@@ -43,9 +44,20 @@ public class UserReviewsAdaptor {
         return userReviews;
     }
 
-    public void CheckManagerReviewIdByReviewId(Long reviewId) {
+    public Long validateManagerReviewExistsByReviewId(Long reviewId) {
         if (!userReviewsRepository.findManagerReviewIdById(reviewId).isEmpty()) {
             throw new ReviewDuplicatedException(ReviewErrorCode.REVIEW_ALREADY_REGISTERED_ERROR);
         }
+
+        return userReviewsRepository.findManagerReviewIdById(reviewId).get();
     }
+
+    public Long validateManagerReviewDoesNotExistByReviewId(Long reviewId) {
+        if (userReviewsRepository.findManagerReviewIdById(reviewId).isEmpty()) {
+            throw new ReviewNotFoundException(ReviewErrorCode.INVALID_REVIEW);
+        }
+
+        return userReviewsRepository.findManagerReviewIdById(reviewId).get();
+    }
+
 }

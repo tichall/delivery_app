@@ -1,7 +1,7 @@
 package com.sparta.delivery_app.domain.review.entity;
 
 import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
-import com.sparta.delivery_app.domain.review.dto.request.MangerReviewRequestDto;
+import com.sparta.delivery_app.domain.review.dto.request.ManagerReviewRequestDto;
 import com.sparta.delivery_app.domain.user.entity.User;
 import jakarta.persistence.*;
 
@@ -46,7 +46,7 @@ public class ManagerReviews extends BaseTimeEntity {
     }
 
     @Builder
-    public static ManagerReviews of(Long userReviewId, User user, MangerReviewRequestDto requestDto) {
+    public static ManagerReviews of(Long userReviewId, User user, ManagerReviewRequestDto requestDto) {
         return ManagerReviews.builder()
                 .content(requestDto.getContent())
                 .reviewsId(userReviewId)
