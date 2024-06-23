@@ -105,6 +105,18 @@ public class OrderService {
         return OrderPageResponseDto.of(pageNum, orderPage);
     }
 
+    /**
+     * 검증 없이 주문 상태를 배달 완료로 변경
+     */
+    @Transactional
+    public void changeStatus(Long orderId) {
+        Order findOrder = orderAdaptor.queryOrderById(orderId);
+        findOrder.changeOrderStatus(OrderStatus.DELIVERY_COMPLETED);
+    }
+
+    /**
+     * 주문 상태를 조리중으로 변경
+     */
     @Transactional
     public void changeStatusPrepare(Long orderId, AuthenticationUser user) {
         User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
@@ -113,6 +125,9 @@ public class OrderService {
         findOrder.changeOrderStatus(OrderStatus.IN_PREPARATION);
     }
 
+    /**
+     * 주문 상태를 배달 완료로 변경
+     */
     @Transactional
     public void changeStatusDelivered(Long orderId, AuthenticationUser user) {
         User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
