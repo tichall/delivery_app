@@ -1,4 +1,4 @@
-package com.sparta.delivery_app.rateLimit;
+package com.sparta.delivery_app.common.config;
 
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
