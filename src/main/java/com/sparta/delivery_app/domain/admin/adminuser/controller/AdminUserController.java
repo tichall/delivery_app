@@ -13,13 +13,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @Slf4j
+@RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin/users")
+@RequestMapping("/api/v1/admin/users")
 public class AdminUserController {
 
     private final AdminUserService adminUserService;
@@ -33,6 +35,7 @@ public class AdminUserController {
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "5") int size) {
+        log.info("ADMIN-UserController");
 
         List<AdminUserResponseDto> allUserList = adminUserService.getAllUserList(page - 1, size, authenticationUser);
         return ResponseEntity.status(StatusCode.CREATED.code)
