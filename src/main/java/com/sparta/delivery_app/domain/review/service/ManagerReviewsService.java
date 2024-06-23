@@ -9,6 +9,7 @@ import com.sparta.delivery_app.domain.review.dto.request.ManagerReviewRequestDto
 import com.sparta.delivery_app.domain.review.dto.response.ManagerReviewResponseDto;
 import com.sparta.delivery_app.domain.review.dto.response.UserReviewResponseDto;
 import com.sparta.delivery_app.domain.review.entity.ManagerReviews;
+import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
 import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,9 @@ public class ManagerReviewsService {
 
         // 주문 존재 확인
         Order orderData = orderAdaptor.queryOrderById(orderId);
+        // TODO
+        UserReviews userReviews = orderData.getUserReviews();
+        ManagerReviews managerReviews = userReviews.getManagerReviews();
 
         // 주문ID를 통해 리뷰ID 존재 확인
         Long userReviewId = orderAdaptor.queryReviewIdByOrderId(orderData.getId());
@@ -39,11 +43,12 @@ public class ManagerReviewsService {
         // 판매자리뷰가 이미 존재하는지 확인
         userReviewsAdaptor.validateManagerReviewExistsByReviewId(userReviewId);
 
-        ManagerReviews managerReviews = ManagerReviews.of(userReviewId, userData, requestDto);
+//        ManagerReviews managerReviews = ManagerReviews.of(userReviewId, userData, requestDto);
 
-        managerReviewsAdaptor.saveReview(managerReviews);
+//        managerReviewsAdaptor.saveReview(managerReviews);
 
-        return ManagerReviewResponseDto.of(managerReviews);
+//        return ManagerReviewResponseDto.of(managerReviews);
+        return null;
     }
 
     public ManagerReviewResponseDto modifyReview(Long orderId, ManagerReviewRequestDto requestDto, AuthenticationUser user) {
