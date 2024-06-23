@@ -73,7 +73,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
                 .requestMatchers(HttpMethod.POST, "/api/v1/users/consumers").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/users/managers").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/v1/refresh/reissue").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/auth/reissue").permitAll()
                 .requestMatchers(HttpMethod.GET, "/open-api/**").permitAll()
                 .anyRequest().authenticated()
         );
