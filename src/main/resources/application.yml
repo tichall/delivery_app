@@ -44,3 +44,8 @@ cloud:
 
 logging.level:
   root: info
+
+---
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}

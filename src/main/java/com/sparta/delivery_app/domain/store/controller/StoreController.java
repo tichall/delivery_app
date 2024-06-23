@@ -2,7 +2,7 @@ package com.sparta.delivery_app.domain.store.controller;
 
 import com.sparta.delivery_app.common.globalResponse.RestApiResponse;
 import com.sparta.delivery_app.common.status.StatusCode;
-import com.sparta.delivery_app.domain.store.dto.request.ModifySotoreRequestDto;
+import com.sparta.delivery_app.domain.store.dto.request.ModifyStoreRequestDto;
 import com.sparta.delivery_app.domain.store.dto.response.ModifyStoreResponseDto;
 import com.sparta.delivery_app.domain.store.dto.request.RegisterStoreRequestDto;
 import com.sparta.delivery_app.domain.store.dto.response.RegisterStoreResponseDto;
@@ -21,10 +21,13 @@ import org.springframework.web.bind.annotation.*;
 public class StoreController {
 
     private final StoreService storeService;
-
+    /*
+     * Manager(Status.ENABLE)가 매장 등록(계정 당 1개)
+     */
     @PostMapping
-    public ResponseEntity<RestApiResponse<RegisterStoreResponseDto>> registerStore(@Valid @RequestBody RegisterStoreRequestDto requestDto,
+    public ResponseEntity<RestApiResponse<RegisterStoreResponseDto>> registerStore(@Valid @RequestBody final RegisterStoreRequestDto requestDto,
                                                                                    User user) {
+        log.info("controller-registerStore");
         RegisterStoreResponseDto responseDto = storeService.registerStore(requestDto, user);
 
         return ResponseEntity.status(StatusCode.CREATED.code)
@@ -33,8 +36,9 @@ public class StoreController {
     }
 
     @PutMapping
-    public ResponseEntity<RestApiResponse<ModifyStoreResponseDto>> modifyStore(@Valid @RequestBody ModifySotoreRequestDto requestDto,
+    public ResponseEntity<RestApiResponse<ModifyStoreResponseDto>> modifyStore(@Valid @RequestBody final ModifyStoreRequestDto requestDto,
                                                                                User user) {
+        log.info("controller-modifyStore");
         ModifyStoreResponseDto responseDto = storeService.modifyStore(requestDto, user);
 
     return ResponseEntity.status(StatusCode.CREATED.code)

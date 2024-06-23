@@ -4,6 +4,7 @@ import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
 import com.sparta.delivery_app.domain.liked.entity.Liked;
 import com.sparta.delivery_app.domain.review.entity.ManagerReviews;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
+import com.sparta.delivery_app.domain.user.dto.request.UserModifyRequestDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -38,13 +39,13 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String userAddress;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user")
     private List<Liked> likedList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user")
     private List<UserReviews> userReviewsList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user")
     private List<ManagerReviews> managerReviewsList = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
@@ -55,6 +56,9 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private UserRole userRole;
 
+    @Column(columnDefinition = "TEXT")
+    private String refreshToken;
+
     @Builder
     public User(String email, String password, String name, String nickName, String userAddress, UserStatus userStatus, UserRole userRole) {
         this.email = email;
@@ -64,5 +68,20 @@ public class User extends BaseTimeEntity {
         this.userAddress = userAddress;
         this.userStatus = userStatus;
         this.userRole = userRole;
+    }
+
+    public User updateUser(final UserModifyRequestDto requestDto) {
+        this.nickName = requestDto.nickName();
+        this.name = requestDto.name();
+        this.userAddress = requestDto.address();
+        return this;
+    }
+
+    public void updateRefreshToken(String newRefreshToken) {
+        this.refreshToken = newRefreshToken;
+    }
+
+    public void updateUserStatus() {
+        this.userStatus = UserStatus.DISABLE;
     }
 }
