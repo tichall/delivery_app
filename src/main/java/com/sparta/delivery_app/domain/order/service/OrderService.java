@@ -1,13 +1,13 @@
 package com.sparta.delivery_app.domain.order.service;
 
 import com.sparta.delivery_app.common.exception.errorcode.OrderErrorCode;
-import com.sparta.delivery_app.common.globalcustomexception.StoreMenuMismatchException;
 import com.sparta.delivery_app.common.globalcustomexception.TotalPriceException;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.domain.commen.page.util.PageUtil;
 import com.sparta.delivery_app.domain.menu.adaptor.MenuAdaptor;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
 import com.sparta.delivery_app.domain.menu.entity.MenuStatus;
+import com.sparta.delivery_app.domain.menu.service.MenuService;
 import com.sparta.delivery_app.domain.order.adaptor.OrderAdaptor;
 import com.sparta.delivery_app.domain.order.dto.request.MenuItemRequestDto;
 import com.sparta.delivery_app.domain.order.dto.request.OrderAddRequestDto;
@@ -37,6 +37,7 @@ public class OrderService {
     private UserAdaptor userAdaptor;
     private StoreAdaptor storeAdaptor;
     private MenuAdaptor menuAdaptor;
+    private MenuService menuService;
 
     /**
      * 주문 생성
@@ -114,9 +115,7 @@ public class OrderService {
 
             Menu menu = menuAdaptor.queryMenuById(menuId);
 
-            if (menu.getStore() != currentOrder.getStore()) {
-                throw new StoreMenuMismatchException(OrderErrorCode.STORE_MENU_MISMATCH);
-            }
+            menuService.checkStoreMenuMatch(menu, currentOrder.getStore().getId());
 
             MenuStatus.checkMenuStatus(menu);
 
