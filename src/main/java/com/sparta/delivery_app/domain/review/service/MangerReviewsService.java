@@ -37,7 +37,7 @@ public class MangerReviewsService {
         Long userReviewId = orderAdaptor.queryReviewIdByOrderId(orderData.getId());
 
         // 판매자리뷰가 이미 존재하는지 확인
-        userReviewsAdaptor.checkValidReviewByIdAndReviewStatus(userReviewId);
+        userReviewsAdaptor.CheckManagerReviewIdByReviewId(userReviewId);
 
         ManagerReviews managerReviews = ManagerReviews.of(userReviewId, userData, requestDto);
 

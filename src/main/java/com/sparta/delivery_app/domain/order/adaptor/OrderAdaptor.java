@@ -44,7 +44,7 @@ public class OrderAdaptor {
     }
 
     public Long queryReviewIdByOrderId(Long orderId) {
-        return orderRepository.findReviewIdByOrderId(orderId).orElseThrow(() ->
+        return orderRepository.findReviewIdById(orderId).orElseThrow(() ->
                 new ReviewNotFoundException(ReviewErrorCode.INVALID_REVIEW));
     }
 }
