@@ -423,7 +423,7 @@ public class TestDB {
 
             ManagerReviews managerReviews1 = ManagerReviews.builder()
                     .content("감사합니다~!")
-                    .reviewsId(userReviews1.getId())
+                    .userReviews(userReviews1)
                     .user(manager1)
                     .managerReviewsStatus(ManagerReviewsStatus.ENABLE)
                     .build();
