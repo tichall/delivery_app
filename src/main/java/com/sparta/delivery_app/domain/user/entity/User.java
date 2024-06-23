@@ -4,7 +4,9 @@ import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
 import com.sparta.delivery_app.domain.liked.entity.Liked;
 import com.sparta.delivery_app.domain.review.entity.ManagerReviews;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
-import com.sparta.delivery_app.domain.user.dto.request.UserModifyRequestDto;
+import com.sparta.delivery_app.domain.user.dto.request.ConsumersSignupRequestDto;
+import com.sparta.delivery_app.domain.user.dto.request.ManagersSignupRequestDto;
+import com.sparta.delivery_app.domain.user.dto.request.UserProfileModifyRequestDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -27,9 +29,6 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
-    private String password;
-
     @Column(nullable = false, length = 10)
     private String name;
 
@@ -43,10 +42,13 @@ public class User extends BaseTimeEntity {
     private List<Liked> likedList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<UserReviews> userReviewsList = new ArrayList<>();
+    private List<UserReviews> userReviewList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<ManagerReviews> managerReviewsList = new ArrayList<>();
+    private List<ManagerReviews> managerReviewList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<PasswordHistory> passwordHistoryList = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -60,9 +62,8 @@ public class User extends BaseTimeEntity {
     private String refreshToken;
 
     @Builder
-    public User(String email, String password, String name, String nickName, String userAddress, UserStatus userStatus, UserRole userRole) {
+    public User(String email, String name, String nickName, String userAddress, UserStatus userStatus, UserRole userRole) {
         this.email = email;
-        this.password = password;
         this.name = name;
         this.nickName = nickName;
         this.userAddress = userAddress;
@@ -70,18 +71,41 @@ public class User extends BaseTimeEntity {
         this.userRole = userRole;
     }
 
-    public User updateUser(final UserModifyRequestDto requestDto) {
+    public static User saveUser(final ConsumersSignupRequestDto requestDto) {
+        return User.builder()
+                .email(requestDto.email())
+                .name(requestDto.name())
+                .nickName(requestDto.nickName())
+                .userAddress(requestDto.address())
+                .userStatus(UserStatus.ENABLE)
+                .userRole(UserRole.CONSUMER)
+                .build();
+    }
+
+    public static User saveUser(final ManagersSignupRequestDto requestDto) {
+        return User.builder()
+                .email(requestDto.email())
+                .name(requestDto.name())
+                .nickName(requestDto.nickName())
+                .userAddress(requestDto.address())
+                .userStatus(UserStatus.ENABLE)
+                .userRole(UserRole.MANAGER)
+                .build();
+    }
+
+    public User updateUser(final UserProfileModifyRequestDto requestDto) {
         this.nickName = requestDto.nickName();
         this.name = requestDto.name();
         this.userAddress = requestDto.address();
         return this;
     }
 
-    public void updateRefreshToken(String newRefreshToken) {
+    public void updateRefreshToken(final String newRefreshToken) {
         this.refreshToken = newRefreshToken;
     }
 
-    public void updateUserStatus() {
+    public void updateResignUser() {
+        this.refreshToken = null;
         this.userStatus = UserStatus.DISABLE;
     }
 }

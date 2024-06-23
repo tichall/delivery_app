@@ -19,7 +19,7 @@ import java.io.IOException;
 @Slf4j(topic = "인증 예외 필터")
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private final ObjectMapper objectMapper;
 

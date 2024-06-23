@@ -18,11 +18,9 @@ public class MenuAdaptor {
 
     /**
      * 메뉴 등록
-     *
      * @param menu
      */
     public void saveMenu(Menu menu) {
-
         menuRepository.save(menu);
     }
 

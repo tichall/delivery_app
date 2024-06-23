@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,6 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity //접근 권한
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -29,7 +32,8 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final AuthenticationUserService authenticationUserService;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
     private final JwtLogoutHandler jwtLogoutHandler;
     private final UserAdaptor userAdaptor;
@@ -80,14 +84,16 @@ public class SecurityConfig {
 
         //로그아웃
         http.logout(logout ->
-                logout.logoutUrl("/api/v1/user/logout")
+                logout.logoutUrl("/api/v1/users/logout")
                         .addLogoutHandler(jwtLogoutHandler)
                         .logoutSuccessHandler(jwtLogoutSuccessHandler)
         );
 
         //예외 검증
         http.exceptionHandling(exceptionHandling ->
-                exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                exceptionHandling
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler)
         );
 
         return http.build();
