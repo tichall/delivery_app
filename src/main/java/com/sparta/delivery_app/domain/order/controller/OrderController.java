@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
     private final OrderService orderService;
 
+    @PreAuthorize("hasRole('CONSUMER')")
     @PostMapping
     public ResponseEntity<RestApiResponse<OrderAddResponseDto>> orderAdd(
             @AuthenticationPrincipal AuthenticationUser user,
@@ -32,6 +34,7 @@ public class OrderController {
                 .body(RestApiResponse.of(StatusCode.CREATED.getCode(),"주문이 완료되었습니다.", responseDto));
     }
 
+    @PreAuthorize("hasRole('CONSUMER')")
     @GetMapping("/{orderId}")
     public ResponseEntity<RestApiResponse<OrderGetResponseDto>> orderDetails(
             @AuthenticationPrincipal AuthenticationUser user,
@@ -42,6 +45,7 @@ public class OrderController {
                 .body(RestApiResponse.of(responseDto));
     }
 
+    @PreAuthorize("hasRole('CONSUMER')")
     @GetMapping
     public ResponseEntity<RestApiResponse<OrderPageResponseDto>> orderPage(
             @AuthenticationPrincipal AuthenticationUser user,
