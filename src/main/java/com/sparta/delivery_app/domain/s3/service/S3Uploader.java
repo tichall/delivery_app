@@ -30,7 +30,7 @@ public class S3Uploader {
     private String DEFAULT_MESSAGE = "이미지를 등록하지 않았습니다.";
 
 
-    public String saveMenuImage(MultipartFile file, Long storeId, Long menuId) throws IOException {
+    public String saveMenuImage(MultipartFile file, Long storeId, Long menuId) {
         if (!isFileExists(file)) {
             return DEFAULT_MESSAGE;
         }
@@ -41,7 +41,7 @@ public class S3Uploader {
         return uploadFileToS3(file, imageDir);
     }
 
-    public String saveReviewImage(MultipartFile file, Long userId, Long reviewId) throws IOException {
+    public String saveReviewImage(MultipartFile file, Long userId, Long reviewId) {
         if (!isFileExists(file)) {
             return DEFAULT_MESSAGE;
         }
@@ -52,7 +52,7 @@ public class S3Uploader {
         return uploadFileToS3(file, imageDir);
     }
 
-    private String uploadFileToS3(MultipartFile file, String imageDir) throws IOException {
+    private String uploadFileToS3(MultipartFile file, String imageDir) {
         String fileName = imageDir + file.getOriginalFilename() + "_"
                 + System.currentTimeMillis();
 
@@ -63,7 +63,7 @@ public class S3Uploader {
             amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (Exception e) {
             log.error("이미지 업로드 중 오류가 발생했습니다.", e);
-            throw new S3Exception(S3ErrorCode.IMAGE_UPLOAD_ERROR);
+            throw new S3Exception(S3ErrorCode.IMAGE_STREAM_ERROR);
         }
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
@@ -73,7 +73,7 @@ public class S3Uploader {
         amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, s3Url));
     }
 
-    private boolean isFileExists(MultipartFile multipartFile) {
+    public boolean isFileExists(MultipartFile multipartFile) {
         return !multipartFile.isEmpty();
     }
 

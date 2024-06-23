@@ -1,6 +1,7 @@
 package com.sparta.delivery_app.domain.menu.service;
 
 import com.sparta.delivery_app.common.exception.errorcode.OrderErrorCode;
+import com.sparta.delivery_app.common.globalcustomexception.S3Exception;
 import com.sparta.delivery_app.common.globalcustomexception.StoreMenuMismatchException;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.domain.menu.adaptor.MenuAdaptor;
@@ -9,6 +10,7 @@ import com.sparta.delivery_app.domain.menu.dto.request.MenuModifyRequestDto;
 import com.sparta.delivery_app.domain.menu.dto.response.MenuAddResponseDto;
 import com.sparta.delivery_app.domain.menu.dto.response.MenuModifyResponseDto;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
+import com.sparta.delivery_app.domain.s3.service.S3Uploader;
 import com.sparta.delivery_app.domain.store.adaptor.StoreAdaptor;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
@@ -17,6 +19,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Slf4j
 @Service
@@ -26,13 +31,14 @@ public class MenuService {
     private final MenuAdaptor menuAdaptor;
     private final StoreAdaptor storeAdaptor;
     private final UserAdaptor userAdaptor;
+    private final S3Uploader s3Uploader;
 
     /**
      * 메뉴 등록
      * @param requestDto
      * @return responseDto
      */
-    public MenuAddResponseDto addMenu(final MenuAddRequestDto requestDto, AuthenticationUser user) {
+    public MenuAddResponseDto addMenu(MultipartFile file, final MenuAddRequestDto requestDto, AuthenticationUser user) {
         User findUser = checkUserAuth(user);
 
         Store findStore = storeAdaptor.queryStoreId(findUser);
@@ -40,6 +46,15 @@ public class MenuService {
         Menu menu = Menu.of(findStore, requestDto);
         menuAdaptor.saveMenu(menu);
 
+        if (s3Uploader.isFileExists(file)) {
+            try {
+                String menuImagePath = s3Uploader.saveMenuImage(file, findStore.getId(), menu.getId());
+                menu.updateMenuImagePath(menuImagePath);
+            } catch(S3Exception e) {
+                menuAdaptor.deleteTempMenu(menu);
+                throw new S3Exception(e.getErrorCode());
+            }
+        }
         return MenuAddResponseDto.of(menu);
     }
 

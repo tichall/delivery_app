@@ -58,7 +58,6 @@ public class Menu extends BaseTimeEntity {
                 .menuName(requestDto.menuName())
                 .menuPrice(requestDto.menuPrice())
                 .menuInfo(requestDto.menuInfo())
-                .menuImagePath(requestDto.menuImagePath())
                 .menuStatus(MenuStatus.ENABLE)
                 .build();
     }
@@ -72,5 +71,9 @@ public class Menu extends BaseTimeEntity {
 
     public void deleteMenu() {
         this.menuStatus = MenuStatus.DISABLE;
+    }
+
+    public void updateMenuImagePath(String menuImagePath) {
+        this.menuImagePath = menuImagePath;
     }
 }

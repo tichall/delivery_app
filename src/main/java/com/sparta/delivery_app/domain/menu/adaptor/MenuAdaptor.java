@@ -54,4 +54,8 @@ public class MenuAdaptor {
                 new MenuNotFoundException(MenuErrorCode.MENU_NOT_FOUND));
     }
 
+    public void deleteTempMenu(Menu menu) {
+        menuRepository.delete(menu);
+    }
+
 }

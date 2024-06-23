@@ -14,6 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -29,10 +32,11 @@ public class MenuController {
      */
     @PostMapping
     public ResponseEntity<RestApiResponse<MenuAddResponseDto>> menuAdd(
-            @Valid @RequestBody final MenuAddRequestDto requestDto,
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            @Valid @RequestPart final MenuAddRequestDto requestDto,
             @AuthenticationPrincipal AuthenticationUser user
             ) {
-        final MenuAddResponseDto responseDto =  menuService.addMenu(requestDto, user);
+        final MenuAddResponseDto responseDto =  menuService.addMenu(file, requestDto, user);
 
         return ResponseEntity.status(StatusCode.CREATED.code)
                 .body(RestApiResponse.of("메뉴 등록에 성공 했습니다.", responseDto));
