@@ -6,12 +6,15 @@ import com.sparta.delivery_app.common.globalcustomexception.OrderAccessDeniedExc
 import com.sparta.delivery_app.common.globalcustomexception.OrderNotFoundException;
 import com.sparta.delivery_app.common.globalcustomexception.ReviewNotFoundException;
 import com.sparta.delivery_app.domain.order.entity.Order;
+import com.sparta.delivery_app.domain.order.entity.OrderStatus;
 import com.sparta.delivery_app.domain.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Component
@@ -41,6 +44,10 @@ public class OrderAdaptor {
 
     public Page<Order> queryOrdersByUserId(Pageable pageable, Long userId) {
         return orderRepository.findAllByUserId(pageable, userId);
+    }
+
+    public List<Order> queryOrderListByStoreIdAndOrderStatus(Long storeId, OrderStatus orderStatus) {
+        return orderRepository.findAllOrderByStoreIdAndOrderStatus(storeId, orderStatus);
     }
 
     public Long queryReviewIdByOrderId(Long orderId) {
