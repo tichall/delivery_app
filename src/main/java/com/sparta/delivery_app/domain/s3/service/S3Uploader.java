@@ -31,7 +31,7 @@ public class S3Uploader {
 
 
     public String saveMenuImage(MultipartFile file, Long storeId, Long menuId) {
-        if (!isFileExists(file)) {
+        if (!S3Utils.isFileExists(file)) {
             return DEFAULT_MESSAGE;
         }
 
@@ -42,7 +42,7 @@ public class S3Uploader {
     }
 
     public String saveReviewImage(MultipartFile file, Long userId, Long reviewId) {
-        if (!isFileExists(file)) {
+        if (!S3Utils.isFileExists(file)) {
             return DEFAULT_MESSAGE;
         }
 
@@ -71,10 +71,6 @@ public class S3Uploader {
     public void deleteFileFromS3(String imagePathUrl) {
         String s3Url = S3Utils.extractImagePath(imagePathUrl);
         amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, s3Url));
-    }
-
-    public boolean isFileExists(MultipartFile multipartFile) {
-        return !multipartFile.isEmpty();
     }
 
 }

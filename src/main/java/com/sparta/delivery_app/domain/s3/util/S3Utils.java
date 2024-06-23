@@ -23,6 +23,13 @@ public class S3Utils {
     private static final String PROFILE_IMAGE_DIR = "profile";
 
     /**
+     * 파일 존재 여부 검사
+     */
+    public static boolean isFileExists(MultipartFile multipartFile) {
+        return multipartFile != null && !multipartFile.isEmpty();
+    }
+
+    /**
      * 파일 확장자 검사
      */
     public static void validateImageExtension(String fileName) {

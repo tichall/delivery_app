@@ -34,7 +34,7 @@ public class MenuController {
      */
     @PostMapping
     public ResponseEntity<RestApiResponse<MenuAddResponseDto>> menuAdd(
-            @RequestParam(value = "file", required = false) MultipartFile file,
+            @RequestPart(value = "file", required = false) MultipartFile file,
             @Valid @RequestPart final MenuAddRequestDto requestDto,
             @AuthenticationPrincipal AuthenticationUser user
             ) {

@@ -11,6 +11,7 @@ import com.sparta.delivery_app.domain.menu.dto.response.MenuAddResponseDto;
 import com.sparta.delivery_app.domain.menu.dto.response.MenuModifyResponseDto;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
 import com.sparta.delivery_app.domain.s3.service.S3Uploader;
+import com.sparta.delivery_app.domain.s3.util.S3Utils;
 import com.sparta.delivery_app.domain.store.adaptor.StoreAdaptor;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
@@ -48,10 +49,11 @@ public class MenuService {
         Menu menu = Menu.of(findStore, requestDto);
         menuAdaptor.saveMenu(menu);
 
-        if (s3Uploader.isFileExists(file)) {
+        if (S3Utils.isFileExists(file)) {
             try {
                 String menuImagePath = s3Uploader.saveMenuImage(file, findStore.getId(), menu.getId());
                 menu.updateMenuImagePath(menuImagePath);
+                menuAdaptor.saveMenu(menu);
             } catch(S3Exception e) {
                 menuAdaptor.deleteTempMenu(menu);
                 throw new S3Exception(e.getErrorCode());
