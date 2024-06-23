@@ -74,10 +74,10 @@ public class TestDB {
              * 판매자
              */
             User manager1 = User.builder()
-                    .email("b2manager@gmail.com")
-                    .userAddress("사장님 여기는 어디야")
-                    .nickName("b2managernickname")
-                    .name("사장님-스파르타")
+                    .email("b2manager1@gmail.com")
+                    .userAddress("사장님1 여기는 어디야")
+                    .nickName("b2manager1nickname")
+                    .name("사장님1-스파르타")
                     .userRole(UserRole.MANAGER)
                     .userStatus(UserStatus.ENABLE)
                     .build();
@@ -90,10 +90,10 @@ public class TestDB {
             save(manager1Ph1);
 
             User manager2 = User.builder()
-                    .email("b2manager@gmail.com")
-                    .userAddress("사장님 여기는 어디야")
-                    .nickName("b2managernickname")
-                    .name("사장님-스파르타")
+                    .email("b2manager2@gmail.com")
+                    .userAddress("사장님2 여기는 어디야")
+                    .nickName("b2manager2nickname")
+                    .name("사장님2-스파르타")
                     .userRole(UserRole.MANAGER)
                     .userStatus(UserStatus.ENABLE)
                     .build();
@@ -106,10 +106,10 @@ public class TestDB {
             save(manager2Ph2);
 
             User manager3 = User.builder()
-                    .email("b2manager@gmail.com")
-                    .userAddress("사장님 여기는 어디야")
-                    .nickName("b2managernickname")
-                    .name("사장님-스파르타")
+                    .email("b2manager3@gmail.com")
+                    .userAddress("사장님3 여기는 어디야")
+                    .nickName("b2managern3ickname")
+                    .name("사장님3-스파르타")
                     .userRole(UserRole.MANAGER)
                     .userStatus(UserStatus.ENABLE)
                     .build();
@@ -122,10 +122,10 @@ public class TestDB {
             save(manager3Ph3);
 
             User manager4 = User.builder()
-                    .email("b2manager@gmail.com")
-                    .userAddress("사장님 여기는 어디야")
-                    .nickName("b2managernickname")
-                    .name("사장님-스파르타")
+                    .email("b2manager4@gmail.com")
+                    .userAddress("사장님4 여기는 어디야")
+                    .nickName("b2manager4nickname")
+                    .name("사장님4-스파르타")
                     .userRole(UserRole.MANAGER)
                     .userStatus(UserStatus.ENABLE)
                     .build();
@@ -138,10 +138,10 @@ public class TestDB {
             save(manager4Ph4);
 
             User manager5 = User.builder()
-                    .email("b2manager@gmail.com")
-                    .userAddress("사장님 여기는 어디야")
-                    .nickName("b2managernickname")
-                    .name("사장님-스파르타")
+                    .email("b2manager5@gmail.com")
+                    .userAddress("사장님5 여기는 어디야")
+                    .nickName("b2manage5rnickname")
+                    .name("사장님5-스파르타")
                     .userRole(UserRole.MANAGER)
                     .userStatus(UserStatus.ENABLE)
                     .build();
@@ -154,10 +154,10 @@ public class TestDB {
             save(manager5Ph5);
 
             User manager6 = User.builder()
-                    .email("b2manager@gmail.com")
-                    .userAddress("사장님 여기는 어디야")
-                    .nickName("b2managernickname")
-                    .name("사장님-스파르타")
+                    .email("b2manager6@gmail.com")
+                    .userAddress("사장님6 여기는 어디야")
+                    .nickName("b2manager6nickname")
+                    .name("사장님6-스파르타")
                     .userRole(UserRole.MANAGER)
                     .userStatus(UserStatus.ENABLE)
                     .build();
@@ -170,10 +170,10 @@ public class TestDB {
             save(manager6ph6);
 
             User manager7 = User.builder()
-                    .email("b2manager@gmail.com")
-                    .userAddress("사장님 여기는 어디야")
-                    .nickName("b2managernickname")
-                    .name("사장님-스파르타")
+                    .email("b2manager7@gmail.com")
+                    .userAddress("사장님7 여기는 어디야")
+                    .nickName("b2manager7nickname")
+                    .name("사장님7-스파르타")
                     .userRole(UserRole.MANAGER)
                     .userStatus(UserStatus.ENABLE)
                     .build();
