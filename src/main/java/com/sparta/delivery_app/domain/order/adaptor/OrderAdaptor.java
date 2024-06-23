@@ -1,8 +1,10 @@
 package com.sparta.delivery_app.domain.order.adaptor;
 
 import com.sparta.delivery_app.common.exception.errorcode.OrderErrorCode;
+import com.sparta.delivery_app.common.exception.errorcode.ReviewErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.OrderAccessDeniedException;
 import com.sparta.delivery_app.common.globalcustomexception.OrderNotFoundException;
+import com.sparta.delivery_app.common.globalcustomexception.ReviewNotFoundException;
 import com.sparta.delivery_app.domain.order.entity.Order;
 import com.sparta.delivery_app.domain.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -39,5 +41,10 @@ public class OrderAdaptor {
 
     public Page<Order> queryOrdersByUserId(Pageable pageable, Long userId) {
         return orderRepository.findAllByUserId(pageable, userId);
+    }
+
+    public Long queryReviewIdByOrderId(Long orderId) {
+        return orderRepository.findReviewIdById(orderId).orElseThrow(() ->
+                new ReviewNotFoundException(ReviewErrorCode.INVALID_REVIEW));
     }
 }
