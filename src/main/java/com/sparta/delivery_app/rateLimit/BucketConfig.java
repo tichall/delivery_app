@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import java.time.Duration;
 
 @Configuration
-public class BuketConfig {
+public class BucketConfig {
 
     @Bean
     public Bucket bucket() {
