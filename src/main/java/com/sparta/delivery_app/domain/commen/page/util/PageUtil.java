@@ -11,12 +11,12 @@ public class PageUtil {
     public static final Integer PAGE_SIZE_FIVE = 5;
     public static final Integer PAGE_SIZE_TEN = 10;
 
-    public static Pageable createPageable(Integer pageNum, Integer pageSize, String sortBy, Boolean isAsc) {
+    public static Pageable createPageable(Integer pageNum, Integer pageSize, String sortBy, Boolean isDesc) {
         if (pageNum < 1) {
             throw new PageNotFoundException(PageErrorCode.INVALID_PAGE_NUMBER);
         }
 
-        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort.Direction direction = isDesc ? Sort.Direction.DESC : Sort.Direction.ASC;
         Sort sort = Sort.by(direction, sortBy);
 
         return PageRequest.of(pageNum - 1, pageSize, sort);
