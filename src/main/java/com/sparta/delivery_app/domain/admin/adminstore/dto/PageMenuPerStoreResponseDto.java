@@ -1,4 +1,4 @@
-package com.sparta.delivery_app.domain.admin.adminstore;
+package com.sparta.delivery_app.domain.admin.adminstore.dto;
 
 import com.sparta.delivery_app.domain.menu.entity.Menu;
 import com.sparta.delivery_app.domain.order.entity.Order;
