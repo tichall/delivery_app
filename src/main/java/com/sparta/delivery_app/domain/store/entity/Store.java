@@ -8,6 +8,7 @@ import com.sparta.delivery_app.domain.store.dto.request.RegisterStoreRequestDto;
 import com.sparta.delivery_app.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,7 +35,7 @@ public class Store extends BaseTimeEntity {
     @Column
     private String storeInfo;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 12)
     private String storeRegistrationNumber;
 
     @Column(nullable = false)
@@ -53,6 +54,17 @@ public class Store extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StoreStatus status;
+
+    @Builder
+    public Store(User user, String storeName, String storeAddress, String storeInfo, String storeRegistrationNumber, Long minTotalPrice, StoreStatus status) {
+        this.user = user;
+        this.storeName = storeName;
+        this.storeAddress = storeAddress;
+        this.storeInfo = storeInfo;
+        this.storeRegistrationNumber = storeRegistrationNumber;
+        this.minTotalPrice = minTotalPrice;
+        this.status = status;
+    }
 
     public Store(final RegisterStoreRequestDto requestDto, User user) {
         this.storeName = requestDto.storeName();

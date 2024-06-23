@@ -23,6 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+import static com.sparta.delivery_app.domain.user.entity.UserStatus.checkManagerEnable;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -72,7 +74,7 @@ public class MenuService {
         Store store = storeAdaptor.queryStoreId(findUser);
         Menu menu = menuAdaptor.queryMenuByIdAndMenuStatus(menuId);
 
-        checkMenuIdAndStoreId(menu, store.getId());
+        checkStoreMenuMatch(menu, store.getId());
         menu.updateMenu(requestDto);
 
         return MenuModifyResponseDto.of(menu);
@@ -90,7 +92,7 @@ public class MenuService {
         Store store = storeAdaptor.queryStoreId(findUser);
         Menu menu = menuAdaptor.queryMenuByIdAndMenuStatus(menuId);
 
-        checkMenuIdAndStoreId(menu, store.getId());
+        checkStoreMenuMatch(menu, store.getId());
         menu.deleteMenu();
     }
 
@@ -99,7 +101,7 @@ public class MenuService {
      * @param menu
      * @param storeId
      */
-    private void checkMenuIdAndStoreId(Menu menu, Long storeId) {
+    public void checkStoreMenuMatch(Menu menu, Long storeId) {
         if(!menu.getStore().getId().equals(storeId)) {
             throw new StoreMenuMismatchException(OrderErrorCode.STORE_MENU_MISMATCH);
         }
@@ -111,8 +113,8 @@ public class MenuService {
      * @return
      */
     private User checkUserAuth(AuthenticationUser user) {
-        User findUser = userAdaptor.queryUserByEmail(user.getUsername());
-        userAdaptor.isManagerAndEnable(findUser);
+        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
+        checkManagerEnable(findUser);
 
         return findUser;
     }

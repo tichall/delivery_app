@@ -6,6 +6,8 @@ import com.sparta.delivery_app.domain.menu.entity.Menu;
 import com.sparta.delivery_app.domain.menu.entity.MenuStatus;
 import com.sparta.delivery_app.domain.menu.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,11 +18,9 @@ public class MenuAdaptor {
 
     /**
      * 메뉴 등록
-     *
      * @param menu
      */
     public void saveMenu(Menu menu) {
-
         menuRepository.save(menu);
     }
 
@@ -52,6 +52,10 @@ public class MenuAdaptor {
     private Menu findById(Long menuId) {
         return menuRepository.findById(menuId).orElseThrow(() ->
                 new MenuNotFoundException(MenuErrorCode.MENU_NOT_FOUND));
+    }
+
+    public Page<Menu> queryMenuListByStoreId(Long storeId, Pageable pageable) {
+        return menuRepository.findAllMenuByStoreId(storeId, pageable);
     }
 
     public void deleteTempMenu(Menu menu) {

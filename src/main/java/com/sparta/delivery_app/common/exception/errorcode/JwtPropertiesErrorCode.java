@@ -12,6 +12,7 @@ public enum JwtPropertiesErrorCode implements ErrorCode {
     UNSUPPORTED_JWT_TOKEN(StatusCode.BAD_REQUEST.getCode(), "지원되지 않는 JWT 토큰 입니다."),
     JWT_CLAIMS_IS_EMPTY(StatusCode.BAD_REQUEST.getCode(), "잘못된 JWT 토큰 입니다."),
     TOKEN_NOT_FOUND(StatusCode.FORBIDDEN.getCode(), "토큰을 찾을 수 없습니다."),
+    TTTTTTT(StatusCode.FORBIDDEN.getCode(), "fdsafsdfsdfsdf"),
     ;
 
     private final Integer httpStatusCode;

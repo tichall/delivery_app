@@ -1,5 +1,7 @@
-package com.sparta.delivery_app.domain.admin.adminuser;
+package com.sparta.delivery_app.domain.admin.adminuser.service;
 
+import com.sparta.delivery_app.common.security.AuthenticationUser;
+import com.sparta.delivery_app.domain.admin.adminuser.dto.AdminUserResponseDto;
 import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
 import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.sparta.delivery_app.domain.user.entity.UserStatus.checkManagerEnable;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -19,8 +23,13 @@ public class AdminUserService {
 
     private final UserAdaptor userAdaptor;
 
-    //admin 검증 필요
-    public List<AdminUserResponseDto> getAllUserList(int page, int size) {
+    public List<AdminUserResponseDto> getAllUserList(
+            int page, int size, AuthenticationUser authenticationUser) {
+
+        //ADMIN 권한의 유저 Status 가 ENABLE 인지 확인
+        String email = authenticationUser.getUsername();
+        User enableUser = userAdaptor.queryUserByEmail(email);
+        checkManagerEnable(enableUser);
 
         //페이지 정보 추출
         Pageable pageable = PageRequest.of(page, size);
