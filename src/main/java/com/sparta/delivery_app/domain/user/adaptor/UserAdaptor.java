@@ -1,21 +1,17 @@
 package com.sparta.delivery_app.domain.user.adaptor;
 
-import com.sparta.delivery_app.common.globalcustomexception.UnableOpenStoreException;
 import com.sparta.delivery_app.common.globalcustomexception.UserDuplicatedException;
-import com.sparta.delivery_app.domain.admin.adminuser.AdminUserResponseDto;
-import com.sparta.delivery_app.domain.user.entity.User;
 import com.sparta.delivery_app.common.globalcustomexception.UserNotExistException;
-import com.sparta.delivery_app.domain.user.entity.UserRole;
-import com.sparta.delivery_app.domain.user.entity.UserStatus;
+import com.sparta.delivery_app.domain.user.entity.User;
 import com.sparta.delivery_app.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
-import static com.sparta.delivery_app.common.exception.errorcode.UserErrorCode.*;
+import static com.sparta.delivery_app.common.exception.errorcode.UserErrorCode.DUPLICATED_USER;
+import static com.sparta.delivery_app.common.exception.errorcode.UserErrorCode.NOT_SIGNED_UP_USER;
+import static com.sparta.delivery_app.domain.user.entity.UserStatus.checkManagerEnable;
 
 @Component
 @RequiredArgsConstructor
@@ -38,18 +34,8 @@ public class UserAdaptor {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotExistException(NOT_SIGNED_UP_USER)
         );
-        isManagerAndEnable(user);
+        checkManagerEnable(user);
         return user;
-    }
-
-    /*
-     * MANAGER 이면서 ENABLE 상태인지 확인
-     */
-    public void isManagerAndEnable(User user) {
-        if (!(user.getUserRole().equals(UserRole.MANAGER) &&
-                user.getUserStatus().equals(UserStatus.ENABLE))) {
-            throw new UnableOpenStoreException(NOT_AUTHORITY_TO_REGISTER_STORE);
-        }
     }
 
     public User queryUserByEmail(String email) {
@@ -65,13 +51,8 @@ public class UserAdaptor {
         return null;
     }
 
-//    public List<AdminUserResponseDto> queryAllUser() {
-//        return userRepository.findAll().stream().map(AdminUserResponseDto::new).toList();
-//    }
-
     public Page<User> queryAllUserPage(Pageable pageable) {
         Page<User> userPage = userRepository.findAll(pageable);
         return userPage;
     }
-
 }
