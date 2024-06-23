@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -45,8 +46,9 @@ public class OrderService {
      * @param requestDto 주문 정보
      * @return OrderAddResponseDto 생성된 주문 정보
      */
+    @Transactional
     public OrderAddResponseDto addOrder(AuthenticationUser user, final OrderAddRequestDto requestDto) {
-        User findUser = userAdaptor.queryUserByEmail(user.getUsername());
+        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
         Store store = storeAdaptor.queryStoreById(requestDto.storeId());
         Long totalPrice;
 
@@ -74,7 +76,7 @@ public class OrderService {
      * @return OrderGetResponseDto 조회된 주문 정보
      */
     public OrderGetResponseDto findOrder(AuthenticationUser user, Long orderId) {
-        User findUser = userAdaptor.queryUserByEmail(user.getUsername());
+        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
         Order findOrder = orderAdaptor.queryOrderByIdAndUserID(findUser.getId(), orderId);
         return OrderGetResponseDto.of(findOrder);
     }
@@ -93,7 +95,7 @@ public class OrderService {
             String sortBy,
             Boolean isDesc
     ) {
-        User findUser = userAdaptor.queryUserByEmail(user.getUsername());
+        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
 
         Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, sortBy, isDesc);
 
@@ -101,6 +103,37 @@ public class OrderService {
 
         PageUtil.validatePage(pageNum, orderPage);
         return OrderPageResponseDto.of(pageNum, orderPage);
+    }
+
+    /**
+     * 검증 없이 주문 상태를 배달 완료로 변경
+     */
+    @Transactional
+    public void changeStatus(Long orderId) {
+        Order findOrder = orderAdaptor.queryOrderById(orderId);
+        findOrder.changeOrderStatus(OrderStatus.DELIVERY_COMPLETED);
+    }
+
+    /**
+     * 주문 상태를 조리중으로 변경
+     */
+    @Transactional
+    public void changeStatusPrepare(Long orderId, AuthenticationUser user) {
+        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
+        storeAdaptor.queryStoreId(findUser);
+        Order findOrder = orderAdaptor.queryOrderById(orderId);
+        findOrder.changeOrderStatus(OrderStatus.IN_PREPARATION);
+    }
+
+    /**
+     * 주문 상태를 배달 완료로 변경
+     */
+    @Transactional
+    public void changeStatusDelivered(Long orderId, AuthenticationUser user) {
+        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
+        storeAdaptor.queryStoreId(findUser);
+        Order findOrder = orderAdaptor.queryOrderById(orderId);
+        findOrder.changeOrderStatus(OrderStatus.DELIVERY_COMPLETED);
     }
 
     /**
