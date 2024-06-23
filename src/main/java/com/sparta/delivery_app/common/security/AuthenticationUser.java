@@ -1,6 +1,7 @@
 package com.sparta.delivery_app.common.security;
 
 
+import com.sparta.delivery_app.domain.user.entity.PasswordHistory;
 import com.sparta.delivery_app.domain.user.entity.User;
 import com.sparta.delivery_app.domain.user.entity.UserRole;
 import lombok.AllArgsConstructor;
@@ -71,10 +72,10 @@ public class AuthenticationUser implements UserDetails {
     }
 
 
-    public static AuthenticationUser of(User user) {
+    public static AuthenticationUser of(User user, PasswordHistory passwordHistory) {
         return AuthenticationUser.builder()
                 .email(user.getEmail())
-                .password(user.getPassword())
+                .password(passwordHistory.getPassword())
                 .userRole(user.getUserRole())
                 .build();
     }

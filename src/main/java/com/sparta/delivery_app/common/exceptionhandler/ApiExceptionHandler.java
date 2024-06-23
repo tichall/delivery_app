@@ -2,10 +2,7 @@ package com.sparta.delivery_app.common.exceptionhandler;
 
 import com.sparta.delivery_app.common.exception.errorcode.ErrorCode;
 import com.sparta.delivery_app.common.globalResponse.ErrorResponse;
-import com.sparta.delivery_app.common.globalcustomexception.global.GlobalAccessDeniedException;
-import com.sparta.delivery_app.common.globalcustomexception.global.GlobalDuplicatedException;
-import com.sparta.delivery_app.common.globalcustomexception.global.GlobalMismatchException;
-import com.sparta.delivery_app.common.globalcustomexception.global.GlobalNotFoundException;
+import com.sparta.delivery_app.common.globalcustomexception.global.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +43,14 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(GlobalMismatchException.class)
     protected ResponseEntity<ErrorResponse> globalMismatchException(GlobalMismatchException e) {
+        ErrorCode errorCode = e.getErrorCode();
+
+        return ResponseEntity.status(errorCode.getHttpStatusCode())
+                .body(ErrorResponse.of(errorCode));
+    }
+
+    @ExceptionHandler(GlobalStatusException.class)
+    protected ResponseEntity<ErrorResponse> globalStatusException(GlobalStatusException e) {
         ErrorCode errorCode = e.getErrorCode();
 
         return ResponseEntity.status(errorCode.getHttpStatusCode())

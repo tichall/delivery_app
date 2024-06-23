@@ -39,7 +39,7 @@ public class TokenService {
     @Transactional
     public TokenResponseDto getFindUser(String refreshTokenHeader) {
         String email = jwtUtil.getUserInfoFromToken(refreshTokenHeader).getSubject();
-        User user = userAdaptor.queryUserByEmail(email);
+        User user = userAdaptor.queryUserByEmailAndStatus(email);
 
         TokenDto tokenDto = jwtUtil.generateAccessTokenAndRefreshToken(user.getEmail(), user.getUserRole());
         String refreshTokenValue = tokenDto.getRefreshToken().substring(7);

@@ -96,7 +96,7 @@ public class MenuService {
      * @return
      */
     private User checkUserAuth(AuthenticationUser user) {
-        User findUser = userAdaptor.queryUserByEmail(user.getUsername());
+        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
         userAdaptor.isManagerAndEnable(findUser);
 
         return findUser;
