@@ -18,8 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.sparta.delivery_app.domain.user.entity.UserStatus.checkManagerEnable;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -35,7 +33,7 @@ public class MenuService {
      * @return responseDto
      */
     public MenuAddResponseDto addMenu(final MenuAddRequestDto requestDto, AuthenticationUser user) {
-        User findUser = checkUserAuth(user);
+        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
 
         Store findStore = storeAdaptor.queryStoreId(findUser);
 
@@ -54,7 +52,7 @@ public class MenuService {
      */
     @Transactional
     public MenuModifyResponseDto modifyMenu(Long menuId, final MenuModifyRequestDto requestDto, AuthenticationUser user) {
-        User findUser = checkUserAuth(user);
+        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
 
         Store store = storeAdaptor.queryStoreId(findUser);
         Menu menu = menuAdaptor.queryMenuByIdAndMenuStatus(menuId);
@@ -72,7 +70,7 @@ public class MenuService {
      */
     @Transactional
     public void deleteMenu(Long menuId, AuthenticationUser user) {
-        User findUser = checkUserAuth(user);
+        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
 
         Store store = storeAdaptor.queryStoreId(findUser);
         Menu menu = menuAdaptor.queryMenuByIdAndMenuStatus(menuId);
@@ -90,17 +88,5 @@ public class MenuService {
         if(!menu.getStore().getId().equals(storeId)) {
             throw new StoreMenuMismatchException(OrderErrorCode.STORE_MENU_MISMATCH);
         }
-    }
-
-    /**
-     * 사용자 인증
-     * @param user
-     * @return
-     */
-    private User checkUserAuth(AuthenticationUser user) {
-        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
-        checkManagerEnable(findUser);
-
-        return findUser;
     }
 }
