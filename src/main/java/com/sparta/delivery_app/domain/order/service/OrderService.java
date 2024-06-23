@@ -1,14 +1,13 @@
 package com.sparta.delivery_app.domain.order.service;
 
-import com.sparta.delivery_app.common.exception.errorcode.MenuErrorCode;
 import com.sparta.delivery_app.common.exception.errorcode.OrderErrorCode;
-import com.sparta.delivery_app.common.globalcustomexception.MenuStatusException;
-import com.sparta.delivery_app.common.globalcustomexception.StoreMenuMismatchException;
 import com.sparta.delivery_app.common.globalcustomexception.TotalPriceException;
+import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.domain.commen.page.util.PageUtil;
 import com.sparta.delivery_app.domain.menu.adaptor.MenuAdaptor;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
 import com.sparta.delivery_app.domain.menu.entity.MenuStatus;
+import com.sparta.delivery_app.domain.menu.service.MenuService;
 import com.sparta.delivery_app.domain.order.adaptor.OrderAdaptor;
 import com.sparta.delivery_app.domain.order.dto.request.MenuItemRequestDto;
 import com.sparta.delivery_app.domain.order.dto.request.OrderAddRequestDto;
@@ -20,12 +19,12 @@ import com.sparta.delivery_app.domain.order.entity.OrderItem;
 import com.sparta.delivery_app.domain.order.entity.OrderStatus;
 import com.sparta.delivery_app.domain.store.adaptor.StoreAdaptor;
 import com.sparta.delivery_app.domain.store.entity.Store;
+import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
+import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,16 +33,25 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-    private OrderAdaptor orderAdaptor;
-    private StoreAdaptor storeAdaptor;
-    private MenuAdaptor menuAdaptor;
+    private final OrderAdaptor orderAdaptor;
+    private final UserAdaptor userAdaptor;
+    private final StoreAdaptor storeAdaptor;
+    private final MenuAdaptor menuAdaptor;
+    private final MenuService menuService;
 
-    public OrderAddResponseDto addOrder(final OrderAddRequestDto requestDto) {
+    /**
+     * 주문 생성
+     * @param user 인증된 유저 정보
+     * @param requestDto 주문 정보
+     * @return OrderAddResponseDto 생성된 주문 정보
+     */
+    public OrderAddResponseDto addOrder(AuthenticationUser user, final OrderAddRequestDto requestDto) {
+        User findUser = userAdaptor.queryUserByEmail(user.getUsername());
         Store store = storeAdaptor.queryStoreById(requestDto.storeId());
         Long totalPrice;
 
         Order currentOrder = Order.builder()
-//                .user(user)
+                .user(findUser)
                 .store(store)
                 .orderStatus(OrderStatus.ORDER_COMPLETED)
                 .build();
@@ -59,24 +67,47 @@ public class OrderService {
         return OrderAddResponseDto.of(currentOrder, totalPrice);
     }
 
-    public OrderGetResponseDto findOrder(Long orderId) {
-        // 해당 유저의 주문인지 검증 필요
-        Long userId = 0L; // 임시
-        Order order = orderAdaptor.queryOrderByIdAndUserID(userId, orderId);
-        return OrderGetResponseDto.of(order);
+    /**
+     * 주문 단건 조회
+     * @param user 인증된 유저 정보
+     * @param orderId 조회할 주문 아이디
+     * @return OrderGetResponseDto 조회된 주문 정보
+     */
+    public OrderGetResponseDto findOrder(AuthenticationUser user, Long orderId) {
+        User findUser = userAdaptor.queryUserByEmail(user.getUsername());
+        Order findOrder = orderAdaptor.queryOrderByIdAndUserID(findUser.getId(), orderId);
+        return OrderGetResponseDto.of(findOrder);
     }
 
-    public OrderPageResponseDto findOrders(Integer pageNum, String sortBy, Boolean isDesc) {
-        Long userId = 0L; // 임시
+    /**
+     * 주문 전체 조회 (페이징)
+     * @param user 인증된 유저 정보
+     * @param pageNum 접근할 페이지 번호
+     * @param sortBy 정렬 조건
+     * @param isDesc 내림차순 여부
+     * @return OrderPageResponseDto 조회된 페이지
+     */
+    public OrderPageResponseDto findOrders(
+            AuthenticationUser user,
+            Integer pageNum,
+            String sortBy,
+            Boolean isDesc
+    ) {
+        User findUser = userAdaptor.queryUserByEmail(user.getUsername());
 
         Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, sortBy, isDesc);
 
-        Page<Order> orderPage = orderAdaptor.queryOrdersByUserId(pageable, userId);
+        Page<Order> orderPage = orderAdaptor.queryOrdersByUserId(pageable, findUser.getId());
 
         PageUtil.validatePage(pageNum, orderPage);
         return OrderPageResponseDto.of(pageNum, orderPage);
     }
 
+    /**
+     * 선택한 메뉴들을 현재 주문에 추가
+     * @param currentOrder 현재 주문
+     * @param menuItemRequestDtoList 선택한 메뉴
+     */
     private void addValidatedMenuItemsToOrder(Order currentOrder, List<MenuItemRequestDto> menuItemRequestDtoList) {
         for (MenuItemRequestDto menuItemRequestDto : menuItemRequestDtoList) {
             Long menuId = menuItemRequestDto.menuId();
@@ -84,9 +115,7 @@ public class OrderService {
 
             Menu menu = menuAdaptor.queryMenuById(menuId);
 
-            if (menu.getStore() != currentOrder.getStore()) {
-                throw new StoreMenuMismatchException(OrderErrorCode.STORE_MENU_MISMATCH);
-            }
+            menuService.checkStoreMenuMatch(menu, currentOrder.getStore().getId());
 
             MenuStatus.checkMenuStatus(menu);
 
@@ -99,5 +128,4 @@ public class OrderService {
             currentOrder.addOrderItem(orderItem);
         }
     }
-
 }
