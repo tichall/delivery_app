@@ -30,6 +30,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         if (exception instanceof CustomSecurityException e) {
             sendErrorResponse(response, e.getErrorCode());
+            return;
         }
 
         sendErrorResponse(response, SecurityErrorCode.INVALID_JWT_SIGNATURE);

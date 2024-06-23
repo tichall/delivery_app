@@ -1,13 +1,15 @@
 package com.sparta.delivery_app.common.security.jwt;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.delivery_app.common.globalResponse.ErrorResponse;
 import com.sparta.delivery_app.common.globalResponse.RestApiResponse;
+import com.sparta.delivery_app.common.security.errorcode.SecurityErrorCode;
+import com.sparta.delivery_app.common.security.exception.CustomSecurityException;
 import com.sparta.delivery_app.common.security.jwt.dto.AuthRequestDto;
 import com.sparta.delivery_app.common.security.jwt.dto.TokenDto;
 import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
 import com.sparta.delivery_app.domain.user.entity.User;
+import com.sparta.delivery_app.domain.user.entity.UserStatus;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -63,9 +65,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         log.info("로그인 성공 및 JWT 토큰 발행");
 
         User user = userAdaptor.queryUserByEmail(authResult.getName());
-//        if (user.getUserStatus() == UserStatus.DISABLE) {
-//            throw new SecurityException(SecurityErrorCode.LOGIN_FAIL);
-//        }
+
+        if (user.getUserStatus() == UserStatus.DISABLE) {
+            request.setAttribute("exception", new CustomSecurityException(SecurityErrorCode.RESIGN_USER));
+            throw new CustomSecurityException(SecurityErrorCode.RESIGN_USER);
+        }
 
         TokenDto tokenDto = jwtUtil.generateAccessTokenAndRefreshToken(user.getEmail(), user.getUserRole());
         String refreshTokenValue = tokenDto.getRefreshToken().substring(7);

@@ -54,7 +54,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 }
             } else {
                 log.error("유효하지 않는 Refersh Token");
-                throw new CustomSecurityException(SecurityErrorCode.EXPIRED_JWT_TOKEN);
+                req.setAttribute("exception", new CustomSecurityException(SecurityErrorCode.INVALID_JWT_SIGNATURE));
             }
         }
         filterChain.doFilter(req, res);
