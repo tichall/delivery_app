@@ -7,7 +7,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum PageErrorCode implements ErrorCode {
-    INVALID_PAGE_NUMBER(StatusCode.BAD_REQUEST.getCode(), "접근할 수 없는 페이지입니다.");
+    INVALID_PAGE_NUMBER(StatusCode.BAD_REQUEST.getCode(), "접근할 수 없는 페이지입니다."),
+    UNABLE_TO_CONNECT(StatusCode.INTERNAL_SERVER_ERROR.getCode(), "접속할 수 없습니다. 잠시 후 시도해주세요.");
 
     private final Integer httpStatusCode;
     private final String description;
