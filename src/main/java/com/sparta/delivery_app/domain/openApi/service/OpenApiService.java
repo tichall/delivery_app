@@ -5,9 +5,11 @@ import com.sparta.delivery_app.common.exception.errorcode.PageErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.OpenApiAccessDeniedException;
 import com.sparta.delivery_app.domain.commen.page.util.PageUtil;
 import com.sparta.delivery_app.domain.openApi.adapter.OpenApiAdapter;
+import com.sparta.delivery_app.domain.openApi.dto.ReviewPageResponseDto;
 import com.sparta.delivery_app.domain.openApi.dto.StoreDetailsResponseDto;
 import com.sparta.delivery_app.domain.openApi.dto.StoreListReadResponseDto;
 import com.sparta.delivery_app.domain.openApi.dto.StorePageResponseDto;
+import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import io.github.bucket4j.Bucket;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,9 @@ public class OpenApiService {
 
     /**
      * 전체 매장 조회
+     * @param pageNum
+     * @param sortBy
+     * @param isDesc
      * @return
      */
     public StorePageResponseDto findStores(Integer pageNum, String sortBy, Boolean isDesc) {
@@ -47,7 +52,25 @@ public class OpenApiService {
      * @return
      */
     public StoreDetailsResponseDto findMenus(Long storeId) {
+
         return openApiAdapter.queryMenusByStoreId(storeId);
+    }
+
+    /**
+     * 전체 리뷰 조회
+     * @param pageNum
+     * @param sortBy
+     * @param isDesc
+     * @return
+     */
+    public ReviewPageResponseDto findReviews(Integer pageNum, String sortBy, Boolean isDesc) {
+        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, sortBy, isDesc);
+
+        Page<UserReviews> reviewPage = openApiAdapter.queryReviews(pageable);
+
+        PageUtil.validatePage(pageNum, reviewPage);
+
+        return ReviewPageResponseDto.of(pageNum, reviewPage);
     }
 
     /**

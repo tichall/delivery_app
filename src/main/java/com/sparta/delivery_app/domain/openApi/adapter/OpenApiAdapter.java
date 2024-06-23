@@ -2,6 +2,8 @@ package com.sparta.delivery_app.domain.openApi.adapter;
 
 import com.sparta.delivery_app.domain.openApi.dto.StoreDetailsResponseDto;
 import com.sparta.delivery_app.domain.openApi.dto.StoreListReadResponseDto;
+import com.sparta.delivery_app.domain.review.entity.UserReviews;
+import com.sparta.delivery_app.domain.review.repository.UserReviewsRepository;
 import com.sparta.delivery_app.domain.store.adaptor.StoreAdaptor;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.store.entity.StoreStatus;
@@ -18,6 +20,7 @@ public class OpenApiAdapter {
 
     private final StoreRepository storeRepository;
     private final StoreAdaptor storeAdaptor;
+    private final UserReviewsRepository userReviewsRepository;
 
     /**
      * ENABLE 상태인 매장만 조회
@@ -40,4 +43,7 @@ public class OpenApiAdapter {
         return new StoreDetailsResponseDto(store);
     }
 
+    public Page<UserReviews> queryReviews(Pageable pageable) {
+        return userReviewsRepository.findAll(pageable);
+    }
 }

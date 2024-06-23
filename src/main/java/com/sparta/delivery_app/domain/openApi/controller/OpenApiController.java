@@ -2,6 +2,7 @@ package com.sparta.delivery_app.domain.openApi.controller;
 
 import com.sparta.delivery_app.common.globalResponse.RestApiResponse;
 import com.sparta.delivery_app.common.status.StatusCode;
+import com.sparta.delivery_app.domain.openApi.dto.ReviewPageResponseDto;
 import com.sparta.delivery_app.domain.openApi.dto.StoreDetailsResponseDto;
 import com.sparta.delivery_app.domain.openApi.dto.StorePageResponseDto;
 import com.sparta.delivery_app.domain.openApi.service.OpenApiService;
@@ -59,14 +60,25 @@ public class OpenApiController {
                 .body(RestApiResponse.of("선택하신 매장의 정보 조회에 성공 했습니다.", storeDetails));
     }
 
+    /**
+     * 전체 사용자 리뷰 조회
+     * @param pageNum
+     * @param sortBy
+     * @param isDesc
+     * @return
+     */
     @GetMapping("/reviews")
-    public ResponseEntity<RestApiResponse<String>> reviewList(
+    public ResponseEntity<RestApiResponse<ReviewPageResponseDto>> reviewList(
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
             @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") String sortBy,
             @RequestParam(value = "isDesc", required = false, defaultValue = "true") Boolean isDesc
     ) {
-        return null;
-    }
+        openApiService.useToken();
 
+        ReviewPageResponseDto responseDto = openApiService.findReviews(pageNum, sortBy, isDesc);
+
+        return ResponseEntity.status(StatusCode.OK.code)
+                .body(RestApiResponse.of("전체 리뷰 조회에 성공했습니다.", responseDto));
+    }
 
 }
