@@ -1,6 +1,8 @@
 package com.sparta.delivery_app.domain.review.adaptor;
 
 import com.sparta.delivery_app.common.exception.errorcode.ReviewErrorCode;
+import com.sparta.delivery_app.common.globalcustomexception.ReviewDuplicatedException;
+import com.sparta.delivery_app.common.globalcustomexception.ReviewNotFoundException;
 import com.sparta.delivery_app.common.globalcustomexception.ReviewStatusException;
 import com.sparta.delivery_app.domain.review.entity.ReviewStatus;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
@@ -29,7 +31,6 @@ public class UserReviewsAdaptor {
                 new ReviewStatusException(ReviewErrorCode.INVALID_REVIEW));
     }
 
-
     /**
      * 메뉴 id, 상태 검증
      */
@@ -41,5 +42,11 @@ public class UserReviewsAdaptor {
         }
 
         return userReviews;
+    }
+
+    public void CheckManagerReviewIdByReviewId(Long reviewId) {
+        if (!userReviewsRepository.findManagerReviewIdByReviewId(reviewId).isEmpty()) {
+            throw new ReviewDuplicatedException(ReviewErrorCode.REVIEW_ALREADY_REGISTERED_ERROR);
+        }
     }
 }

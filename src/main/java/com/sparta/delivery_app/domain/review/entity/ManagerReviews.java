@@ -1,10 +1,12 @@
 package com.sparta.delivery_app.domain.review.entity;
 
 import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
+import com.sparta.delivery_app.domain.review.dto.request.MangerReviewRequestDto;
 import com.sparta.delivery_app.domain.user.entity.User;
 import jakarta.persistence.*;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,4 +36,22 @@ public class ManagerReviews extends BaseTimeEntity {
     private ManagerReviewsStatus managerReviewsStatus;
 
 
+    @Builder
+    public ManagerReviews(Long id, String content, Long reviewsId, User user, ManagerReviewsStatus managerReviewsStatus) {
+        this.id = id;
+        this.content = content;
+        this.reviewsId = reviewsId;
+        this.user = user;
+        this.managerReviewsStatus = managerReviewsStatus;
+    }
+
+    @Builder
+    public static ManagerReviews of(Long userReviewId, User user, MangerReviewRequestDto requestDto) {
+        return ManagerReviews.builder()
+                .content(requestDto.getContent())
+                .reviewsId(userReviewId)
+                .user(user)
+                .managerReviewsStatus(ManagerReviewsStatus.ENABLE)
+                .build();
+    }
 }
