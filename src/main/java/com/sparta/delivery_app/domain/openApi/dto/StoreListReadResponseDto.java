@@ -1,10 +1,12 @@
 package com.sparta.delivery_app.domain.openApi.dto;
 
 import com.sparta.delivery_app.domain.store.entity.Store;
+import lombok.Builder;
 import lombok.Getter;
 
 
 @Getter
+@Builder
 public class StoreListReadResponseDto {
 
     private String storeName;
@@ -12,10 +14,12 @@ public class StoreListReadResponseDto {
     private Long minTotalPrice;
     private String storeInfo;
 
-    public StoreListReadResponseDto(Store store) {
-        this.storeName = store.getStoreName();
-        this.storeAddress = store.getStoreAddress();
-        this.minTotalPrice = store.getMinTotalPrice();
-        this.storeInfo = store.getStoreInfo();
+
+    public static StoreListReadResponseDto of(Store store) {
+        return StoreListReadResponseDto.builder()
+                .storeName(store.getStoreName())
+                .storeAddress(store.getStoreAddress())
+                .minTotalPrice(store.getMinTotalPrice())
+                .storeInfo(store.getStoreInfo()).build();
     }
 }

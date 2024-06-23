@@ -70,7 +70,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/v1/users/consumers").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/users/managers").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/refresh/reissue").permitAll()
-                .requestMatchers(HttpMethod.POST, "/open-api/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/open-api/**").permitAll()
                 .anyRequest().authenticated()
         );
 

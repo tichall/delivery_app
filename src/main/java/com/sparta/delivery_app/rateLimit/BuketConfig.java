@@ -13,7 +13,7 @@ public class BuketConfig {
 
     @Bean
     public Bucket bucket() {
-        final Refill refill = Refill.intervally(10, Duration.ofSeconds(60));
+        final Refill refill = Refill.intervally(3, Duration.ofSeconds(60));
 
         final Bandwidth limit = Bandwidth.classic(10, refill);
 

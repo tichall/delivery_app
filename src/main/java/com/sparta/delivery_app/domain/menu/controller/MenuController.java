@@ -25,6 +25,8 @@ public class MenuController {
 
     /**
      * 메뉴 등록
+     * @param requestDto
+     * @param user
      * @return 성공 메시지 및 등록된 메뉴 정보
      */
     @PostMapping
@@ -40,7 +42,9 @@ public class MenuController {
 
     /**
      * 메뉴 수정
-     * @param menuId 메뉴 ID
+     * @param menuId
+     * @param requestDto
+     * @param user
      * @return 성공 메시지 및 수정된 메뉴 정보
      */
     @PutMapping("/{menuId}")
@@ -57,7 +61,8 @@ public class MenuController {
 
     /**
      * 메뉴 삭제
-     * @param menuId 메뉴 ID
+     * @param menuId
+     * @param user
      */
     @DeleteMapping("/{menuId}")
     public ResponseEntity<RestApiResponse<Void>> menuDelete(
@@ -69,18 +74,4 @@ public class MenuController {
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("메뉴 삭제가 완료되었습니다."));
     }
-
-//    @GetMapping
-//    public ResponseEntity<String> test(
-//            HttpServletRequest http
-//    ) {
-//        String s = http.getRemoteAddr();
-//        http.getRequestURL();
-//        http.getRequestURI();
-//        http.getContextPath();
-//        http.getServerName();
-//        http.getServerPort();
-//        return ResponseEntity.ok(http.getServerName());
-//    }
-
 }
