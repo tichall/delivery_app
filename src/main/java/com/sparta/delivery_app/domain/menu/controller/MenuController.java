@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +33,7 @@ public class MenuController {
      * @param user
      * @return 성공 메시지 및 등록된 메뉴 정보
      */
+    @PreAuthorize("hasRole('MANAGER')")
     @PostMapping
     public ResponseEntity<RestApiResponse<MenuAddResponseDto>> menuAdd(
             @RequestPart(value = "file", required = false) MultipartFile file,
@@ -51,6 +53,7 @@ public class MenuController {
      * @param user
      * @return 성공 메시지 및 수정된 메뉴 정보
      */
+    @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/{menuId}")
     public ResponseEntity<RestApiResponse<MenuModifyResponseDto>> menuModify(
             @PathVariable Long menuId,
@@ -68,6 +71,7 @@ public class MenuController {
      * @param menuId
      * @param user
      */
+    @PreAuthorize("hasRole('MANAGER')")
     @DeleteMapping("/{menuId}")
     public ResponseEntity<RestApiResponse<Void>> menuDelete(
             @PathVariable Long menuId,

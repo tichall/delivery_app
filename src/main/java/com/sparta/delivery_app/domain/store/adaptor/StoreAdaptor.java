@@ -4,10 +4,8 @@ import com.sparta.delivery_app.common.exception.errorcode.StoreErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.StoreDuplicatedException;
 import com.sparta.delivery_app.common.globalcustomexception.StoreNotFoundException;
 import com.sparta.delivery_app.common.globalcustomexception.StoreRegisteredHistoryException;
-import com.sparta.delivery_app.common.globalcustomexception.StoreStatusException;
 import com.sparta.delivery_app.domain.store.dto.request.RegisterStoreRequestDto;
 import com.sparta.delivery_app.domain.store.entity.Store;
-import com.sparta.delivery_app.domain.store.entity.StoreStatus;
 import com.sparta.delivery_app.domain.store.repository.StoreRepository;
 import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -48,12 +46,6 @@ public class StoreAdaptor {
         return storeRepository.findStoreByUser(user).orElseThrow(() ->
                 new StoreNotFoundException(StoreErrorCode.INVALID_STORE)
         );
-    }
-
-    public void queryStoreStatus(Store store) {
-        if (!store.getStatus().equals(StoreStatus.ENABLE)) {
-            throw new StoreStatusException(StoreErrorCode.INVALID_STORE);
-        }
     }
 
     @Transactional
