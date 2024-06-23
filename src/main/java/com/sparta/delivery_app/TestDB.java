@@ -295,7 +295,7 @@ public class TestDB {
             save(menu);
 
             Menu menu1 = Menu.builder()
-                    .store(store2)
+                    .store(store1)
                     .menuName("1번 매장 음식")
                     .menuPrice(10_000L)
                     .menuInfo("맛있다!")
@@ -306,7 +306,7 @@ public class TestDB {
 
             for (int i = 1; i <= 2; i++) {
                 Menu menu2 = Menu.builder()
-                        .store(store3)
+                        .store(store2)
                         .menuName("2번 매장 음식" + i)
                         .menuPrice(12_000L)
                         .menuInfo("맛있다!")
@@ -318,7 +318,7 @@ public class TestDB {
 
             for (int i = 1; i <= 3; i++) {
                 Menu menu3 = Menu.builder()
-                        .store(store4)
+                        .store(store3)
                         .menuName("3번 매장 음식" + i)
                         .menuPrice(13_000L)
                         .menuInfo("맛있다!")
@@ -330,7 +330,7 @@ public class TestDB {
 
             for (int i = 1; i <= 2; i++) {
                 Menu menu4 = Menu.builder()
-                        .store(store5)
+                        .store(store4)
                         .menuName("4번 매장 음식" + i)
                         .menuPrice(14_000L)
                         .menuInfo("맛있다!")
@@ -342,7 +342,7 @@ public class TestDB {
 
             for (int i = 1; i <= 3; i++) {
                 Menu menu5 = Menu.builder()
-                        .store(store6)
+                        .store(store5)
                         .menuName("5번 매장 음식" + i)
                         .menuPrice(15_000L)
                         .menuInfo("맛있다!")
