@@ -30,6 +30,7 @@ public class UserReviewsAdaptor {
                 new ReviewStatusException(ReviewErrorCode.INVALID_REVIEW));
     }
 
+
     /**
      * 메뉴 id, 상태 검증
      */
@@ -41,6 +42,10 @@ public class UserReviewsAdaptor {
         }
 
         return userReviews;
+    }
+
+    public UserReviews queryReviewListByOrderId(Long id) {
+        return userReviewsRepository.findAllUserReviewsByOrderId(id);
     }
 
     public void CheckManagerReviewIdByReviewId(Long reviewId) {

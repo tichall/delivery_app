@@ -1,5 +1,7 @@
 package com.sparta.delivery_app.domain.user.adaptor;
 
+import com.sparta.delivery_app.common.exception.errorcode.StoreErrorCode;
+import com.sparta.delivery_app.common.exception.errorcode.UserErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.UnableOpenStoreException;
 import com.sparta.delivery_app.common.globalcustomexception.UserDuplicatedException;
 import com.sparta.delivery_app.common.globalcustomexception.UserNotExistException;
@@ -35,18 +37,8 @@ public class UserAdaptor {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotExistException(NOT_SIGNED_UP_USER)
         );
-        checkManagerEnable(user);
+        UserStatus.checkManagerEnable(user);
         return user;
-    }
-
-    /*
-     * MANAGER 이면서 ENABLE 상태인지 확인
-     */
-    public void isManagerAndEnable(User user) {
-        if (!(user.getUserRole().equals(UserRole.MANAGER) &&
-                user.getUserStatus().equals(UserStatus.ENABLE))) {
-            throw new UnableOpenStoreException(NOT_AUTHORITY_TO_REGISTER_STORE);
-        }
     }
 
     /**
