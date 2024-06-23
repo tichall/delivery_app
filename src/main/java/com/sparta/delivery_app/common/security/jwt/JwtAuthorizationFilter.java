@@ -43,11 +43,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             log.info("refresh token 검증");
 
             String email = jwtUtil.getUserInfoFromToken(accessTokenValue).getSubject();
-            String refreshToken = userAdaptor.queryUserByEmail(email).getRefreshToken();
-            if (!refreshToken.isBlank()) {
-                User user = userAdaptor.queryUserByEmail(email);
+            User findUser = userAdaptor.queryUserByEmail(email);
 
-                if (isValidateUserAndToken(email, user)) {
+            if (findUser.getRefreshToken() != null) {
+                if (isValidateUserEmail(email, findUser)) {
 
                     log.info("Token 인증 완료");
                     Claims info = jwtUtil.getUserInfoFromToken(accessTokenValue);
@@ -61,7 +60,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         filterChain.doFilter(req, res);
     }
 
-    private boolean isValidateUserAndToken(String email, User findUser) {
+    private boolean isValidateUserEmail(String email, User findUser) {
         return email.equals(findUser.getEmail());
     }
 

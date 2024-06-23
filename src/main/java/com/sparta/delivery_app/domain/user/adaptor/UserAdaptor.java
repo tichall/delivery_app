@@ -2,9 +2,8 @@ package com.sparta.delivery_app.domain.user.adaptor;
 
 import com.sparta.delivery_app.common.globalcustomexception.UnableOpenStoreException;
 import com.sparta.delivery_app.common.globalcustomexception.UserDuplicatedException;
-import com.sparta.delivery_app.domain.admin.adminuser.AdminUserResponseDto;
-import com.sparta.delivery_app.domain.user.entity.User;
 import com.sparta.delivery_app.common.globalcustomexception.UserNotExistException;
+import com.sparta.delivery_app.domain.user.entity.User;
 import com.sparta.delivery_app.domain.user.entity.UserRole;
 import com.sparta.delivery_app.domain.user.entity.UserStatus;
 import com.sparta.delivery_app.domain.user.repository.UserRepository;
@@ -12,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 import static com.sparta.delivery_app.common.exception.errorcode.UserErrorCode.*;
 
@@ -56,11 +53,17 @@ public class UserAdaptor {
      * 특정 email 조회
      * Status
      */
-    public User queryUserByEmail(String email) {
+    public User queryUserByEmailAndStatus(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotExistException(NOT_SIGNED_UP_USER));
         UserStatus.checkUserStatus(user.getUserStatus());
         return user;
+    }
+
+    public User queryUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotExistException(NOT_SIGNED_UP_USER));
+
     }
 
     public Page<User> queryAllUserPage(Pageable pageable) {

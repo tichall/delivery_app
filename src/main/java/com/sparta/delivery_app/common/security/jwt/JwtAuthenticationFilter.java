@@ -2,8 +2,10 @@ package com.sparta.delivery_app.common.security.jwt;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.delivery_app.common.exception.errorcode.CommonErrorCode;
 import com.sparta.delivery_app.common.globalResponse.ErrorResponse;
 import com.sparta.delivery_app.common.globalResponse.RestApiResponse;
+import com.sparta.delivery_app.common.globalcustomexception.global.GlobalServerException;
 import com.sparta.delivery_app.common.security.jwt.dto.AuthRequestDto;
 import com.sparta.delivery_app.common.security.jwt.dto.TokenDto;
 import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
@@ -60,7 +62,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
         log.info("로그인 성공 및 JWT 토큰 발행");
-        User user = userAdaptor.queryUserByEmail(authResult.getName());
+
+        User user = userAdaptor.queryUserByEmailAndStatus(authResult.getName());
 
         TokenDto tokenDto = jwtUtil.generateAccessTokenAndRefreshToken(user.getEmail(), user.getUserRole());
         String refreshTokenValue = tokenDto.getRefreshToken().substring(7);

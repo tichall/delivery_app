@@ -104,7 +104,8 @@ public class User extends BaseTimeEntity {
         this.refreshToken = newRefreshToken;
     }
 
-    public void updateUserStatus() {
+    public void updateResignUser() {
+        this.refreshToken = null;
         this.userStatus = UserStatus.DISABLE;
     }
 }

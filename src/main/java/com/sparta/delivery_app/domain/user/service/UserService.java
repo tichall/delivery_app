@@ -60,7 +60,7 @@ public class UserService {
 
     @Transactional
     public void resignUser(AuthenticationUser user, UserResignRequestDto userResignRequestDto) {
-        User findUser = userAdaptor.queryUserByEmail(user.getUsername());
+        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
         PasswordHistory passwordHistory = passwordHistoryAdaptor.queryPasswordHistoryTop1ByUser(findUser);
 
         if (!passwordEncoder.matches(userResignRequestDto.password(), passwordHistory.getPassword())) {
@@ -68,12 +68,12 @@ public class UserService {
             throw new UserPasswordMismatchException(UserErrorCode.PASSWORD_NOT_MATCH);
         }
 
-        findUser.updateUserStatus();
+        findUser.updateResignUser();
     }
 
     @Transactional
     public UserProfileModifyResponseDto modifyProfileUser(AuthenticationUser user, UserProfileModifyRequestDto requestDto) {
-        User findUser = userAdaptor.queryUserByEmail(user.getUsername());
+        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
         PasswordHistory passwordHistory = passwordHistoryAdaptor.queryPasswordHistoryTop1ByUser(findUser);
 
         if (!passwordEncoder.matches(requestDto.password(), passwordHistory.getPassword())) {
@@ -87,7 +87,7 @@ public class UserService {
 
     @Transactional
     public void modifyPasswordUser(AuthenticationUser user, UserPasswordModifyRequestDto requestDto) {
-        User findUser = userAdaptor.queryUserByEmail(user.getUsername());
+        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
         List<PasswordHistory> passwordhistoryList = passwordHistoryAdaptor.queryPasswordHistoryTop4ByUser(findUser);
 
         for (int i = 0; i < passwordhistoryList.size(); i++) {
