@@ -1,9 +1,14 @@
 package com.sparta.delivery_app.domain.store.dto.response;
 
 import com.sparta.delivery_app.domain.store.entity.Store;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 
+
+@Getter
 @Builder
+@AllArgsConstructor
 public class ModifyStoreResponseDto {
 
     private String storeName;
@@ -23,6 +28,5 @@ public class ModifyStoreResponseDto {
     }
 
 }
-
 
 
