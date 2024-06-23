@@ -1,10 +1,7 @@
 package com.sparta.delivery_app.domain.s3.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 import com.sparta.delivery_app.common.exception.errorcode.S3ErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.S3Exception;
 import com.sparta.delivery_app.domain.s3.util.S3Utils;
@@ -38,6 +35,7 @@ public class S3Uploader {
         S3Utils.validateImageExtension(file.getOriginalFilename());
 
         String imageDir = S3Utils.createMenuImageDir(storeId, menuId);
+        deleteFileFromS3(imageDir);
         return uploadFileToS3(file, imageDir);
     }
 
@@ -49,6 +47,7 @@ public class S3Uploader {
         S3Utils.validateImageExtension(file.getOriginalFilename());
 
         String imageDir = S3Utils.createReviewImageDir(userId, reviewId);
+        deleteFileFromS3(imageDir);
         return uploadFileToS3(file, imageDir);
     }
 
@@ -68,9 +67,25 @@ public class S3Uploader {
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
-    public void deleteFileFromS3(String imagePathUrl) {
-        String s3Url = S3Utils.extractImagePath(imagePathUrl);
-        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, s3Url));
-    }
+    public void deleteFileFromS3(String imageDir) {
+        ObjectListing objectListing = amazonS3Client.listObjects(bucket, imageDir);
 
+        if (objectListing.getObjectSummaries().isEmpty()) {
+            log.info("파일이 존재하지 않습니다.");
+            return;
+        }
+
+        while(true) {
+            for (S3ObjectSummary summary : objectListing.getObjectSummaries()) {
+                amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, summary.getKey()));
+                log.info("삭제 : " + summary.getKey());
+            }
+
+            if(objectListing.isTruncated()) {
+                objectListing = amazonS3Client.listNextBatchOfObjects(objectListing);
+            } else {
+                break;
+            }
+        }
+    }
 }

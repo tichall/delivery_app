@@ -14,9 +14,7 @@ public record MenuModifyRequestDto(
 
         @NotBlank(message = "메뉴 정보가 입력되지 않았습니다.")
         @Size(max = 255)
-        String menuInfo,
-
-        String menuImagePath
+        String menuInfo
 ) {
 
 }

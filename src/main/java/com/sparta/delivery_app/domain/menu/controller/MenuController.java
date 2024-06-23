@@ -56,11 +56,12 @@ public class MenuController {
     @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/{menuId}")
     public ResponseEntity<RestApiResponse<MenuModifyResponseDto>> menuModify(
+            @RequestPart(value = "file", required = false) MultipartFile file,
             @PathVariable Long menuId,
-            @Valid @RequestBody final MenuModifyRequestDto requestDto,
+            @Valid @RequestPart final MenuModifyRequestDto requestDto,
             @AuthenticationPrincipal AuthenticationUser user
     ) {
-        final MenuModifyResponseDto responseDto = menuService.modifyMenu(menuId, requestDto, user);
+        final MenuModifyResponseDto responseDto = menuService.modifyMenu(file, menuId, requestDto, user);
 
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("메뉴 수정에 성공 했습니다.", responseDto));

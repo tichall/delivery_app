@@ -66,7 +66,6 @@ public class Menu extends BaseTimeEntity {
         this.menuName = requestDto.menuName();
         this.menuPrice = requestDto.menuPrice();
         this.menuInfo = requestDto.menuInfo();
-        this.menuImagePath = requestDto.menuImagePath();
     }
 
     public void deleteMenu() {

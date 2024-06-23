@@ -2,7 +2,6 @@ package com.sparta.delivery_app.domain.s3.util;
 
 import com.sparta.delivery_app.common.exception.errorcode.S3ErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.S3Exception;
-import lombok.Builder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,17 +43,6 @@ public class S3Utils {
         }
     }
 
-    /**
-     * S3 이미지 경로 추출
-     */
-    public static String extractImagePath(String imagePath) {
-        int startIndex = imagePath.indexOf(URL_PREFIX);
-        if (startIndex == -1) {
-            throw new S3Exception(S3ErrorCode.INVALID_IMAGE_URL);
-        }
-        return imagePath.substring(startIndex);
-    }
-
     public static String createMenuImageDir(Long storeId, Long menuId) {
         return URL_PREFIX + "/"
                 + STORE_DIR + "/"
@@ -70,4 +58,5 @@ public class S3Utils {
                 + REVIEW_IMAGE_DIR + "/"
                 + reviewId + "/";
     }
+
 }

@@ -41,6 +41,7 @@ public class MenuService {
      * @param requestDto
      * @return responseDto
      */
+    @Transactional
     public MenuAddResponseDto addMenu(MultipartFile file, final MenuAddRequestDto requestDto, AuthenticationUser user) {
         User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
 
@@ -53,7 +54,6 @@ public class MenuService {
             try {
                 String menuImagePath = s3Uploader.saveMenuImage(file, findStore.getId(), menu.getId());
                 menu.updateMenuImagePath(menuImagePath);
-                menuAdaptor.saveMenu(menu);
             } catch(S3Exception e) {
                 menuAdaptor.deleteTempMenu(menu);
                 throw new S3Exception(e.getErrorCode());
@@ -71,15 +71,22 @@ public class MenuService {
      * @return responseDto
      */
     @Transactional
-    public MenuModifyResponseDto modifyMenu(Long menuId, final MenuModifyRequestDto requestDto, AuthenticationUser user) {
-        User findUser = checkUserAuth(user);
+    public MenuModifyResponseDto modifyMenu(MultipartFile file, Long menuId, final MenuModifyRequestDto requestDto, AuthenticationUser user) {
+        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
 
-        Store store = storeAdaptor.queryStoreId(findUser);
+        Store findStore = storeAdaptor.queryStoreId(findUser);
         Menu menu = menuAdaptor.queryMenuByIdAndMenuStatus(menuId);
 
-        checkStoreMenuMatch(menu, store.getId());
+        checkStoreMenuMatch(menu, findStore.getId());
+        if (S3Utils.isFileExists(file)) {
+            try {
+                String menuImagePath = s3Uploader.saveMenuImage(file, findStore.getId(), menu.getId());
+                menu.updateMenuImagePath(menuImagePath);
+            } catch(S3Exception e) {
+                throw new S3Exception(e.getErrorCode());
+            }
+        }
         menu.updateMenu(requestDto);
-
         return MenuModifyResponseDto.of(menu);
     }
 
@@ -121,4 +128,5 @@ public class MenuService {
 
         return findUser;
     }
+
 }
