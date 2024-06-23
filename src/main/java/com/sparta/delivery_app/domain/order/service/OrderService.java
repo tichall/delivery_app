@@ -33,11 +33,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-    private OrderAdaptor orderAdaptor;
-    private UserAdaptor userAdaptor;
-    private StoreAdaptor storeAdaptor;
-    private MenuAdaptor menuAdaptor;
-    private MenuService menuService;
+    private final OrderAdaptor orderAdaptor;
+    private final UserAdaptor userAdaptor;
+    private final StoreAdaptor storeAdaptor;
+    private final MenuAdaptor menuAdaptor;
+    private final MenuService menuService;
 
     /**
      * 주문 생성
