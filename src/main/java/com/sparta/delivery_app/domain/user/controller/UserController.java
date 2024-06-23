@@ -12,6 +12,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,6 +48,7 @@ public class UserController {
                 );
     }
 
+    @PreAuthorize("hasAnyRole('CONSUMER','MANAGER')")
     @DeleteMapping("/resign")
     public ResponseEntity<RestApiResponse<String>> resign(
             @AuthenticationPrincipal AuthenticationUser user,
@@ -57,6 +60,7 @@ public class UserController {
                 .body(RestApiResponse.of("탈퇴 되었습니다."));
     }
 
+    @PreAuthorize("hasAnyRole('CONSUMER','MANAGER')")
     @PutMapping("/profile")
     public ResponseEntity<RestApiResponse<UserProfileModifyResponseDto>> profileModify(
             @AuthenticationPrincipal AuthenticationUser user,
@@ -67,6 +71,7 @@ public class UserController {
                 .body(RestApiResponse.of(responseDto));
     }
 
+    @PreAuthorize("hasAnyRole('CONSUMER','MANAGER')")
     @PatchMapping("/password")
     public ResponseEntity<RestApiResponse<String>> passwordModify(
             @AuthenticationPrincipal AuthenticationUser user,
