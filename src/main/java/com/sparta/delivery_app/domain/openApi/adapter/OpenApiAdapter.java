@@ -1,7 +1,6 @@
 package com.sparta.delivery_app.domain.openApi.adapter;
 
 import com.sparta.delivery_app.domain.openApi.dto.StoreDetailsResponseDto;
-import com.sparta.delivery_app.domain.openApi.dto.StoreListReadResponseDto;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import com.sparta.delivery_app.domain.review.repository.UserReviewsRepository;
 import com.sparta.delivery_app.domain.store.adaptor.StoreAdaptor;
@@ -12,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -43,6 +41,11 @@ public class OpenApiAdapter {
         return new StoreDetailsResponseDto(store);
     }
 
+    /**
+     * ENABLE 상태인 사용자 리뷰만 조회
+     * @param pageable
+     * @return
+     */
     public Page<UserReviews> queryReviews(Pageable pageable) {
         return userReviewsRepository.findAll(pageable);
     }

@@ -7,11 +7,11 @@ import com.sparta.delivery_app.domain.store.dto.request.RegisterStoreRequestDto;
 import com.sparta.delivery_app.domain.store.dto.response.ModifyStoreResponseDto;
 import com.sparta.delivery_app.domain.store.dto.response.RegisterStoreResponseDto;
 import com.sparta.delivery_app.domain.store.entity.Store;
+import com.sparta.delivery_app.domain.store.entity.StoreStatus;
 import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
 import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,7 +50,7 @@ public class StoreService {
         log.info("Service-ENABLE 상태인 MANAGER 소유의 Store 확인");
         User checkStoreOwner = userAdaptor.checkManagerRole(userId);
         Store ownedStore = storeAdaptor.queryStoreId(checkStoreOwner);
-        storeAdaptor.queryStoreStatus(ownedStore);
+        StoreStatus.checkStoreStatus(ownedStore);
         ownedStore.modifyStore(requestDto);
         storeAdaptor.saveModifiedStore(ownedStore);
 

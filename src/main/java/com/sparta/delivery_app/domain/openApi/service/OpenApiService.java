@@ -7,7 +7,6 @@ import com.sparta.delivery_app.domain.commen.page.util.PageUtil;
 import com.sparta.delivery_app.domain.openApi.adapter.OpenApiAdapter;
 import com.sparta.delivery_app.domain.openApi.dto.ReviewPageResponseDto;
 import com.sparta.delivery_app.domain.openApi.dto.StoreDetailsResponseDto;
-import com.sparta.delivery_app.domain.openApi.dto.StoreListReadResponseDto;
 import com.sparta.delivery_app.domain.openApi.dto.StorePageResponseDto;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import com.sparta.delivery_app.domain.store.entity.Store;
@@ -17,8 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Slf4j
 @Service

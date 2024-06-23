@@ -6,15 +6,10 @@ import com.sparta.delivery_app.domain.openApi.dto.ReviewPageResponseDto;
 import com.sparta.delivery_app.domain.openApi.dto.StoreDetailsResponseDto;
 import com.sparta.delivery_app.domain.openApi.dto.StorePageResponseDto;
 import com.sparta.delivery_app.domain.openApi.service.OpenApiService;
-import com.sparta.delivery_app.domain.openApi.dto.StoreListReadResponseDto;
-import io.github.bucket4j.Bucket;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
