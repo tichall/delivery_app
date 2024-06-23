@@ -2,6 +2,7 @@ package com.sparta.delivery_app.domain.order.entity;
 
 
 import com.sparta.delivery_app.domain.commen.BaseTimeCreateEntity;
+import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -23,6 +24,9 @@ public class Order extends BaseTimeCreateEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private UserReviews userReviews;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")

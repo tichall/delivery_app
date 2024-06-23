@@ -33,6 +33,9 @@ public class UserReviews extends BaseTimeEntity {
     @JoinColumn(name = "order_id")
     private Order order;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private ManagerReviews managerReviews;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

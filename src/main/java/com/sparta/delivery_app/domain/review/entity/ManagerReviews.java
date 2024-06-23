@@ -26,8 +26,9 @@ public class ManagerReviews extends BaseTimeEntity {
     @Column(name = "contnet", nullable = false)
     private String content;
 
-    @Column(nullable = false)
-    private Long reviewsId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_reviews_id")
+    private UserReviews userReviews;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -39,19 +40,19 @@ public class ManagerReviews extends BaseTimeEntity {
 
 
     @Builder
-    public ManagerReviews(Long id, String content, Long reviewsId, User user, ManagerReviewsStatus managerReviewsStatus) {
+    public ManagerReviews(Long id, String content, UserReviews userReviews, User user, ManagerReviewsStatus managerReviewsStatus) {
         this.id = id;
         this.content = content;
-        this.reviewsId = reviewsId;
+        this.userReviews = userReviews;
         this.user = user;
         this.managerReviewsStatus = managerReviewsStatus;
     }
 
     @Builder
-    public static ManagerReviews of(Long userReviewId, User user, ManagerReviewRequestDto requestDto) {
+    public static ManagerReviews of(UserReviews userReviews, User user, ManagerReviewRequestDto requestDto) {
         return ManagerReviews.builder()
                 .content(requestDto.getContent())
-                .reviewsId(userReviewId)
+                .userReviews(userReviews)
                 .user(user)
                 .managerReviewsStatus(ManagerReviewsStatus.ENABLE)
                 .build();
