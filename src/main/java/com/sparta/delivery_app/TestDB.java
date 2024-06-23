@@ -429,13 +429,13 @@ public class TestDB {
                     .build();
             save(managerReviews1);
 
-            ManagerReviews managerReviews2 = ManagerReviews.builder()
-                    .content("진상고객 우~~~")
-                    .reviewsId(userReviews2.getId())
-                    .user(manager1)
-                    .managerReviewsStatus(ManagerReviewsStatus.ENABLE)
-                    .build();
-            save(managerReviews2);
+//            ManagerReviews managerReviews2 = ManagerReviews.builder()
+//                    .content("진상고객 우~~~")
+//                    .reviewsId(userReviews2.getId())
+//                    .user(manager1)
+//                    .managerReviewsStatus(ManagerReviewsStatus.ENABLE)
+//                    .build();
+//            save(managerReviews2);
 
             /**
              * 좋아요
