@@ -35,7 +35,7 @@ public class UserAdaptor {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotExistException(NOT_SIGNED_UP_USER)
         );
-        isManagerAndEnable(user);
+        checkManagerEnable(user);
         return user;
     }
 
@@ -77,9 +77,5 @@ public class UserAdaptor {
     public User saveUser(User userData) {
         return userRepository.save(userData);
     }
-
-//    public List<AdminUserResponseDto> queryAllUser() {
-//        return userRepository.findAll().stream().map(AdminUserResponseDto::new).toList();
-//    }
 
 }

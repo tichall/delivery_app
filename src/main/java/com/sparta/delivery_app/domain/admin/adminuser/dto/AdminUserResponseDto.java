@@ -1,14 +1,11 @@
-package com.sparta.delivery_app.domain.admin.adminuser;
+package com.sparta.delivery_app.domain.admin.adminuser.dto;
 
-import com.sparta.delivery_app.domain.store.dto.response.RegisterStoreResponseDto;
-import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.user.entity.User;
 import com.sparta.delivery_app.domain.user.entity.UserRole;
 import com.sparta.delivery_app.domain.user.entity.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.data.domain.Page;
 
 @Getter
 @Builder
