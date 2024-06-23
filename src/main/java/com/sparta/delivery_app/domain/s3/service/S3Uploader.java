@@ -5,8 +5,8 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.sparta.delivery_app.common.exception.errorcode.AwsS3ErrorCode;
-import com.sparta.delivery_app.common.globalcustomexception.FileUploadFailedException;
+import com.sparta.delivery_app.common.exception.errorcode.S3ErrorCode;
+import com.sparta.delivery_app.common.globalcustomexception.S3Exception;
 import com.sparta.delivery_app.domain.s3.util.S3Utils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,67 +27,54 @@ public class S3Uploader {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    // 메뉴 이미지 저장 경로 store/{storeId}/menu/{menuId}
-    private static final String STORE_DIR = "store";
-    private static final String MENU_IMAGE_DIR = "menu";
-
-    // 리뷰 이미지 저장 경로 user/{userId}/review/{reviewId}
-    private static final String USER_DIR = "user";
-    private static final String REVIEW_IMAGE_DIR = "review";
-
     private String DEFAULT_MESSAGE = "이미지를 등록하지 않았습니다.";
 
 
     public String saveMenuImage(MultipartFile file, Long storeId, Long menuId) throws IOException {
-
         if (!isFileExists(file)) {
             return DEFAULT_MESSAGE;
         }
-        String fileName = S3Utils.createFileName(
-                file,
-                STORE_DIR,
-                storeId,
-                MENU_IMAGE_DIR,
-                menuId
-        );
 
-        return uploadFileToAws(file, fileName);
+        S3Utils.validateImageExtension(file.getOriginalFilename());
+
+        String imageDir = S3Utils.createMenuImageDir(storeId, menuId);
+        return uploadFileToS3(file, imageDir);
     }
 
     public String saveReviewImage(MultipartFile file, Long userId, Long reviewId) throws IOException {
-
         if (!isFileExists(file)) {
             return DEFAULT_MESSAGE;
         }
-        String fileName = S3Utils.createFileName(
-                file,
-                USER_DIR,
-                userId,
-                REVIEW_IMAGE_DIR,
-                reviewId
-        );
 
-        return uploadFileToAws(file, fileName);
+        S3Utils.validateImageExtension(file.getOriginalFilename());
+
+        String imageDir = S3Utils.createReviewImageDir(userId, reviewId);
+        return uploadFileToS3(file, imageDir);
     }
 
-    private String uploadFileToAws(MultipartFile multipartFile, String fileName) throws IOException {
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentType(multipartFile.getContentType());
+    private String uploadFileToS3(MultipartFile file, String imageDir) throws IOException {
+        String fileName = imageDir + file.getOriginalFilename() + "_"
+                + System.currentTimeMillis();
 
-        try (InputStream inputStream = multipartFile.getInputStream()) {
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(file.getContentType());
+
+        try (InputStream inputStream = file.getInputStream()) {
             amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (Exception e) {
             log.error("이미지 업로드 중 오류가 발생했습니다.", e);
-            throw new FileUploadFailedException(AwsS3ErrorCode.IMAGE_UPLOAD_ERROR);
+            throw new S3Exception(S3ErrorCode.IMAGE_UPLOAD_ERROR);
         }
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
-//    public void deleteImageFile(String imagePathUrl) {
-//        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, imagePathUrl));
-//    }
+    public void deleteFileFromS3(String imagePathUrl) {
+        String s3Url = S3Utils.extractImagePath(imagePathUrl);
+        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, s3Url));
+    }
 
     private boolean isFileExists(MultipartFile multipartFile) {
         return !multipartFile.isEmpty();
     }
+
 }
