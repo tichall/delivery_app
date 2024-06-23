@@ -2,6 +2,7 @@ package com.sparta.delivery_app.common.exceptionhandler;
 
 import com.sparta.delivery_app.common.exception.errorcode.ErrorCode;
 import com.sparta.delivery_app.common.globalResponse.ErrorResponse;
+import com.sparta.delivery_app.common.globalcustomexception.S3Exception;
 import com.sparta.delivery_app.common.globalcustomexception.global.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -57,5 +58,12 @@ public class ApiExceptionHandler {
                 .body(ErrorResponse.of(errorCode));
     }
 
+    @ExceptionHandler(S3Exception.class)
+    protected ResponseEntity<ErrorResponse> s3Exception(S3Exception e) {
+        ErrorCode errorCode = e.getErrorCode();
+
+        return ResponseEntity.status(errorCode.getHttpStatusCode())
+                .body(ErrorResponse.of(errorCode));
+    }
 
 }

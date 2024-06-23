@@ -34,6 +34,7 @@ public class MenuService {
     private final MenuAdaptor menuAdaptor;
     private final StoreAdaptor storeAdaptor;
     private final UserAdaptor userAdaptor;
+    private final S3Uploader s3Uploader;
 
     /**
      * 메뉴 등록
@@ -47,6 +48,17 @@ public class MenuService {
 
         Menu menu = Menu.of(findStore, requestDto);
         menuAdaptor.saveMenu(menu);
+
+        if (S3Utils.isFileExists(file)) {
+            try {
+                String menuImagePath = s3Uploader.saveMenuImage(file, findStore.getId(), menu.getId());
+                menu.updateMenuImagePath(menuImagePath);
+                menuAdaptor.saveMenu(menu);
+            } catch(S3Exception e) {
+                menuAdaptor.deleteTempMenu(menu);
+                throw new S3Exception(e.getErrorCode());
+            }
+        }
 
         return MenuAddResponseDto.of(menu);
     }
