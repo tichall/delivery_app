@@ -1,5 +1,7 @@
 package com.sparta.delivery_app.domain.store.entity;
 
+import com.sparta.delivery_app.common.exception.errorcode.StoreErrorCode;
+import com.sparta.delivery_app.common.globalcustomexception.StoreNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -11,5 +13,15 @@ public enum StoreStatus {
     DISABLE("DISABLE");
 
     private final String storeStatusName;
+
+    /**
+     * 매장 상태 검증
+     * @param store
+     */
+    public static void checkStoreStatus(Store store) {
+        if(store.getStatus().equals(StoreStatus.DISABLE)) {
+            throw new StoreNotFoundException(StoreErrorCode.DELETED_STORE);
+        }
+    }
 
 }
