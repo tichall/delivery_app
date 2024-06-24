@@ -31,12 +31,11 @@ public class AdminStoreController {
     (@PathVariable Long storeId,
      @AuthenticationPrincipal AuthenticationUser authenticationUser,
      @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
-     @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") String sortBy,
      @RequestParam(value = "isDesc", required = false, defaultValue = "true") Boolean isDesc) {
         log.info("특정매장 모든메뉴 조회");
 
         PageMenuPerStoreResponseDto responseDto = adminStoreService.getMenuListPerStore(storeId,
-                authenticationUser, pageNum, sortBy, isDesc);
+                authenticationUser, pageNum, isDesc);
         return ResponseEntity.status(StatusCode.CREATED.code)
                 .body(RestApiResponse.of("조회 성공", responseDto));
     }

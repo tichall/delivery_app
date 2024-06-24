@@ -81,19 +81,17 @@ public class OrderService {
      * 주문 전체 조회 (페이징)
      * @param user 인증된 유저 정보
      * @param pageNum 접근할 페이지 번호
-     * @param sortBy 정렬 조건
      * @param isDesc 내림차순 여부
      * @return OrderPageResponseDto 조회된 페이지
      */
     public OrderPageResponseDto findOrders(
             AuthenticationUser user,
             final Integer pageNum,
-            String sortBy,
             final Boolean isDesc
     ) {
         User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
 
-        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, sortBy, isDesc);
+        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
 
         Page<Order> orderPage = orderAdaptor.queryOrdersByUserId(pageable, findUser.getId());
 

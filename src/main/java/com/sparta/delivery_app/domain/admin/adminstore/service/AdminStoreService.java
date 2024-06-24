@@ -37,14 +37,14 @@ public class AdminStoreService {
     private final OrderAdaptor orderAdaptor;
 
     public PageMenuPerStoreResponseDto getMenuListPerStore(
-            Long storeId, AuthenticationUser authenticationUser, Integer pageNum, String sortBy, Boolean isDesc) {
+            Long storeId, AuthenticationUser authenticationUser, Integer pageNum, Boolean isDesc) {
         log.info("getMenuListPerStore-service");
 
         //(ADMIN 권한의) 유저 Status 가 ENABLE 인지 확인
         adminUserStatusCheck(authenticationUser);
 
         Store choiceStore = storeAdaptor.queryStoreById(storeId);
-        Pageable pageable = PageUtil.createPageable(pageNum,PageUtil.PAGE_SIZE_FIVE, sortBy,isDesc);
+        Pageable pageable = PageUtil.createPageable(pageNum,PageUtil.PAGE_SIZE_FIVE, isDesc);
 
         Page<Menu> menuPage = menuAdaptor.queryMenuListByStoreId(storeId, pageable);
         PageUtil.validatePage(pageNum, menuPage);
