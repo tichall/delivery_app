@@ -1,9 +1,12 @@
 package com.sparta.delivery_app.common.security;
 
+import com.sparta.delivery_app.common.security.errorcode.SecurityErrorCode;
+import com.sparta.delivery_app.common.security.exception.CustomSecurityException;
 import com.sparta.delivery_app.domain.user.adaptor.PasswordHistoryAdaptor;
 import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
 import com.sparta.delivery_app.domain.user.entity.PasswordHistory;
 import com.sparta.delivery_app.domain.user.entity.User;
+import com.sparta.delivery_app.domain.user.entity.UserStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;

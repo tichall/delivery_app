@@ -1,6 +1,5 @@
 package com.sparta.delivery_app.common.security.jwt;
 
-import com.sparta.delivery_app.common.exception.errorcode.JwtPropertiesErrorCode;
 import com.sparta.delivery_app.common.security.jwt.dto.TokenDto;
 import com.sparta.delivery_app.common.security.jwt.enums.TokenTime;
 import com.sparta.delivery_app.domain.user.entity.UserRole;
@@ -105,16 +104,16 @@ public class JwtUtil {
             return true;
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
             log.error("Invalid JWT signature, 유효하지 않는 JWT 서명", e);
-            request.setAttribute("jwtException", JwtPropertiesErrorCode.INVALID_TOKEN.getDescription());
+            request.setAttribute("exception", e);
         } catch (ExpiredJwtException e) {
             log.error("Expired JWT token, 만료된 JWT token", e);
-            request.setAttribute("jwtException", JwtPropertiesErrorCode.EXPIRED_JWT_TOKEN.getDescription());
+            request.setAttribute("exception", e);
         } catch (UnsupportedJwtException e) {
             log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰", e);
-            request.setAttribute("jwtException", JwtPropertiesErrorCode.UNSUPPORTED_JWT_TOKEN.getDescription());
+            request.setAttribute("exception", e);
         } catch (IllegalArgumentException e) {
             log.error("JWT claims is empty, 잘못된 JWT 토큰", e);
-            request.setAttribute("jwtException", JwtPropertiesErrorCode.JWT_CLAIMS_IS_EMPTY.getDescription());
+            request.setAttribute("exception", e);
         }
         return false;
     }
