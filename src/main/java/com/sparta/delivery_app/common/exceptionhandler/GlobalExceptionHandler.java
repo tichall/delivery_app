@@ -31,55 +31,55 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.of(errorCode));
     }
 
-//    /**
-//     * 요청 정보가 잘 못된 경우
-//     */
-//    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-//    protected ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
-//        log.error("{}", e.getMessage());
-//        ErrorResponse errorResponse = ErrorResponse.of(CommonErrorCode.BAD_REQUEST);
-//
-//        return ResponseEntity.status(errorResponse.getCode())
-//                .body(errorResponse);
-//    }
-//
-//    /**
-//     * 지원하지 않은 HTTP method 호출 할 경우 발생
-//     */
-//    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-//    protected ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
-//        log.error("{}", e.getMessage());
-//        ErrorResponse errorResponse = ErrorResponse.of(CommonErrorCode.METHOD_NOT_ALLOWED);
-//
-//        return ResponseEntity.status(errorResponse.getCode())
-//                .body(errorResponse);
-//    }
-//
-//    /**
-//     * 지원하지 않는 API 요청인 경우
-//     */
-//    @ExceptionHandler(NoResourceFoundException.class)
-//    protected ResponseEntity handleNoResourceFoundException(NoResourceFoundException e) {
-//        log.error("[handleNoResourceFoundException] cause: {} , message: {}", NestedExceptionUtils.getMostSpecificCause(e), e.getMessage());
-//        log.error("{}", e.getMessage());
-//        ErrorResponse errorResponse = ErrorResponse.of(CommonErrorCode.NO_RESOURCE_FOUND_EXCEPTION);
-//
-//        return ResponseEntity.status(errorResponse.getCode())
-//                .body(errorResponse);
-//    }
-//
-//    /**
-//     * 하위에서 잡지 못한 에러
-//     */
-//    @ExceptionHandler(Exception.class)
-//    protected ResponseEntity handleException(Exception e) {
-//        log.error("[handleException] cause: {} , message: {}", NestedExceptionUtils.getMostSpecificCause(e), e.getMessage());
-//        log.error("{}", e.getMessage());
-//
-//        ErrorResponse errorResponse = ErrorResponse.of(CommonErrorCode.INTERNAL_SERVER_ERROR);
-//
-//        return ResponseEntity.status(errorResponse.getCode())
-//                .body(errorResponse);
-//    }
+    /**
+     * 요청 정보가 잘못된 경우
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    protected ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        log.error("{}", e.getMessage());
+        ErrorResponse errorResponse = ErrorResponse.of(CommonErrorCode.BAD_REQUEST);
+
+        return ResponseEntity.status(errorResponse.getCode())
+                .body(errorResponse);
+    }
+
+    /**
+     * 지원하지 않은 HTTP method 호출 할 경우 발생
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    protected ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+        log.error("{}", e.getMessage());
+        ErrorResponse errorResponse = ErrorResponse.of(CommonErrorCode.METHOD_NOT_ALLOWED);
+
+        return ResponseEntity.status(errorResponse.getCode())
+                .body(errorResponse);
+    }
+
+    /**
+     * 지원하지 않는 API 요청인 경우
+     */
+    @ExceptionHandler(NoResourceFoundException.class)
+    protected ResponseEntity handleNoResourceFoundException(NoResourceFoundException e) {
+        log.error("[handleNoResourceFoundException] cause: {} , message: {}", NestedExceptionUtils.getMostSpecificCause(e), e.getMessage());
+        log.error("{}", e.getMessage());
+        ErrorResponse errorResponse = ErrorResponse.of(CommonErrorCode.NO_RESOURCE_FOUND_EXCEPTION);
+
+        return ResponseEntity.status(errorResponse.getCode())
+                .body(errorResponse);
+    }
+
+    /**
+     * 하위에서 잡지 못한 에러
+     */
+    @ExceptionHandler(Exception.class)
+    protected ResponseEntity handleException(Exception e) {
+        log.error("[handleException] cause: {} , message: {}", NestedExceptionUtils.getMostSpecificCause(e), e.getMessage());
+        log.error("{}", e.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.of(CommonErrorCode.INTERNAL_SERVER_ERROR);
+
+        return ResponseEntity.status(errorResponse.getCode())
+                .body(errorResponse);
+    }
 
 }
