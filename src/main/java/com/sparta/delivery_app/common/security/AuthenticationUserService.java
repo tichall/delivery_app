@@ -1,12 +1,9 @@
 package com.sparta.delivery_app.common.security;
 
-import com.sparta.delivery_app.common.security.errorcode.SecurityErrorCode;
-import com.sparta.delivery_app.common.security.exception.CustomSecurityException;
-import com.sparta.delivery_app.domain.user.adaptor.PasswordHistoryAdaptor;
-import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
+import com.sparta.delivery_app.domain.user.adapter.PasswordHistoryAdapter;
+import com.sparta.delivery_app.domain.user.adapter.UserAdapter;
 import com.sparta.delivery_app.domain.user.entity.PasswordHistory;
 import com.sparta.delivery_app.domain.user.entity.User;
-import com.sparta.delivery_app.domain.user.entity.UserStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,13 +16,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthenticationUserService implements UserDetailsService {
 
-    private final UserAdaptor userAdaptor;
-    private final PasswordHistoryAdaptor passwordHistoryAdaptor;
+    private final UserAdapter userAdapter;
+    private final PasswordHistoryAdapter passwordHistoryAdapter;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userAdaptor.queryUserByEmail(email);
-        PasswordHistory passwordHistory = passwordHistoryAdaptor.queryPasswordHistoryTop1ByUser(user);
+        User user = userAdapter.queryUserByEmail(email);
+        PasswordHistory passwordHistory = passwordHistoryAdapter.queryPasswordHistoryTop1ByUser(user);
         return AuthenticationUser.of(user, passwordHistory);
     }
 }

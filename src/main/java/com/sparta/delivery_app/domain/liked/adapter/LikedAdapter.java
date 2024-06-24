@@ -1,4 +1,4 @@
-package com.sparta.delivery_app.domain.liked.adaptor;
+package com.sparta.delivery_app.domain.liked.adapter;
 
 import com.sparta.delivery_app.common.exception.errorcode.LikedErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.LikedNotFoundException;
@@ -9,11 +9,9 @@ import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 @Component
 @RequiredArgsConstructor
-public class LikedAdaptor {
+public class LikedAdapter {
 
     private final LikedRepository likedRepository;
 

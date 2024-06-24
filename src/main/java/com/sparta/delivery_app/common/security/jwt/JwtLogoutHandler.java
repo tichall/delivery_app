@@ -2,7 +2,7 @@ package com.sparta.delivery_app.common.security.jwt;
 
 import com.sparta.delivery_app.common.security.errorcode.SecurityErrorCode;
 import com.sparta.delivery_app.common.security.exception.CustomSecurityException;
-import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
+import com.sparta.delivery_app.domain.user.adapter.UserAdapter;
 import com.sparta.delivery_app.domain.user.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,7 +21,7 @@ import java.util.Objects;
 public class JwtLogoutHandler implements LogoutHandler {
 
     private final JwtUtil jwtUtil;
-    private final UserAdaptor userAdaptor;
+    private final UserAdapter userAdapter;
 
     /**
      * access refresh들고옴
@@ -42,7 +42,7 @@ public class JwtLogoutHandler implements LogoutHandler {
             throw e;
         }
         String email = jwtUtil.getUserInfoFromToken(refreshTokenFromHeader).getSubject();
-        User findUser = userAdaptor.queryUserByEmailAndStatus(email);
+        User findUser = userAdapter.queryUserByEmailAndStatus(email);
 
         if (!Objects.equals(refreshTokenFromHeader, findUser.getRefreshToken())) {
             log.error("일치하지 않는 토큰");
@@ -51,7 +51,7 @@ public class JwtLogoutHandler implements LogoutHandler {
             throw e;
         }
         findUser.updateRefreshToken(null);
-        userAdaptor.saveUser(findUser);
+        userAdapter.saveUser(findUser);
 
         SecurityContextHolder.clearContext();
     }

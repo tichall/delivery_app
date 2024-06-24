@@ -1,12 +1,8 @@
-package com.sparta.delivery_app.domain.user.adaptor;
+package com.sparta.delivery_app.domain.user.adapter;
 
-import com.sparta.delivery_app.common.exception.errorcode.StoreErrorCode;
-import com.sparta.delivery_app.common.exception.errorcode.UserErrorCode;
-import com.sparta.delivery_app.common.globalcustomexception.UnableOpenStoreException;
 import com.sparta.delivery_app.common.globalcustomexception.UserDuplicatedException;
 import com.sparta.delivery_app.common.globalcustomexception.UserNotExistException;
 import com.sparta.delivery_app.domain.user.entity.User;
-import com.sparta.delivery_app.domain.user.entity.UserRole;
 import com.sparta.delivery_app.domain.user.entity.UserStatus;
 import com.sparta.delivery_app.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +14,7 @@ import static com.sparta.delivery_app.common.exception.errorcode.UserErrorCode.*
 
 @Component
 @RequiredArgsConstructor
-public class UserAdaptor {
+public class UserAdapter {
 
     private final UserRepository userRepository;
 

@@ -11,7 +11,7 @@ import lombok.Getter;
 public class TotalPricePerStoreResponseDto {
 
     /**
-     * menu hashMap에 value로 들어갈 responseDto
+     * menu hashMap 에 value 로 들어갈 responseDto
      */
     private String menuName;
     private Long menuPrice;

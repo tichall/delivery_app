@@ -1,15 +1,15 @@
 package com.sparta.delivery_app.domain.review.service;
 
 import com.sparta.delivery_app.common.security.AuthenticationUser;
-import com.sparta.delivery_app.domain.order.adaptor.OrderAdaptor;
+import com.sparta.delivery_app.domain.order.adapter.OrderAdapter;
 import com.sparta.delivery_app.domain.order.entity.Order;
-import com.sparta.delivery_app.domain.review.adaptor.ManagerReviewsAdaptor;
-import com.sparta.delivery_app.domain.review.adaptor.UserReviewsAdaptor;
+import com.sparta.delivery_app.domain.review.adapter.ManagerReviewsAdapter;
+import com.sparta.delivery_app.domain.review.adapter.UserReviewsAdapter;
 import com.sparta.delivery_app.domain.review.dto.request.ManagerReviewRequestDto;
 import com.sparta.delivery_app.domain.review.dto.response.ManagerReviewResponseDto;
 import com.sparta.delivery_app.domain.review.entity.ManagerReviews;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
-import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
+import com.sparta.delivery_app.domain.user.adapter.UserAdapter;
 import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,28 +20,28 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ManagerReviewsService {
 
-    private final ManagerReviewsAdaptor managerReviewsAdaptor;
-    private final OrderAdaptor orderAdaptor;
-    private final UserReviewsAdaptor userReviewsAdaptor;
-    private final UserAdaptor userAdaptor;
+    private final ManagerReviewsAdapter managerReviewsAdapter;
+    private final OrderAdapter orderAdapter;
+    private final UserReviewsAdapter userReviewsAdapter;
+    private final UserAdapter userAdapter;
 
 
     public ManagerReviewResponseDto addReview(Long orderId, ManagerReviewRequestDto requestDto, AuthenticationUser user) {
         // 사용자 존재 확인
-        User userData = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
+        User userData = userAdapter.queryUserByEmailAndStatus(user.getUsername());
 
         // 주문 존재 확인
-        Order orderData = orderAdaptor.queryOrderById(orderId);
+        Order orderData = orderAdapter.queryOrderById(orderId);
 
         // TODO
         UserReviews userReviews = orderData.getUserReviews();
         ManagerReviews managerReviews = userReviews.getManagerReviews();
 
         // 주문ID를 통해 리뷰ID 존재 확인
-        Long userReviewId = orderAdaptor.queryReviewIdByOrderId(orderData.getId());
+        Long userReviewId = orderAdapter.queryReviewIdByOrderId(orderData.getId());
 
         // 판매자리뷰가 이미 존재하는지 확인
-        userReviewsAdaptor.validateManagerReviewExistsByReviewId(userReviewId);
+        userReviewsAdapter.validateManagerReviewExistsByReviewId(userReviewId);
 
 //        ManagerReviews managerReviews = ManagerReviews.of(userReviewId, userData, requestDto);
 
@@ -53,16 +53,16 @@ public class ManagerReviewsService {
 
     public ManagerReviewResponseDto modifyReview(Long orderId, ManagerReviewRequestDto requestDto, AuthenticationUser user) {
         // 사용자 존재 확인
-        User userData = userAdaptor.queryUserByEmail(user.getUsername());
+        User userData = userAdapter.queryUserByEmail(user.getUsername());
 
         // 주문 존재 확인
-        Order orderData = orderAdaptor.queryOrderById(orderId);
+        Order orderData = orderAdapter.queryOrderById(orderId);
 
         // Order를 통해 리뷰ID 존재 확인
-        Long userReviewId = orderAdaptor.queryReviewIdByOrderId(orderData.getId());
+        Long userReviewId = orderAdapter.queryReviewIdByOrderId(orderData.getId());
 
         // 판매자 리뷰가 존재하지않는지 확인
-        Long managerReviewId = userReviewsAdaptor.validateManagerReviewDoesNotExistByReviewId(userReviewId);
+        Long managerReviewId = userReviewsAdapter.validateManagerReviewDoesNotExistByReviewId(userReviewId);
 
         ManagerReviews managerReviews = ManagerReviews.of(managerReviewId, requestDto);
 

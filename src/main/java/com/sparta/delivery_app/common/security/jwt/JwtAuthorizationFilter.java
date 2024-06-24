@@ -3,7 +3,7 @@ package com.sparta.delivery_app.common.security.jwt;
 import com.sparta.delivery_app.common.security.AuthenticationUserService;
 import com.sparta.delivery_app.common.security.errorcode.SecurityErrorCode;
 import com.sparta.delivery_app.common.security.exception.CustomSecurityException;
-import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
+import com.sparta.delivery_app.domain.user.adapter.UserAdapter;
 import com.sparta.delivery_app.domain.user.entity.User;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -26,12 +26,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final AuthenticationUserService authenticationUserService;
-    private final UserAdaptor userAdaptor;
+    private final UserAdapter userAdapter;
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, AuthenticationUserService authenticationUserService, UserAdaptor userAdaptor) {
+    public JwtAuthorizationFilter(JwtUtil jwtUtil, AuthenticationUserService authenticationUserService, UserAdapter userAdapter) {
         this.jwtUtil = jwtUtil;
         this.authenticationUserService = authenticationUserService;
-        this.userAdaptor = userAdaptor;
+        this.userAdapter = userAdapter;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             log.info("refresh token 검증");
 
             String email = jwtUtil.getUserInfoFromToken(accessTokenValue).getSubject();
-            User findUser = userAdaptor.queryUserByEmail(email);
+            User findUser = userAdapter.queryUserByEmail(email);
 
             if (findUser.getRefreshToken() != null) {
                 if (isValidateUserEmail(email, findUser)) {

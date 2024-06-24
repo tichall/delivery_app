@@ -3,14 +3,13 @@ package com.sparta.delivery_app.common.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.delivery_app.common.security.AuthenticationUserService;
 import com.sparta.delivery_app.common.security.jwt.*;
-import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
+import com.sparta.delivery_app.domain.user.adapter.UserAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,7 +18,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
@@ -37,7 +35,7 @@ public class SecurityConfig {
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
     private final JwtLogoutHandler jwtLogoutHandler;
-    private final UserAdaptor userAdaptor;
+    private final UserAdapter userAdapter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -51,14 +49,14 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(objectMapper, jwtUtil, userAdaptor);
+        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(objectMapper, jwtUtil, userAdapter);
         filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
         return filter;
     }
 
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtUtil, authenticationUserService, userAdaptor);
+        return new JwtAuthorizationFilter(jwtUtil, authenticationUserService, userAdapter);
     }
 
     @Bean
