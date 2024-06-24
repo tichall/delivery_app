@@ -33,7 +33,7 @@ public class TokenService {
         if (!jwtUtil.validateToken(request, refreshTokenHeader)) {
             throw new TokenNotFoundException(SecurityErrorCode.INVALID_JWT_SIGNATURE);
         }
-        System.out.println("444444");
+
         return refreshTokenHeader;
     }
 
@@ -41,6 +41,10 @@ public class TokenService {
     public TokenResponseDto getFindUser(String refreshTokenHeader) {
         String email = jwtUtil.getUserInfoFromToken(refreshTokenHeader).getSubject();
         User user = userAdapter.queryUserByEmailAndStatus(email);
+
+        if (user.getRefreshToken() == null) {
+            throw new TokenNotFoundException(SecurityErrorCode.NOT_FOUND_TOKEN);
+        }
 
         TokenDto tokenDto = jwtUtil.generateAccessTokenAndRefreshToken(user.getEmail(), user.getUserRole());
         String refreshTokenValue = tokenDto.getRefreshToken().substring(7);

@@ -4,16 +4,14 @@ import com.sparta.delivery_app.common.exception.errorcode.ReviewErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.ReviewAccessDeniedException;
 import com.sparta.delivery_app.common.globalcustomexception.ReviewNotFoundException;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
-import com.sparta.delivery_app.domain.order.adapter.OrderAdapter;
 import com.sparta.delivery_app.domain.order.entity.Order;
-import com.sparta.delivery_app.domain.review.adapter.UserReviewsAdapter;
-import com.sparta.delivery_app.domain.review.dto.request.UserReviewModifyRequestDto;
+import com.sparta.delivery_app.domain.review.adaptor.UserReviewsAdaptor;
 import com.sparta.delivery_app.domain.review.dto.request.UserReviewAddRequestDto;
-import com.sparta.delivery_app.domain.review.dto.response.UserReviewModifyResponseDto;
+import com.sparta.delivery_app.domain.review.dto.request.UserReviewModifyRequestDto;
 import com.sparta.delivery_app.domain.review.dto.response.UserReviewAddResponseDto;
+import com.sparta.delivery_app.domain.review.dto.response.UserReviewModifyResponseDto;
 import com.sparta.delivery_app.domain.review.entity.ReviewStatus;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
-import com.sparta.delivery_app.domain.user.adapter.UserAdapter;
 import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +33,18 @@ public class UserReviewsService {
 
         // 주문이 등록되어있는가? -> 주문이 없다면 예외
         Order order = orderAdapter.queryOrderById(orderId);
+        if (!order.getUser().getId().equals(userData.getId())) {
+            throw new ReviewAccessDeniedException(ReviewErrorCode.NOT_AUTHORITY_TO_CREATED_REVIEW);
+        }
+
+        // 배달 상태 확인
+        OrderStatus.checkOrderStatus(order);
+
+        // 주문에 이미 리뷰가 존재하는지 확인
+        UserReviews userReviews = order.getUserReviews();
+        if (userReviews != null) {
+            throw new ReviewDuplicatedException(ReviewErrorCode.REVIEW_ALREADY_REGISTERED_ERROR);
+        }
 
         UserReviews savedReview = UserReviews.saveReview(order, userData, requestDto);
 
@@ -50,6 +60,9 @@ public class UserReviewsService {
 
         // 주문이 등록되어있는가? -> 주문이 없다면 예외
         Order order = orderAdapter.queryOrderById(orderId);
+        if (!order.getUser().getId().equals(userData.getId())) {
+            throw new ReviewAccessDeniedException(ReviewErrorCode.NOT_AUTHORITY_TO_UPDATE_REVIEW);
+        }
 
         // 사용자 리뷰가 있는지 확인
         UserReviews userReviews = order.getUserReviews();
@@ -57,7 +70,7 @@ public class UserReviewsService {
             throw new ReviewNotFoundException(ReviewErrorCode.INVALID_REVIEW);
         }
 
-//        수정권한 확인
+        // 수정권한 확인
         if (!userReviews.getUser().getId().equals(userData.getId())) {
             throw new ReviewAccessDeniedException(ReviewErrorCode.NOT_AUTHORITY_TO_UPDATE_REVIEW);
         }
