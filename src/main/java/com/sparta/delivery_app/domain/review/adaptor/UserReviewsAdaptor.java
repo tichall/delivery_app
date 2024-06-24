@@ -24,14 +24,6 @@ public class UserReviewsAdaptor {
     }
 
     /**
-     * 리뷰 Id 검증
-     */
-    public UserReviews findById(Long reviewId) {
-        return userReviewsRepository.findById(reviewId).orElseThrow(() ->
-                new ReviewNotFoundException(ReviewErrorCode.INVALID_REVIEW));
-    }
-
-    /**
      * 메뉴 id, 상태 검증
      */
     public UserReviews checkValidReviewByIdAndReviewStatus(Long reviewId) {
@@ -55,4 +47,11 @@ public class UserReviewsAdaptor {
                 new ReviewNotFoundException(ReviewErrorCode.INVALID_REVIEW));
     }
 
+    /**
+     * 리뷰 Id 검증
+     */
+    private UserReviews findById(Long reviewId) {
+        return userReviewsRepository.findById(reviewId).orElseThrow(() ->
+                new ReviewNotFoundException(ReviewErrorCode.INVALID_REVIEW));
+    }
 }

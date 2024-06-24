@@ -16,7 +16,7 @@ public class ReviewPageResponseDto {
 
     private Integer currentPage;
     private Long totalReviews;
-    private List<UserReviewResponseDto> reviewList;
+    private List<UserReviewAddResponseDto> reviewList;
 
     public static ReviewPageResponseDto of(Integer currentPage, Page<UserReviews> reviewPage) {
         return ReviewPageResponseDto.builder()
