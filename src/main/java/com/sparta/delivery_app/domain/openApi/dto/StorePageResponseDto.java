@@ -21,7 +21,6 @@ public class StorePageResponseDto {
                 .currentPage(currentPage)
                 .totalStore(storePage.getTotalElements())
                 .storeList(storePage.getContent().stream()
-                        .filter(b -> b.getStatus().equals(StoreStatus.ENABLE))
                         .map(StoreListReadResponseDto::of).toList())
                 .build();
     }

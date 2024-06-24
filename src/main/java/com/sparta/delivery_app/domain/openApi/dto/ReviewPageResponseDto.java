@@ -23,8 +23,6 @@ public class ReviewPageResponseDto {
                 .currentPage(currentPage)
                 .totalReviews(reviewPage.getTotalElements())
                 .reviewList(reviewPage.getContent().stream()
-                        .filter(b -> b.getReviewStatus().equals(ReviewStatus.ENABLE))
-                        .filter(a -> a.getUser().getUserRole().equals(UserRole.CONSUMER))
                         .map(UserReviewResponseDto::of).toList())
                 .build();
     }
