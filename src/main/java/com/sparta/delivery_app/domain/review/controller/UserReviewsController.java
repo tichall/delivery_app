@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +25,7 @@ public class UserReviewsController {
 
     private final UserReviewsService userReviewsService;
 
+    @PreAuthorize("hasRole('CONSUMER')")
     @PostMapping("/{orderId}")
     public ResponseEntity<RestApiResponse<UserReviewAddResponseDto>> create(
             @RequestPart(value = "file", required = false) MultipartFile file,
@@ -37,6 +39,7 @@ public class UserReviewsController {
                 .body(RestApiResponse.of("리뷰가 등록되었습니다.", responseDto));
     }
 
+    @PreAuthorize("hasRole('CONSUMER')")
     @PatchMapping("/{orderId}")
     public ResponseEntity<RestApiResponse<UserReviewModifyResponseDto>> update(
             @RequestPart(value = "file", required = false) MultipartFile file,
@@ -50,6 +53,7 @@ public class UserReviewsController {
                 .body(RestApiResponse.of("리뷰가 수정되었습니다.", responseDto));
     }
 
+    @PreAuthorize("hasRole('CONSUMER')")
     @DeleteMapping("{reviewId}")
     public ResponseEntity<RestApiResponse<Object>> delete(
             @PathVariable final Long reviewId,

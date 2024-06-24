@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ public class ManagerReviewsController {
 
     private final ManagerReviewsService managerReviewsService;
 
+    @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("/{orderId}")
     public ResponseEntity<RestApiResponse<ManagerReviewAddResponseDto>> create(
             @PathVariable final Long orderId,
@@ -36,7 +38,7 @@ public class ManagerReviewsController {
                 .body(RestApiResponse.of("리뷰가 등록되었습니다.", responseDto));
     }
 
-
+    @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/{orderId}")
     public ResponseEntity<RestApiResponse<ManagerReviewModifyResponseDto>> update(
             @PathVariable final Long orderId,
