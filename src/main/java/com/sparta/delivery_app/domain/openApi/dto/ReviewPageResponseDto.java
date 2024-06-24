@@ -1,6 +1,6 @@
 package com.sparta.delivery_app.domain.openApi.dto;
 
-import com.sparta.delivery_app.domain.review.dto.response.UserReviewResponseDto;
+import com.sparta.delivery_app.domain.review.dto.response.UserReviewAddResponseDto;
 import com.sparta.delivery_app.domain.review.entity.ReviewStatus;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import com.sparta.delivery_app.domain.user.entity.UserRole;
@@ -16,7 +16,7 @@ public class ReviewPageResponseDto {
 
     private Integer currentPage;
     private Long totalReviews;
-    private List<UserReviewResponseDto> reviewList;
+    private List<UserReviewAddResponseDto> reviewList;
 
     public static ReviewPageResponseDto of(Integer currentPage, Page<UserReviews> reviewPage) {
         return ReviewPageResponseDto.builder()
@@ -25,7 +25,7 @@ public class ReviewPageResponseDto {
                 .reviewList(reviewPage.getContent().stream()
                         .filter(b -> b.getReviewStatus().equals(ReviewStatus.ENABLE))
                         .filter(a -> a.getUser().getUserRole().equals(UserRole.CONSUMER))
-                        .map(UserReviewResponseDto::of).toList())
+                        .map(UserReviewAddResponseDto::of).toList())
                 .build();
     }
 }

@@ -7,7 +7,6 @@ import com.sparta.delivery_app.domain.review.adaptor.ManagerReviewsAdaptor;
 import com.sparta.delivery_app.domain.review.adaptor.UserReviewsAdaptor;
 import com.sparta.delivery_app.domain.review.dto.request.ManagerReviewRequestDto;
 import com.sparta.delivery_app.domain.review.dto.response.ManagerReviewResponseDto;
-import com.sparta.delivery_app.domain.review.dto.response.UserReviewResponseDto;
 import com.sparta.delivery_app.domain.review.entity.ManagerReviews;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
@@ -29,10 +28,11 @@ public class ManagerReviewsService {
 
     public ManagerReviewResponseDto addReview(Long orderId, ManagerReviewRequestDto requestDto, AuthenticationUser user) {
         // 사용자 존재 확인
-        User userData = userAdaptor.queryUserByEmail(user.getUsername());
+        User userData = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
 
         // 주문 존재 확인
         Order orderData = orderAdaptor.queryOrderById(orderId);
+
         // TODO
         UserReviews userReviews = orderData.getUserReviews();
         ManagerReviews managerReviews = userReviews.getManagerReviews();
