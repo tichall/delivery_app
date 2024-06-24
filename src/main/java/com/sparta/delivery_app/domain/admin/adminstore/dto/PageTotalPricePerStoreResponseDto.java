@@ -19,10 +19,11 @@ public class PageTotalPricePerStoreResponseDto {
     private int totalMenu;
     private Long storeId;
     private String storeName;
+    private Long specificStoreEarning;
     private Map<Long, TotalPricePerStoreResponseDto> earningMap;
 
     public static PageTotalPricePerStoreResponseDto of(
-            Integer currentPage, Store store,
+            Integer currentPage, Store store, Long specificStoreEarning,
             Map<Long, TotalPricePerStoreResponseDto> earningMap) {
 
         return PageTotalPricePerStoreResponseDto.builder()
@@ -30,7 +31,9 @@ public class PageTotalPricePerStoreResponseDto {
                 .totalMenu(earningMap.size())
                 .storeId(store.getId())
                 .storeName(store.getStoreName())
-                .earningMap(earningMap).build();
+                .earningMap(earningMap)
+                .specificStoreEarning(specificStoreEarning)
+                .build();
 
     }
 }

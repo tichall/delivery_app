@@ -17,10 +17,10 @@ public class PageReviewPerStoreResponseDto {
     private final String storeName;
     private final List<ReviewPerStoreResponseDto> reviewPerStoreList;
 
-    public static PageReviewPerStoreResponseDto of(List<ReviewPerStoreResponseDto> reviewList, Integer pageNum, Store store) {
+    public static PageReviewPerStoreResponseDto of(List<ReviewPerStoreResponseDto> reviewList, Store store) {
 
         return PageReviewPerStoreResponseDto.builder()
-                .pageNum(pageNum)
+//                .pageNum(pageNum)
                 .storeId(store.getId())
                 .storeName(store.getStoreName())
                 .reviewPerStoreList(reviewList)

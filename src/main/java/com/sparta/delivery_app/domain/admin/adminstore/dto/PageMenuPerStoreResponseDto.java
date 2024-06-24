@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PageMenuPerStoreResponseDto {
 
+    private final Integer pageNum;
     private final Long storeId;
     private final String storeName;
     private final List<MenuPerStoreResponseDto> menuPerStoreList;
@@ -29,9 +30,8 @@ public class PageMenuPerStoreResponseDto {
                 .toList();
 
         return new PageMenuPerStoreResponseDto(
-                store.getId(),
-                store.getStoreName(),
-                menuDtoList
+                pageNum, store.getId(),
+                store.getStoreName(), menuDtoList
         );
     }
 

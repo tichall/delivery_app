@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/admin/stores/{storeId}")
+@RequestMapping("/api/v1/admin/stores")
 public class AdminStoreController {
 
     private final AdminStoreService adminStoreService;
@@ -30,7 +30,7 @@ public class AdminStoreController {
      */
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/menus")
+    @GetMapping("/{storeId}/menus")
     public ResponseEntity<RestApiResponse<PageMenuPerStoreResponseDto>> getMenuListPerStore
     (@PathVariable final Long storeId,
      @AuthenticationPrincipal AuthenticationUser authenticationUser,
@@ -49,23 +49,21 @@ public class AdminStoreController {
      * @param storeId
      * @param authenticationUser
      * @param pageNum
-     * @param sortBy
      * @param isDesc
      * @return StatusCode.OK
      */
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/reviews")
-    public ResponseEntity<RestApiResponse<PageReviewPerStoreResponseDto>> getReviewListPerStore
-    (@PathVariable final Long storeId,
+    @GetMapping("/{storeId}/reviews")
+    public ResponseEntity<RestApiResponse<PageReviewPerStoreResponseDto>> getReviewListPerStore(
+     @PathVariable final Long storeId,
      @AuthenticationPrincipal AuthenticationUser authenticationUser,
      @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
-     @RequestParam(value = "sortBy", required = false, defaultValue = "menu") String sortBy,
      @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc) {
         log.info("특정 매장 모든 리뷰 조회-controller");
 
-        PageReviewPerStoreResponseDto responseDto = adminStoreService.getReviewListPerStore(authenticationUser, storeId, pageNum, sortBy, isDesc);
-        return ResponseEntity.status(StatusCode.CREATED.code)
+        PageReviewPerStoreResponseDto responseDto = adminStoreService.getReviewListPerStore(authenticationUser, storeId, pageNum, isDesc);
+        return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("조회 성공", responseDto));
     }
 
@@ -74,20 +72,18 @@ public class AdminStoreController {
      * @param storeId
      * @param authenticationUser
      * @param pageNum
-     * @param sortBy
      * @param isDesc
      * @return StatusCode.OK
      */
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/earning")
+    @GetMapping("/{storeId}/earning")
     public ResponseEntity<RestApiResponse<PageTotalPricePerStoreResponseDto>> getEarningList(
             @PathVariable final Long storeId,
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
-            @RequestParam(value = "sortBy", required = false, defaultValue = "menu") String sortBy,
             @RequestParam(value = "isDesc", required = false, defaultValue = "true") Boolean isDesc
     ) {
-        PageTotalPricePerStoreResponseDto map = adminStoreService.getEarning(authenticationUser, pageNum, sortBy, isDesc, storeId);
+        PageTotalPricePerStoreResponseDto map = adminStoreService.getEarning(authenticationUser, isDesc, pageNum, storeId);
 
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("성공", map));
