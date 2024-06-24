@@ -1,10 +1,7 @@
 package com.sparta.delivery_app.domain.admin.adminstore.service;
 
 import com.sparta.delivery_app.common.security.AuthenticationUser;
-import com.sparta.delivery_app.domain.admin.adminstore.dto.PageMenuPerStoreResponseDto;
-import com.sparta.delivery_app.domain.admin.adminstore.dto.PageTotalPricePerStoreResponseDto;
-import com.sparta.delivery_app.domain.admin.adminstore.dto.ReviewPerStoreResponseDto;
-import com.sparta.delivery_app.domain.admin.adminstore.dto.TotalPricePerStoreResponseDto;
+import com.sparta.delivery_app.domain.admin.adminstore.dto.*;
 import com.sparta.delivery_app.domain.commen.page.util.PageUtil;
 import com.sparta.delivery_app.domain.menu.adaptor.MenuAdaptor;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
@@ -25,9 +22,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.fasterxml.jackson.databind.type.LogicalType.Map;
 import static com.sparta.delivery_app.domain.user.entity.UserStatus.checkManagerEnable;
 
 @Slf4j
@@ -42,9 +41,10 @@ public class AdminStoreService {
     private final OrderItemRepository orderItemRepository;
 
     public PageMenuPerStoreResponseDto getMenuListPerStore(
-            Long storeId, AuthenticationUser authenticationUser, final Integer pageNum, final Boolean isDesc) {
-        log.info("getMenuListPerStore-service");
+            Long storeId, AuthenticationUser authenticationUser, final Integer pageNum,
 
+            final Boolean isDesc) {
+        log.info("getMenuListPerStore-service");
         //(ADMIN 권한의) 유저 Status 가 ENABLE 인지 확인
         adminUserStatusCheck(authenticationUser);
 
@@ -57,13 +57,12 @@ public class AdminStoreService {
         return PageMenuPerStoreResponseDto.of(pageNum, choiceStore);
     }
 
-    //    public PageReviewPerStoreResponseDto getReviewListPerStore(
-    public List<ReviewPerStoreResponseDto> getReviewListPerStore(
-            AuthenticationUser authenticationUser, Long storeId, final Integer pageNum, final Boolean isDesc) {
+    public PageReviewPerStoreResponseDto getReviewListPerStore(
+            AuthenticationUser authenticationUser, Long storeId, final Integer pageNum,
+            String sortBy, Boolean isDesc) {
         log.info("특정 매장 모든 리뷰 조회-service 시작");
-        //(ADMIN 권한의) 유저 Status 가 ENABLE 인지 확인
         adminUserStatusCheck(authenticationUser);
-//        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
+        Store choiceStore = storeAdaptor.queryStoreById(storeId);
 
         //storeId 와 OrderStatus.DELIVERY_COMPLETED 로 orderList 가져와서 하나씩 responseDto 에 담기
         List<Order> deliveredOrderList = orderAdaptor.queryOrderListByStoreIdAndOrderStatus(storeId, OrderStatus.DELIVERY_COMPLETED);
@@ -71,30 +70,20 @@ public class AdminStoreService {
 
         for (Order deliveredOrder : deliveredOrderList) {
             UserReviews userReview = deliveredOrder.getUserReviews();
-            ReviewPerStoreResponseDto ReviewResponseDto = ReviewPerStoreResponseDto.of(storeId, userReview);
-            reviewDtoList.add(ReviewResponseDto);
+            if(userReview != null) {
+                ReviewPerStoreResponseDto ReviewResponseDto = ReviewPerStoreResponseDto.of(userReview);
+                reviewDtoList.add(ReviewResponseDto);
+            } else {
+                log.warn("Order ID {} 의 Review 가 없습니다.", deliveredOrder.getId());
+            }
         }
 
-        return reviewDtoList;
-    }
-    //페이징처리
-//        PageReviewPerStoreResponseDto(reviewDtoList);
-//
-//        List<UserReviews> Reviews = orderList.stream().map(
-//                order -> reviewAdaptor.queryReviewListByOrderId(order.getId());
-//
-//        PageUtil.validatePage(pageNum, ReviewPage);
-//
-//        return PageReviewPerStoreResponseDto.of(pageNum, choiceStore);
-//    }
+        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
+        Page<OrderItem> orderItemPage = orderItemRepository.findAll(pageable);
+        PageUtil.validatePage(pageNum, orderItemPage);
 
-    //(ADMIN 권한의) 유저 Status 가 ENABLE 인지 확인
-    private void adminUserStatusCheck(AuthenticationUser authenticationUser) {
-        String email = authenticationUser.getUsername();
-        User adminUser = userAdaptor.queryUserByEmail(email);
-        checkManagerEnable(adminUser);
+        return PageReviewPerStoreResponseDto.of(reviewDtoList, pageNum, choiceStore);
     }
-
 
     /**
      * 특정 매장 메뉴별 총 판매 금액 조회
@@ -105,8 +94,11 @@ public class AdminStoreService {
      * @return
      */
     public PageTotalPricePerStoreResponseDto getEarning(
-            Integer pageNum, String sortBy,
+            AuthenticationUser authenticationUser, Integer pageNum, String sortBy,
             Boolean isDesc, Long storeId) {
+
+        adminUserStatusCheck(authenticationUser);
+
         Store findStore = storeAdaptor.queryStoreById(storeId);
         List<Menu> menuList = findStore.getMenuList();
 
@@ -130,13 +122,20 @@ public class AdminStoreService {
             earningMap.put(menu.getId(), responseDto);
         }
 
-        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, sortBy, isDesc);
+        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
 
         Page<OrderItem> orderItemPage = orderItemRepository.findAll(pageable);
 
         PageUtil.validatePage(pageNum, orderItemPage);
 
         return PageTotalPricePerStoreResponseDto.of(pageNum, findStore, earningMap);
+    }
+
+    //(ADMIN 권한의) 유저 Status 가 ENABLE 인지 확인
+    private void adminUserStatusCheck(AuthenticationUser authenticationUser) {
+        String email = authenticationUser.getUsername();
+        User adminUser = userAdaptor.queryUserByEmail(email);
+        checkManagerEnable(adminUser);
     }
 
 }
