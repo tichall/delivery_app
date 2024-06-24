@@ -2,7 +2,8 @@ package com.sparta.delivery_app.domain.review.entity;
 
 import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
 import com.sparta.delivery_app.domain.order.entity.Order;
-import com.sparta.delivery_app.domain.review.dto.request.UserReviewRequestDto;
+import com.sparta.delivery_app.domain.review.dto.request.UserReviewModifyRequestDto;
+import com.sparta.delivery_app.domain.review.dto.request.UserReviewAddRequestDto;
 import com.sparta.delivery_app.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -54,23 +55,22 @@ public class UserReviews extends BaseTimeEntity {
         this.reviewStatus = reviewStatus;
     }
 
-    //Entity -> DTO로 변환
-    @Builder
-    public static UserReviews of(Order order, User user, UserReviewRequestDto requestDto) {
+    public static UserReviews saveReview(Order order, User user, UserReviewAddRequestDto requestDto) {
         return UserReviews.builder()
-                .content(requestDto.getContent())
-                .reviewImagePath(requestDto.getReviewImagePath())
-                .rating(requestDto.getRating())
+                .content(requestDto.content())
+                .reviewImagePath(requestDto.reviewImagePath())
+                .rating(requestDto.rating())
                 .order(order)
                 .user(user)
                 .reviewStatus(ReviewStatus.ENABLE)
                 .build();
     }
 
-    public void updateReview(UserReviewRequestDto requestDto) {
-        this.content = requestDto.getContent();
-        this.reviewImagePath = requestDto.getReviewImagePath();
-        this.rating = requestDto.getRating();
+    public UserReviews updateReview(UserReviewModifyRequestDto requestDto) {
+        this.content = requestDto.content();
+        this.reviewImagePath = requestDto.reviewImagePath();
+        this.rating = requestDto.rating();
+        return this;
     }
 
     public void deleteReview() {
