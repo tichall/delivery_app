@@ -54,6 +54,12 @@ public class MenuAdaptor {
                 new MenuNotFoundException(MenuErrorCode.MENU_NOT_FOUND));
     }
 
+    /**
+     * 특정 매장의 메뉴 조회
+     * @param storeId
+     * @param pageable
+     * @return
+     */
     public Page<Menu> queryMenuListByStoreId(Long storeId, Pageable pageable) {
         return menuRepository.findAllMenuByStoreId(storeId, pageable);
     }
