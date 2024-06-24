@@ -29,7 +29,12 @@ public class UserService {
     private final PasswordHistoryAdaptor passwordHistoryAdaptor;
     private final PasswordEncoder passwordEncoder;
 
-    public ConsumersSignupResponseDto consumersUserAdd(ConsumersSignupRequestDto requestDto) {
+    /**
+     * consumers 회원가입
+     * @param requestDto
+     * @return 회원가입 정보 email, nickname
+     */
+    public ConsumersSignupResponseDto consumersUserAdd(final ConsumersSignupRequestDto requestDto) {
         userAdaptor.checkDuplicateEmail(requestDto.email());
 
         User userData = User.saveUser(requestDto);
@@ -44,7 +49,12 @@ public class UserService {
         return ConsumersSignupResponseDto.of(userData);
     }
 
-    public ManagersSignupResponseDto managersUserAdd(ManagersSignupRequestDto requestDto) {
+    /**
+     * manager 회원가입
+     * @param requestDto
+     * @return 회원가입 정보 email, nickname
+     */
+    public ManagersSignupResponseDto managersUserAdd(final ManagersSignupRequestDto requestDto) {
         userAdaptor.checkDuplicateEmail(requestDto.email());
 
         User userData = User.saveUser(requestDto);
@@ -58,8 +68,13 @@ public class UserService {
         return ManagersSignupResponseDto.of(userData);
     }
 
+    /**
+     * 회원탈퇴
+     * @param user
+     * @param userResignRequestDto
+     */
     @Transactional
-    public void resignUser(AuthenticationUser user, UserResignRequestDto userResignRequestDto) {
+    public void resignUser(AuthenticationUser user, final UserResignRequestDto userResignRequestDto) {
         User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
         PasswordHistory passwordHistory = passwordHistoryAdaptor.queryPasswordHistoryTop1ByUser(findUser);
 
@@ -71,8 +86,14 @@ public class UserService {
         findUser.updateResignUser();
     }
 
+    /**
+     * 프로필 수정
+     * @param user
+     * @param requestDto
+     * @return 회원가입 정보 email, name, address
+     */
     @Transactional
-    public UserProfileModifyResponseDto modifyProfileUser(AuthenticationUser user, UserProfileModifyRequestDto requestDto) {
+    public UserProfileModifyResponseDto modifyProfileUser(AuthenticationUser user,final  UserProfileModifyRequestDto requestDto) {
         User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
         PasswordHistory passwordHistory = passwordHistoryAdaptor.queryPasswordHistoryTop1ByUser(findUser);
 
@@ -85,8 +106,13 @@ public class UserService {
         return UserProfileModifyResponseDto.of(updateUser);
     }
 
+    /**
+     * 비밀번호 수정
+     * @param user
+     * @param requestDto
+     */
     @Transactional
-    public void modifyPasswordUser(AuthenticationUser user, UserPasswordModifyRequestDto requestDto) {
+    public void modifyPasswordUser(AuthenticationUser user, final UserPasswordModifyRequestDto requestDto) {
         User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
         List<PasswordHistory> passwordhistoryList = passwordHistoryAdaptor.queryPasswordHistoryTop4ByUser(findUser);
 
