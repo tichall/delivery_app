@@ -1,5 +1,8 @@
 package com.sparta.delivery_app.domain.review.entity;
 
+import com.sparta.delivery_app.common.exception.errorcode.ReviewErrorCode;
+import com.sparta.delivery_app.common.globalcustomexception.ReviewAccessDeniedException;
+import com.sparta.delivery_app.common.globalcustomexception.ReviewStatusException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -10,4 +13,10 @@ public enum ReviewStatus {
     DISABLE("DISABLE");
 
     private final String reviewStatusName;
+
+    public static void checkReviewStatus(UserReviews userReviews) {
+        if (userReviews.getReviewStatus().equals(ReviewStatus.DISABLE)) {
+            throw new ReviewStatusException(ReviewErrorCode.DELETED_REVIEW);
+        }
+    }
 }
