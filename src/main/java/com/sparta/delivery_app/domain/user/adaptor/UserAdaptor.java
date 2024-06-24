@@ -23,11 +23,10 @@ public class UserAdaptor {
     private final UserRepository userRepository;
 
     public void checkDuplicateEmail(String email) {
-        userRepository.findByEmail(email)
-                .ifPresent(u -> {
-                            throw new UserDuplicatedException(DUPLICATED_USER);
-                        }
-                );
+        userRepository.findByEmail(email).ifPresent(u -> {
+                    throw new UserDuplicatedException(DUPLICATED_USER);
+                }
+        );
     }
 
     /*
@@ -55,16 +54,12 @@ public class UserAdaptor {
     public User queryUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotExistException(NOT_SIGNED_UP_USER));
-
     }
 
     public Page<User> queryAllUserPage(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
 
-    public User getCurrentUser() {
-        return null;
-    }
 
     public User saveUser(User userData) {
         return userRepository.save(userData);
