@@ -8,6 +8,7 @@ import com.sparta.delivery_app.domain.review.entity.ManagerReviewsStatus;
 import com.sparta.delivery_app.domain.review.entity.ReviewStatus;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import com.sparta.delivery_app.domain.review.repository.ManagerReviewsRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -35,4 +36,5 @@ public class ManagerReviewsAdaptor {
         return managerReviewsRepository.findById(reviewId).orElseThrow(() ->
                 new ReviewNotFoundException(ReviewErrorCode.INVALID_REVIEW));
     }
+
 }
