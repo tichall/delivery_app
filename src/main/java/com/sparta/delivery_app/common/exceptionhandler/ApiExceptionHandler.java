@@ -20,50 +20,41 @@ public class ApiExceptionHandler {
      */
     @ExceptionHandler(GlobalDuplicatedException.class)
     protected ResponseEntity<ErrorResponse> globalDuplicatedException(GlobalDuplicatedException e) {
-        ErrorCode errorCode = e.getErrorCode();
-
-        return ResponseEntity.status(errorCode.getHttpStatusCode())
-                .body(ErrorResponse.of(errorCode));
+        log.error("GlobalDuplicatedException 발생");
+        return sendErrorResponse(e.getErrorCode());
     }
 
     @ExceptionHandler(GlobalNotFoundException.class)
     protected ResponseEntity<ErrorResponse> globalNotFoundException(GlobalNotFoundException e) {
-        ErrorCode errorCode = e.getErrorCode();
-
-        return ResponseEntity.status(errorCode.getHttpStatusCode())
-                .body(ErrorResponse.of(errorCode));
+        log.error("GlobalNotFoundException 발생");
+        return sendErrorResponse(e.getErrorCode());
     }
 
     @ExceptionHandler(GlobalAccessDeniedException.class)
     protected ResponseEntity<ErrorResponse> globalAccessDeniedException(GlobalAccessDeniedException e) {
-        ErrorCode errorCode = e.getErrorCode();
-
-        return ResponseEntity.status(errorCode.getHttpStatusCode())
-                .body(ErrorResponse.of(errorCode));
+        log.error("GlobalAccessDeniedException 발생");
+        return sendErrorResponse(e.getErrorCode());
     }
 
     @ExceptionHandler(GlobalMismatchException.class)
     protected ResponseEntity<ErrorResponse> globalMismatchException(GlobalMismatchException e) {
-        ErrorCode errorCode = e.getErrorCode();
-
-        return ResponseEntity.status(errorCode.getHttpStatusCode())
-                .body(ErrorResponse.of(errorCode));
+        log.error("GlobalMismatchException 발생");
+        return sendErrorResponse(e.getErrorCode());
     }
 
     @ExceptionHandler(GlobalStatusException.class)
     protected ResponseEntity<ErrorResponse> globalStatusException(GlobalStatusException e) {
-        ErrorCode errorCode = e.getErrorCode();
-
-        return ResponseEntity.status(errorCode.getHttpStatusCode())
-                .body(ErrorResponse.of(errorCode));
+        log.error("GlobalStatusException 발생");
+        return sendErrorResponse(e.getErrorCode());
     }
 
     @ExceptionHandler(S3Exception.class)
     protected ResponseEntity<ErrorResponse> s3Exception(S3Exception e) {
-        ErrorCode errorCode = e.getErrorCode();
-
-        return ResponseEntity.status(errorCode.getHttpStatusCode())
-                .body(ErrorResponse.of(errorCode));
+        log.error("S3Exception 발생");
+        return sendErrorResponse(e.getErrorCode());
     }
-
+    private static ResponseEntity<ErrorResponse> sendErrorResponse(ErrorCode e) {
+        return ResponseEntity.status(e.getHttpStatusCode())
+                .body(ErrorResponse.of(e));
+    }
 }

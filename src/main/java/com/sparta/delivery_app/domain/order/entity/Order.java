@@ -25,7 +25,7 @@ public class Order extends BaseTimeCreateEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "order", fetch = FetchType.LAZY)
     private UserReviews userReviews;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -48,6 +48,10 @@ public class Order extends BaseTimeCreateEntity {
 
     public void addOrderItem(OrderItem orderItem) {
         orderItemList.add(orderItem);
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public Long calculateTotalPrice() {

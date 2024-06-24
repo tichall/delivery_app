@@ -19,6 +19,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
@@ -73,7 +74,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
                 .requestMatchers(HttpMethod.POST, "/api/v1/users/consumers").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/users/managers").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/v1/refresh/reissue").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/auth/reissue").permitAll()
                 .requestMatchers(HttpMethod.GET, "/open-api/**").permitAll()
                 .anyRequest().authenticated()
         );
