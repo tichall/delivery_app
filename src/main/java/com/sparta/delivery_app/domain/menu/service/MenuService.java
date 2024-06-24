@@ -1,7 +1,5 @@
 package com.sparta.delivery_app.domain.menu.service;
 
-import com.sparta.delivery_app.common.exception.errorcode.OrderErrorCode;
-import com.sparta.delivery_app.common.globalcustomexception.StoreMenuMismatchException;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.domain.menu.adaptor.MenuAdaptor;
 import com.sparta.delivery_app.domain.menu.dto.request.MenuAddRequestDto;
@@ -37,7 +35,7 @@ public class MenuService {
 
         Store findStore = storeAdaptor.queryStoreId(findUser);
 
-        Menu menu = Menu.of(findStore, requestDto);
+        Menu menu = Menu.saveMenu(findStore, requestDto);
         menuAdaptor.saveMenu(menu);
 
         return MenuAddResponseDto.of(menu);
@@ -51,16 +49,16 @@ public class MenuService {
      * @return responseDto
      */
     @Transactional
-    public MenuModifyResponseDto modifyMenu(Long menuId, final MenuModifyRequestDto requestDto, AuthenticationUser user) {
+    public MenuModifyResponseDto modifyMenu(final Long menuId, final MenuModifyRequestDto requestDto, AuthenticationUser user) {
         User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
 
         Store store = storeAdaptor.queryStoreId(findUser);
         Menu menu = menuAdaptor.queryMenuByIdAndMenuStatus(menuId);
 
-        checkStoreMenuMatch(menu, store.getId());
-        menu.updateMenu(requestDto);
+        menu.checkStoreMenuMatch(menu, store.getId());
+        Menu updateMenu = menu.updateMenu(requestDto);
 
-        return MenuModifyResponseDto.of(menu);
+        return MenuModifyResponseDto.of(updateMenu);
     }
 
     /**
@@ -69,24 +67,13 @@ public class MenuService {
      * @param user
      */
     @Transactional
-    public void deleteMenu(Long menuId, AuthenticationUser user) {
+    public void deleteMenu(final Long menuId, AuthenticationUser user) {
         User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
 
         Store store = storeAdaptor.queryStoreId(findUser);
         Menu menu = menuAdaptor.queryMenuByIdAndMenuStatus(menuId);
 
-        checkStoreMenuMatch(menu, store.getId());
+        menu.checkStoreMenuMatch(menu, store.getId());
         menu.deleteMenu();
-    }
-
-    /**
-     * 해당 메뉴가 사용자의 매장에 등록된 메뉴가 맞는지 검증
-     * @param menu
-     * @param storeId
-     */
-    public void checkStoreMenuMatch(Menu menu, Long storeId) {
-        if(!menu.getStore().getId().equals(storeId)) {
-            throw new StoreMenuMismatchException(OrderErrorCode.STORE_MENU_MISMATCH);
-        }
     }
 }

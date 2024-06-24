@@ -1,10 +1,10 @@
 package com.sparta.delivery_app.domain.menu.dto.response;
 
-
 import com.sparta.delivery_app.domain.menu.entity.Menu;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+
 
 @Getter
 @Builder
