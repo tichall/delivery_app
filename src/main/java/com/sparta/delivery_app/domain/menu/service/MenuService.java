@@ -86,9 +86,8 @@ public class MenuService {
             }
         }
 
-        menu.updateMenu(requestDto);
-//        Menu updateMenu = menu.updateMenu(requestDto);
-        return MenuModifyResponseDto.of(menu);
+        Menu updateMenu = menu.updateMenu(requestDto);
+        return MenuModifyResponseDto.of(updateMenu);
     }
 
     /**
