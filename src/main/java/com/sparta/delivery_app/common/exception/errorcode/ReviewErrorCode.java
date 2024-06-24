@@ -11,7 +11,8 @@ public enum ReviewErrorCode implements ErrorCode{
     REVIEW_ALREADY_REGISTERED_ERROR(StatusCode.BAD_REQUEST.getCode(), "이미 등록된 리뷰입니다."),
     NOT_AUTHORITY_TO_UPDATE_REVIEW(StatusCode.FORBIDDEN.getCode(), "수정 권한이 없습니다."),
     NOT_AUTHORITY_TO_DELETE_REVIEW(StatusCode.FORBIDDEN.getCode(), "삭제 권한이 없습니다."),
-    DELETED_REVIEW(StatusCode.BAD_REQUEST.getCode(), "삭제된 리뷰입니다.");
+    DELETED_REVIEW(StatusCode.BAD_REQUEST.getCode(), "삭제된 리뷰입니다."),
+    NOT_AUTHORITY_TO_CREATED_REVIEW(StatusCode.FORBIDDEN.getCode(), "등록 권한이 없습니다.");
 
     private final Integer httpStatusCode;
     private final String description;

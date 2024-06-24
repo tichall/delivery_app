@@ -8,12 +8,12 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class ManagerReviewResponseDto {
+public class ManagerReviewAddResponseDto {
 
     private String content;
 
-    public static ManagerReviewResponseDto of(ManagerReviews managerReviews) {
-        return ManagerReviewResponseDto.builder()
+    public static ManagerReviewAddResponseDto of(ManagerReviews managerReviews) {
+        return ManagerReviewAddResponseDto.builder()
                 .content(managerReviews.getContent())
                 .build();
     }
