@@ -38,7 +38,7 @@ public class OrderController {
     @GetMapping("/{orderId}")
     public ResponseEntity<RestApiResponse<OrderGetResponseDto>> orderDetails(
             @AuthenticationPrincipal AuthenticationUser user,
-            @PathVariable Long orderId) {
+            @PathVariable final Long orderId) {
         OrderGetResponseDto responseDto = orderService.findOrder(user, orderId);
 
         return ResponseEntity.status(StatusCode.OK.getCode())
@@ -49,18 +49,17 @@ public class OrderController {
     @GetMapping
     public ResponseEntity<RestApiResponse<OrderPageResponseDto>> orderPage(
             @AuthenticationPrincipal AuthenticationUser user,
-            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
-            @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") String sortBy,
-            @RequestParam(value = "isDesc", required = false, defaultValue = "true") Boolean isDesc) {
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
+            @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc) {
 
-        OrderPageResponseDto responseDto = orderService.findOrders(user,pageNum, sortBy, isDesc);
+        OrderPageResponseDto responseDto = orderService.findOrders(user,pageNum, isDesc);
 
         return ResponseEntity.status(StatusCode.OK.getCode())
                 .body(RestApiResponse.of(responseDto));
     }
 
     @PutMapping("/{orderId}/delivered")
-    public ResponseEntity<RestApiResponse<Void>> orderDelivery(@PathVariable Long orderId) {
+    public ResponseEntity<RestApiResponse<Void>> orderDelivery(@PathVariable final Long orderId) {
         orderService.changeStatus(orderId);
         return ResponseEntity.status(StatusCode.OK.getCode())
                 .body(RestApiResponse.of("주문이 배달 완료되었습니다."));
@@ -68,7 +67,7 @@ public class OrderController {
 
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("/{orderId}/prepare")
-    public ResponseEntity<RestApiResponse<Void>> orderPrepare(@PathVariable Long orderId, @AuthenticationPrincipal AuthenticationUser user) {
+    public ResponseEntity<RestApiResponse<Void>> orderPrepare(@PathVariable final Long orderId, @AuthenticationPrincipal AuthenticationUser user) {
         orderService.changeStatusPrepare(orderId, user);
         return ResponseEntity.status(StatusCode.OK.getCode())
                 .body(RestApiResponse.of("주문을 조리 중입니다."));
@@ -76,7 +75,7 @@ public class OrderController {
 
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("/{orderId}/delivered")
-    public ResponseEntity<RestApiResponse<Void>> orderDelivered(@PathVariable Long orderId, @AuthenticationPrincipal AuthenticationUser user) {
+    public ResponseEntity<RestApiResponse<Void>> orderDelivered(@PathVariable final Long orderId, @AuthenticationPrincipal AuthenticationUser user) {
         orderService.changeStatusDelivered(orderId, user);
         return ResponseEntity.status(StatusCode.OK.getCode())
                 .body(RestApiResponse.of("주문이 배달 완료되었습니다."));
