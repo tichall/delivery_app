@@ -1,7 +1,8 @@
 package com.sparta.delivery_app.domain.review.entity;
 
 import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
-import com.sparta.delivery_app.domain.review.dto.request.ManagerReviewRequestDto;
+import com.sparta.delivery_app.domain.review.dto.request.ManagerReviewAddRequestDto;
+import com.sparta.delivery_app.domain.review.dto.request.ManagerReviewModifyRequestDto;
 import com.sparta.delivery_app.domain.user.entity.User;
 import jakarta.persistence.*;
 
@@ -46,21 +47,17 @@ public class ManagerReviews extends BaseTimeEntity {
         this.managerReviewsStatus = managerReviewsStatus;
     }
 
-    @Builder
-    public static ManagerReviews of(UserReviews userReviews, User user, ManagerReviewRequestDto requestDto) {
+    public static ManagerReviews saveManagerReview(UserReviews userReviews, User user, ManagerReviewAddRequestDto requestDto) {
         return ManagerReviews.builder()
-                .content(requestDto.getContent())
+                .content(requestDto.content())
                 .userReviews(userReviews)
                 .user(user)
                 .managerReviewsStatus(ManagerReviewsStatus.ENABLE)
                 .build();
     }
 
-    @Builder
-    public static ManagerReviews of(Long managerReviewId, ManagerReviewRequestDto requestDto) {
-        return ManagerReviews.builder()
-                .id(managerReviewId)
-                .content(requestDto.getContent())
-                .build();
+    public ManagerReviews modifyManagerReview(ManagerReviewModifyRequestDto requestDto) {
+        this.content = requestDto.content();
+        return this;
     }
 }

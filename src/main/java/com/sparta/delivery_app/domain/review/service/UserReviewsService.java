@@ -6,6 +6,7 @@ import com.sparta.delivery_app.common.globalcustomexception.ReviewNotFoundExcept
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.domain.order.adaptor.OrderAdaptor;
 import com.sparta.delivery_app.domain.order.entity.Order;
+import com.sparta.delivery_app.domain.order.entity.OrderStatus;
 import com.sparta.delivery_app.domain.review.adaptor.UserReviewsAdaptor;
 import com.sparta.delivery_app.domain.review.dto.request.UserReviewModifyRequestDto;
 import com.sparta.delivery_app.domain.review.dto.request.UserReviewAddRequestDto;
@@ -35,6 +36,12 @@ public class UserReviewsService {
 
         // 주문이 등록되어있는가? -> 주문이 없다면 예외
         Order order = orderAdaptor.queryOrderById(orderId);
+        if (!order.getUser().getId().equals(userData.getId())) {
+            throw new ReviewAccessDeniedException(ReviewErrorCode.NOT_AUTHORITY_TO_CREATED_REVIEW);
+        }
+
+        // 배달 상태 확인
+        OrderStatus.checkOrderStatus(order);
 
         UserReviews savedReview = UserReviews.saveReview(order, userData, requestDto);
 
@@ -50,6 +57,9 @@ public class UserReviewsService {
 
         // 주문이 등록되어있는가? -> 주문이 없다면 예외
         Order order = orderAdaptor.queryOrderById(orderId);
+        if (!order.getUser().getId().equals(userData.getId())) {
+            throw new ReviewAccessDeniedException(ReviewErrorCode.NOT_AUTHORITY_TO_UPDATE_REVIEW);
+        }
 
         // 사용자 리뷰가 있는지 확인
         UserReviews userReviews = order.getUserReviews();
