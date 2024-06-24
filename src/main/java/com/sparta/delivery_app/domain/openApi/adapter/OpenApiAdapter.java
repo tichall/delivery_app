@@ -1,6 +1,7 @@
 package com.sparta.delivery_app.domain.openApi.adapter;
 
 import com.sparta.delivery_app.domain.openApi.dto.StoreDetailsResponseDto;
+import com.sparta.delivery_app.domain.review.entity.ReviewStatus;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import com.sparta.delivery_app.domain.review.repository.UserReviewsRepository;
 import com.sparta.delivery_app.domain.store.adaptor.StoreAdaptor;
@@ -25,7 +26,7 @@ public class OpenApiAdapter {
      * @return
      */
     public Page<Store> queryStores(Pageable pageable) {
-        return storeRepository.findAll(pageable);
+        return storeRepository.findAllByStatus(pageable, StoreStatus.ENABLE);
     }
 
     /**
@@ -47,6 +48,6 @@ public class OpenApiAdapter {
      * @return
      */
     public Page<UserReviews> queryReviews(Pageable pageable) {
-        return userReviewsRepository.findAll(pageable);
+        return userReviewsRepository.findAllByReviewStatus(pageable, ReviewStatus.ENABLE);
     }
 }

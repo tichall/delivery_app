@@ -2,13 +2,13 @@ package com.sparta.delivery_app.domain.admin.adminstore.service;
 
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.domain.admin.adminstore.dto.PageMenuPerStoreResponseDto;
+import com.sparta.delivery_app.domain.admin.adminstore.dto.ReviewPerStoreResponseDto;
 import com.sparta.delivery_app.domain.commen.page.util.PageUtil;
 import com.sparta.delivery_app.domain.menu.adaptor.MenuAdaptor;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
 import com.sparta.delivery_app.domain.order.adaptor.OrderAdaptor;
 import com.sparta.delivery_app.domain.order.entity.Order;
 import com.sparta.delivery_app.domain.order.entity.OrderStatus;
-import com.sparta.delivery_app.domain.review.adaptor.UserReviewsAdaptor;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import com.sparta.delivery_app.domain.store.adaptor.StoreAdaptor;
 import com.sparta.delivery_app.domain.store.entity.Store;
@@ -33,7 +33,6 @@ public class AdminStoreService {
     private final MenuAdaptor menuAdaptor;
     private final StoreAdaptor storeAdaptor;
     private final UserAdaptor userAdaptor;
-    private final UserReviewsAdaptor reviewAdaptor;
     private final OrderAdaptor orderAdaptor;
 
     public PageMenuPerStoreResponseDto getMenuListPerStore(
@@ -52,24 +51,28 @@ public class AdminStoreService {
         return PageMenuPerStoreResponseDto.of(pageNum, choiceStore);
     }
 
+    //    public PageReviewPerStoreResponseDto getReviewListPerStore(
+    public List<ReviewPerStoreResponseDto> getReviewListPerStore(
+            AuthenticationUser authenticationUser, Long storeId, Integer pageNum, String sortBy, Boolean isDesc) {
+        log.info("특정 매장 모든 리뷰 조회-service 시작");
+        //(ADMIN 권한의) 유저 Status 가 ENABLE 인지 확인
+        adminUserStatusCheck(authenticationUser);
+//        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, sortBy, isDesc);
 
-//    public PageReviewPerStoreResponseDto getReviewListPerStore(
-//            AuthenticationUser authenticationUser, Long storeId, Integer pageNum, String sortBy, Boolean isDesc) {
-//
-//        //(ADMIN 권한의) 유저 Status 가 ENABLE 인지 확인
-//        adminUserStatusCheck(authenticationUser);
-//
-//        Store choiceStore = storeAdaptor.queryStoreById(storeId);
-//        Pageable pageable = PageUtil.createPageable(pageNum,PageUtil.PAGE_SIZE_FIVE, sortBy,isDesc);
-//
-//        List<Order> deliveredOrderList = orderAdaptor.queryOrderListByStoreIdAndOrderStatus(storeId, OrderStatus.DELIVERY_COMPLETED);
-//        List<ReviewPerStoreResponseDto> dtoList = new ArrayList<>();
-//        for (Order deliveredOrder : deliveredOrderList) {
-//            UserReviews Review = reviewAdaptor.queryReviewListByOrderId(deliveredOrder.getId());
-//            ReviewPerStoreResponseDto dto = new ReviewPerStoreResponseDto(Review);
-//            dtoList.add(Review);
-//        }
-//        ReviewPerStoreResponseDto(Review)
+        //storeId 와 OrderStatus.DELIVERY_COMPLETED 로 orderList 가져와서 하나씩 responseDto 에 담기
+        List<Order> deliveredOrderList = orderAdaptor.queryOrderListByStoreIdAndOrderStatus(storeId, OrderStatus.DELIVERY_COMPLETED);
+        List<ReviewPerStoreResponseDto> reviewDtoList = new ArrayList<>();
+
+        for (Order deliveredOrder : deliveredOrderList) {
+            UserReviews userReview = deliveredOrder.getUserReviews();
+            ReviewPerStoreResponseDto ReviewResponseDto = ReviewPerStoreResponseDto.of(storeId, userReview);
+            reviewDtoList.add(ReviewResponseDto);
+        }
+
+        return reviewDtoList;
+    }
+    //페이징처리
+//        PageReviewPerStoreResponseDto(reviewDtoList);
 //
 //        List<UserReviews> Reviews = orderList.stream().map(
 //                order -> reviewAdaptor.queryReviewListByOrderId(order.getId());
@@ -85,10 +88,4 @@ public class AdminStoreService {
         User adminUser = userAdaptor.queryUserByEmail(email);
         checkManagerEnable(adminUser);
     }
-
-//   orderAdaptor.queryOrderListByStoreId(storeId);
-//   List<OrderId> OrderIdList = OrderRepository.findAll(storeId);
-//   for(orderId : OrderIdList ) {
-//        List<Review> SpecificStoreReview = ReviewRepository.findByOrderId(OrderId)
-//    }
 }

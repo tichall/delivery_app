@@ -44,7 +44,7 @@ public class OpenApiController {
      */
     @GetMapping("/stores/{storeId}")
     public ResponseEntity<RestApiResponse<StoreDetailsResponseDto>> menuList(
-            @PathVariable Long storeId
+            @PathVariable final Long storeId
     ) {
         openApiService.useToken();
 

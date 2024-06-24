@@ -142,7 +142,7 @@ public class OrderService {
 
             Menu menu = menuAdaptor.queryMenuById(menuId);
 
-            menuService.checkStoreMenuMatch(menu, currentOrder.getStore().getId());
+            menu.checkStoreMenuMatch(menu, currentOrder.getStore().getId());
 
             MenuStatus.checkMenuStatus(menu);
 

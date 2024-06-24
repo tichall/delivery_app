@@ -4,18 +4,16 @@ import com.sparta.delivery_app.common.globalResponse.RestApiResponse;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.common.status.StatusCode;
 import com.sparta.delivery_app.domain.store.dto.request.ModifyStoreRequestDto;
-import com.sparta.delivery_app.domain.store.dto.response.ModifyStoreResponseDto;
 import com.sparta.delivery_app.domain.store.dto.request.RegisterStoreRequestDto;
+import com.sparta.delivery_app.domain.store.dto.response.ModifyStoreResponseDto;
 import com.sparta.delivery_app.domain.store.dto.response.RegisterStoreResponseDto;
 import com.sparta.delivery_app.domain.store.service.StoreService;
-import com.sparta.delivery_app.domain.user.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
