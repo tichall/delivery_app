@@ -52,11 +52,7 @@ public class OrderService {
         Store store = storeAdaptor.queryStoreById(requestDto.storeId());
         Long totalPrice;
 
-        Order currentOrder = Order.builder()
-                .user(findUser)
-                .store(store)
-                .orderStatus(OrderStatus.ORDER_COMPLETED)
-                .build();
+        Order currentOrder = Order.saveOrder(findUser, store);
 
         addValidatedMenuItemsToOrder(currentOrder, requestDto.menuList());
         totalPrice = currentOrder.calculateTotalPrice();
@@ -75,9 +71,9 @@ public class OrderService {
      * @param orderId 조회할 주문 아이디
      * @return OrderGetResponseDto 조회된 주문 정보
      */
-    public OrderGetResponseDto findOrder(AuthenticationUser user, Long orderId) {
+    public OrderGetResponseDto findOrder(AuthenticationUser user, final Long orderId) {
         User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
-        Order findOrder = orderAdaptor.queryOrderByIdAndUserID(findUser.getId(), orderId);
+        Order findOrder = orderAdaptor.queryOrderByIdAndUserId(findUser.getId(), orderId);
         return OrderGetResponseDto.of(findOrder);
     }
 
@@ -91,9 +87,9 @@ public class OrderService {
      */
     public OrderPageResponseDto findOrders(
             AuthenticationUser user,
-            Integer pageNum,
+            final Integer pageNum,
             String sortBy,
-            Boolean isDesc
+            final Boolean isDesc
     ) {
         User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
 
@@ -109,7 +105,7 @@ public class OrderService {
      * 검증 없이 주문 상태를 배달 완료로 변경
      */
     @Transactional
-    public void changeStatus(Long orderId) {
+    public void changeStatus(final Long orderId) {
         Order findOrder = orderAdaptor.queryOrderById(orderId);
         findOrder.changeOrderStatus(OrderStatus.DELIVERY_COMPLETED);
     }
@@ -118,7 +114,7 @@ public class OrderService {
      * 주문 상태를 조리중으로 변경
      */
     @Transactional
-    public void changeStatusPrepare(Long orderId, AuthenticationUser user) {
+    public void changeStatusPrepare(final Long orderId, AuthenticationUser user) {
         User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
         storeAdaptor.queryStoreId(findUser);
         Order findOrder = orderAdaptor.queryOrderById(orderId);
@@ -129,7 +125,7 @@ public class OrderService {
      * 주문 상태를 배달 완료로 변경
      */
     @Transactional
-    public void changeStatusDelivered(Long orderId, AuthenticationUser user) {
+    public void changeStatusDelivered(final Long orderId, AuthenticationUser user) {
         User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
         storeAdaptor.queryStoreId(findUser);
         Order findOrder = orderAdaptor.queryOrderById(orderId);
@@ -152,11 +148,7 @@ public class OrderService {
 
             MenuStatus.checkMenuStatus(menu);
 
-            OrderItem orderItem = OrderItem.builder()
-                    .order(currentOrder)
-                    .menu(menu)
-                    .quantity(quantity)
-                    .build();
+            OrderItem orderItem = OrderItem.saveOrderItem(currentOrder, menu, quantity);
 
             currentOrder.addOrderItem(orderItem);
         }
