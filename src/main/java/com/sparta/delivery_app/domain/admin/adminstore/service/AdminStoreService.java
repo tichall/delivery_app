@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static com.sparta.delivery_app.domain.user.entity.UserStatus.checkManagerEnable;
 
@@ -37,14 +36,14 @@ public class AdminStoreService {
     private final OrderAdaptor orderAdaptor;
 
     public PageMenuPerStoreResponseDto getMenuListPerStore(
-            Long storeId, AuthenticationUser authenticationUser, Integer pageNum, String sortBy, Boolean isDesc) {
+            Long storeId, AuthenticationUser authenticationUser, final Integer pageNum, final Boolean isDesc) {
         log.info("getMenuListPerStore-service");
 
         //(ADMIN 권한의) 유저 Status 가 ENABLE 인지 확인
         adminUserStatusCheck(authenticationUser);
 
         Store choiceStore = storeAdaptor.queryStoreById(storeId);
-        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, sortBy, isDesc);
+        Pageable pageable = PageUtil.createPageable(pageNum,PageUtil.PAGE_SIZE_FIVE, isDesc);
 
         Page<Menu> menuPage = menuAdaptor.queryMenuListByStoreId(storeId, pageable);
         PageUtil.validatePage(pageNum, menuPage);
@@ -54,11 +53,11 @@ public class AdminStoreService {
 
     //    public PageReviewPerStoreResponseDto getReviewListPerStore(
     public List<ReviewPerStoreResponseDto> getReviewListPerStore(
-            AuthenticationUser authenticationUser, Long storeId, Integer pageNum, String sortBy, Boolean isDesc) {
+            AuthenticationUser authenticationUser, Long storeId, final Integer pageNum, final Boolean isDesc) {
         log.info("특정 매장 모든 리뷰 조회-service 시작");
         //(ADMIN 권한의) 유저 Status 가 ENABLE 인지 확인
         adminUserStatusCheck(authenticationUser);
-//        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, sortBy, isDesc);
+//        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
 
         //storeId 와 OrderStatus.DELIVERY_COMPLETED 로 orderList 가져와서 하나씩 responseDto 에 담기
         List<Order> deliveredOrderList = orderAdaptor.queryOrderListByStoreIdAndOrderStatus(storeId, OrderStatus.DELIVERY_COMPLETED);
@@ -71,8 +70,8 @@ public class AdminStoreService {
         }
 
         return reviewDtoList;
-
-        //페이징처리
+    }
+    //페이징처리
 //        PageReviewPerStoreResponseDto(reviewDtoList);
 //
 //        List<UserReviews> Reviews = orderList.stream().map(
@@ -81,7 +80,7 @@ public class AdminStoreService {
 //        PageUtil.validatePage(pageNum, ReviewPage);
 //
 //        return PageReviewPerStoreResponseDto.of(pageNum, choiceStore);
-    }
+//    }
 
     //(ADMIN 권한의) 유저 Status 가 ENABLE 인지 확인
     private void adminUserStatusCheck(AuthenticationUser authenticationUser) {

@@ -3,6 +3,7 @@ package com.sparta.delivery_app.common.exceptionhandler;
 import com.sparta.delivery_app.common.exception.errorcode.ErrorCode;
 import com.sparta.delivery_app.common.globalResponse.ErrorResponse;
 import com.sparta.delivery_app.common.globalcustomexception.S3Exception;
+import com.sparta.delivery_app.common.globalcustomexception.TotalPriceException;
 import com.sparta.delivery_app.common.globalcustomexception.global.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -48,13 +49,21 @@ public class ApiExceptionHandler {
         return sendErrorResponse(e.getErrorCode());
     }
 
+    @ExceptionHandler(TotalPriceException.class)
+    protected ResponseEntity<ErrorResponse> TotalPriceException(TotalPriceException e) {
+        log.error("TotalPriceException 발생");
+        return sendErrorResponse(e.getErrorCode());
+    }
+
     @ExceptionHandler(S3Exception.class)
     protected ResponseEntity<ErrorResponse> s3Exception(S3Exception e) {
         log.error("S3Exception 발생");
         return sendErrorResponse(e.getErrorCode());
     }
+
     private static ResponseEntity<ErrorResponse> sendErrorResponse(ErrorCode e) {
         return ResponseEntity.status(e.getHttpStatusCode())
                 .body(ErrorResponse.of(e));
     }
+
 }
