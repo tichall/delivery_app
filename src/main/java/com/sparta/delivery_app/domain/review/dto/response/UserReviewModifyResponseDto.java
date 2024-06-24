@@ -8,16 +8,15 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class UserReviewResponseDto {
-
+public class UserReviewModifyResponseDto {
     private String storeName;
     private String userName;
     private String content;
     private String reviewImagePath;
     private int rating;
 
-    public static UserReviewResponseDto of(UserReviews userReviews) {
-        return UserReviewResponseDto.builder()
+    public static UserReviewModifyResponseDto of(UserReviews userReviews) {
+        return UserReviewModifyResponseDto.builder()
                 .storeName(userReviews.getOrder().getStore().getStoreName())
                 .userName(userReviews.getUser().getNickName())
                 .content(userReviews.getContent())
@@ -25,5 +24,4 @@ public class UserReviewResponseDto {
                 .rating(userReviews.getRating())
                 .build();
     }
-
 }
