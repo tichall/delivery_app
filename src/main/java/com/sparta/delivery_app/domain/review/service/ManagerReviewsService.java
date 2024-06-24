@@ -1,12 +1,18 @@
 package com.sparta.delivery_app.domain.review.service;
 
+import com.sparta.delivery_app.common.exception.errorcode.ReviewErrorCode;
+import com.sparta.delivery_app.common.globalcustomexception.ReviewAccessDeniedException;
+import com.sparta.delivery_app.common.globalcustomexception.ReviewDuplicatedException;
+import com.sparta.delivery_app.common.globalcustomexception.ReviewNotFoundException;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.domain.order.adaptor.OrderAdaptor;
 import com.sparta.delivery_app.domain.order.entity.Order;
+import com.sparta.delivery_app.domain.order.entity.OrderStatus;
 import com.sparta.delivery_app.domain.review.adaptor.ManagerReviewsAdaptor;
-import com.sparta.delivery_app.domain.review.adaptor.UserReviewsAdaptor;
-import com.sparta.delivery_app.domain.review.dto.request.ManagerReviewRequestDto;
-import com.sparta.delivery_app.domain.review.dto.response.ManagerReviewResponseDto;
+import com.sparta.delivery_app.domain.review.dto.request.ManagerReviewAddRequestDto;
+import com.sparta.delivery_app.domain.review.dto.request.ManagerReviewModifyRequestDto;
+import com.sparta.delivery_app.domain.review.dto.response.ManagerReviewAddResponseDto;
+import com.sparta.delivery_app.domain.review.dto.response.ManagerReviewModifyResponseDto;
 import com.sparta.delivery_app.domain.review.entity.ManagerReviews;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
@@ -14,6 +20,7 @@ import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -22,51 +29,73 @@ public class ManagerReviewsService {
 
     private final ManagerReviewsAdaptor managerReviewsAdaptor;
     private final OrderAdaptor orderAdaptor;
-    private final UserReviewsAdaptor userReviewsAdaptor;
     private final UserAdaptor userAdaptor;
 
 
-    public ManagerReviewResponseDto addReview(Long orderId, ManagerReviewRequestDto requestDto, AuthenticationUser user) {
+    public ManagerReviewAddResponseDto addReview(final Long orderId, final ManagerReviewAddRequestDto requestDto, AuthenticationUser user) {
+        // 사용자 존재 확인
+        User userData = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
+
+        // 주문 존재 확인
+        Order orderData = orderAdaptor.queryOrderById(orderId);
+        if (!orderData.getStore().getUser().getId().equals(userData.getId())) {
+            throw new ReviewAccessDeniedException(ReviewErrorCode.NOT_AUTHORITY_TO_CREATED_REVIEW);
+        }
+
+        // 배달 상태 확인
+        OrderStatus.checkOrderStatus(orderData);
+
+        // 사용자 리뷰가 존재하는지 확인
+        UserReviews userReviews = orderData.getUserReviews();
+        if (userReviews == null) {
+            throw new ReviewNotFoundException(ReviewErrorCode.INVALID_REVIEW);
+        }
+
+        // 매니저 리뷰 존재 확인
+        ManagerReviews managerReviews = userReviews.getManagerReviews();
+        if (managerReviews != null) {
+            throw new ReviewDuplicatedException(ReviewErrorCode.REVIEW_ALREADY_REGISTERED_ERROR);
+        }
+
+        ManagerReviews savedManagerReviews = ManagerReviews.saveManagerReview(userReviews, userData, requestDto);
+
+        managerReviewsAdaptor.saveReview(savedManagerReviews);
+
+        return ManagerReviewAddResponseDto.of(savedManagerReviews);
+    }
+
+    @Transactional
+    public ManagerReviewModifyResponseDto modifyReview(final Long orderId, final ManagerReviewModifyRequestDto requestDto, AuthenticationUser user) {
         // 사용자 존재 확인
         User userData = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
 
         // 주문 존재 확인
         Order orderData = orderAdaptor.queryOrderById(orderId);
 
-        // TODO
-        UserReviews userReviews = orderData.getUserReviews();
-        ManagerReviews managerReviews = userReviews.getManagerReviews();
-
-        // 주문ID를 통해 리뷰ID 존재 확인
-        Long userReviewId = orderAdaptor.queryReviewIdByOrderId(orderData.getId());
-
-        // 판매자리뷰가 이미 존재하는지 확인
-        userReviewsAdaptor.validateManagerReviewExistsByReviewId(userReviewId);
-
-//        ManagerReviews managerReviews = ManagerReviews.of(userReviewId, userData, requestDto);
-
-//        managerReviewsAdaptor.saveReview(managerReviews);
-
-//        return ManagerReviewResponseDto.of(managerReviews);
-        return null;
-    }
-
-    public ManagerReviewResponseDto modifyReview(Long orderId, ManagerReviewRequestDto requestDto, AuthenticationUser user) {
-        // 사용자 존재 확인
-        User userData = userAdaptor.queryUserByEmail(user.getUsername());
-
-        // 주문 존재 확인
-        Order orderData = orderAdaptor.queryOrderById(orderId);
+        // 가게 사장과 유저가 같은 사람인지 확인( 사장=유저(manager) 여야함)
+        if (!orderData.getStore().getUser().getId().equals(userData.getId())) {
+            throw new ReviewAccessDeniedException(ReviewErrorCode.NOT_AUTHORITY_TO_UPDATE_REVIEW);
+        }
 
         // Order를 통해 리뷰ID 존재 확인
-        Long userReviewId = orderAdaptor.queryReviewIdByOrderId(orderData.getId());
+        UserReviews userReviews = orderData.getUserReviews();
+        if (userReviews == null) {
+            throw new ReviewNotFoundException(ReviewErrorCode.INVALID_REVIEW);
+        }
 
-        // 판매자 리뷰가 존재하지않는지 확인
-        Long managerReviewId = userReviewsAdaptor.validateManagerReviewDoesNotExistByReviewId(userReviewId);
+        // 매니저 리뷰 존재 확인
+        ManagerReviews managerReviews = userReviews.getManagerReviews();
+        if (managerReviews == null) {
+            throw new ReviewNotFoundException(ReviewErrorCode.INVALID_REVIEW);
+        }
 
-        ManagerReviews managerReviews = ManagerReviews.of(managerReviewId, requestDto);
+        // 수정권한 확인
+        if (!managerReviews.getUser().getId().equals(userData.getId())) {
+            throw new ReviewAccessDeniedException(ReviewErrorCode.NOT_AUTHORITY_TO_UPDATE_REVIEW);
+        }
 
-        return ManagerReviewResponseDto.of(managerReviews);
+        ManagerReviews modifiedManagerReviews = managerReviews.modifyManagerReview(requestDto);
+
+        return ManagerReviewModifyResponseDto.of(modifiedManagerReviews);
     }
-
 }
