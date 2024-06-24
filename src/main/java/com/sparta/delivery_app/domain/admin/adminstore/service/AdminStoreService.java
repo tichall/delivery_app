@@ -19,6 +19,7 @@ import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -52,9 +53,9 @@ public class AdminStoreService {
         Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
 
         Page<Menu> menuPage = menuAdapter.queryMenuListByStoreId(storeId, pageable);
-        PageUtil.validatePage(pageNum, menuPage);
+        String totalMenu = PageUtil.validatePage(pageNum, menuPage);
 
-        return PageMenuPerStoreResponseDto.of(pageNum, choiceStore);
+        return PageMenuPerStoreResponseDto.of(pageNum, totalMenu, choiceStore);
     }
 
     public PageReviewPerStoreResponseDto getReviewListPerStore(
@@ -64,7 +65,6 @@ public class AdminStoreService {
         adminUserStatusCheck(authenticationUser);
         Store choiceStore = storeAdapter.queryStoreById(storeId);
 
-        //storeId 와 OrderStatus.DELIVERY_COMPLETED 로 orderList 가져와서 하나씩 responseDto 에 담기
         List<Order> deliveredOrderList = orderAdapter.queryOrderListByStoreIdAndOrderStatus(storeId, OrderStatus.DELIVERY_COMPLETED);
         List<ReviewPerStoreResponseDto> reviewDtoList = new ArrayList<>();
 
@@ -78,7 +78,15 @@ public class AdminStoreService {
             }
         }
 
-        return PageReviewPerStoreResponseDto.of(reviewDtoList, choiceStore);
+        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), reviewDtoList.size());
+        Page<ReviewPerStoreResponseDto> reviewPage = new PageImpl<>(reviewDtoList.subList(start, end), pageable, reviewDtoList.size());
+
+        String totalReview = PageUtil.validatePage(pageNum, reviewPage);
+
+        return PageReviewPerStoreResponseDto.of(pageNum, totalReview, choiceStore, reviewPage);
     }
 
     /**
@@ -95,17 +103,11 @@ public class AdminStoreService {
 
         adminUserStatusCheck(authenticationUser);
 
-        // 스토어를 찾는다.
-        // 해당 스토어 아이디로 메뉴들을 찾는다.
-        // 해당 메뉴 아이디로 주문 내역을 찾는다.
-        // 주문 내역을 가져와 팔린 개수를 카운트한다.
-        // page 안에 dto를 넣어 반환한다..?
-
         Store findStore = storeAdapter.queryStoreById(storeId);
         Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
 
         Page<Menu> menuPage = menuAdapter.queryMenuListByStoreId(findStore.getId(), pageable);
-        PageUtil.validatePage(pageNum, menuPage);
+        String totalMenu = PageUtil.validatePage(pageNum, menuPage);
 
         Long allMenuTotalEarning = 0L;
 
@@ -129,7 +131,7 @@ public class AdminStoreService {
             allMenuTotalEarning += r.getMenuTotalPrice();
         }
 
-        return PageTotalPricePerStoreResponseDto.of(pageNum, findStore, allMenuTotalEarning, responsePage);
+        return PageTotalPricePerStoreResponseDto.of(pageNum, totalMenu, findStore, allMenuTotalEarning, responsePage);
     }
 
     //(ADMIN 권한의) 유저 Status 가 ENABLE 인지 확인

@@ -37,9 +37,9 @@ public class OpenApiService {
 
         Page<Store> storePage = openApiAdapter.queryStores(pageable);
 
-        PageUtil.validatePage(pageNum, storePage);
+        String totalStore = PageUtil.validatePage(pageNum, storePage);
 
-        return StorePageResponseDto.of(pageNum, storePage);
+        return StorePageResponseDto.of(pageNum, totalStore, storePage);
     }
 
     /**
@@ -63,9 +63,9 @@ public class OpenApiService {
 
         Page<UserReviews> reviewPage = openApiAdapter.queryReviews(pageable);
 
-        PageUtil.validatePage(pageNum, reviewPage);
+        String totalReview = PageUtil.validatePage(pageNum, reviewPage);
 
-        return ReviewPageResponseDto.of(pageNum, reviewPage);
+        return ReviewPageResponseDto.of(pageNum, totalReview, reviewPage);
     }
 
     /**

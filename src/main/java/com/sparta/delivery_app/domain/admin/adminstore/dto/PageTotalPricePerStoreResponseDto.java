@@ -19,18 +19,18 @@ public class PageTotalPricePerStoreResponseDto {
      * 페이징 처리 responseDto
      */
     private Integer currentPage;
-    private Long totalMenu;
+    private String totalMenu;
     private Long storeId;
     private String storeName;
     private Long specificStoreEarning;
     private List<TotalPricePerStoreResponseDto> earningMap;
 
     public static PageTotalPricePerStoreResponseDto of(
-            Integer currentPage, Store store, Long specificStoreEarning, Page<TotalPricePerStoreResponseDto> menuPage) {
+            Integer currentPage, String totalMenu, Store store, Long specificStoreEarning, Page<TotalPricePerStoreResponseDto> menuPage) {
 
         return PageTotalPricePerStoreResponseDto.builder()
                 .currentPage(currentPage)
-                .totalMenu(menuPage.getTotalElements())
+                .totalMenu(totalMenu)
                 .storeId(store.getId())
                 .storeName(store.getStoreName())
                 .specificStoreEarning(specificStoreEarning)

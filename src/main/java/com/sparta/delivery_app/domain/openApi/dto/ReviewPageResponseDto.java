@@ -14,13 +14,13 @@ import java.util.List;
 public class ReviewPageResponseDto {
 
     private Integer currentPage;
-    private Long totalReviews;
+    private String totalReview;
     private List<UserReviewAddResponseDto> reviewList;
 
-    public static ReviewPageResponseDto of(Integer currentPage, Page<UserReviews> reviewPage) {
+    public static ReviewPageResponseDto of(Integer currentPage, String totalReview, Page<UserReviews> reviewPage) {
         return ReviewPageResponseDto.builder()
                 .currentPage(currentPage)
-                .totalReviews(reviewPage.getTotalElements())
+                .totalReview(totalReview)
                 .reviewList(reviewPage.getContent().stream()
                         .map(UserReviewAddResponseDto::of).toList())
                 .build();

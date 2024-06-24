@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 public class PageUtil {
     public static final Integer PAGE_SIZE_FIVE = 5;
     public static final Integer PAGE_SIZE_TEN = 10;
+    public static final String NO_ELEMENT_MESSAGE = "조회된 데이터가 없습니다.";
 
     public static Pageable createPageable(Integer pageNum, Integer pageSize, Boolean isDesc) {
         if (pageNum < 1) {
@@ -22,9 +23,15 @@ public class PageUtil {
         return PageRequest.of(pageNum - 1, pageSize, sort);
     }
 
-    public static <T> void validatePage(Integer pageNum, Page<T> page) {
+    public static <T> String validatePage(Integer pageNum, Page<T> page) {
+        if (page.getTotalElements() <= 0) {
+            return NO_ELEMENT_MESSAGE;
+        }
+
         if (pageNum > page.getTotalPages()) {
             throw new PageNotFoundException(PageErrorCode.INVALID_PAGE_NUMBER);
         }
+
+        return page.getTotalElements() + "개 조회 완료!";
     }
 }
