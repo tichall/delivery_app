@@ -26,7 +26,7 @@ public class LikedController {
     @PostMapping("/{storeId}")
     public ResponseEntity<RestApiResponse<Object>> likedAdd(
             @AuthenticationPrincipal AuthenticationUser user,
-            @PathVariable Long storeId
+            @PathVariable final Long storeId
     ) {
 
         likedService.addLiked(user, storeId);
@@ -41,7 +41,7 @@ public class LikedController {
     @DeleteMapping("/{storeId}")
     public ResponseEntity<RestApiResponse<Object>> likedDelete(
             @AuthenticationPrincipal AuthenticationUser user,
-            @PathVariable Long storeId
+            @PathVariable final Long storeId
     ) {
         likedService.deleteLiked(user, storeId);
         return ResponseEntity.status(StatusCode.OK.code)

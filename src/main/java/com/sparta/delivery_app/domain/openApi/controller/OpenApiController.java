@@ -25,8 +25,8 @@ public class OpenApiController {
      */
     @GetMapping("/stores")
     public ResponseEntity<RestApiResponse<StorePageResponseDto>> storeList(
-            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
-            @RequestParam(value = "isDesc", required = false, defaultValue = "true") Boolean isDesc
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
+            @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc
     ) {
 
         openApiService.useToken();
@@ -62,8 +62,8 @@ public class OpenApiController {
      */
     @GetMapping("/reviews")
     public ResponseEntity<RestApiResponse<ReviewPageResponseDto>> reviewList(
-            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
-            @RequestParam(value = "isDesc", required = false, defaultValue = "true") Boolean isDesc
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
+            @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc
     ) {
         openApiService.useToken();
 

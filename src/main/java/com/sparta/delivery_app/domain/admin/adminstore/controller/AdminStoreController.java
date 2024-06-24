@@ -33,8 +33,8 @@ public class AdminStoreController {
     public ResponseEntity<RestApiResponse<PageMenuPerStoreResponseDto>> getMenuListPerStore
     (@PathVariable Long storeId,
      @AuthenticationPrincipal AuthenticationUser authenticationUser,
-     @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
-     @RequestParam(value = "isDesc", required = false, defaultValue = "true") Boolean isDesc) {
+     @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
+     @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc) {
         log.info("특정매장 모든메뉴 조회-controller");
 
         PageMenuPerStoreResponseDto responseDto = adminStoreService.getMenuListPerStore(storeId,
@@ -51,13 +51,12 @@ public class AdminStoreController {
     public ResponseEntity<RestApiResponse<List<ReviewPerStoreResponseDto>>> getReviewListPerStore
     (@PathVariable Long storeId,
      @AuthenticationPrincipal AuthenticationUser authenticationUser,
-     @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
-     @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") String sortBy,
-     @RequestParam(value = "isDesc", required = false, defaultValue = "true") Boolean isDesc) {
+     @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
+     @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc) {
         log.info("특정 매장 모든 리뷰 조회-controller");
 
 //        PageReviewPerStoreResponseDto responseDto = adminStoreService.getReviewListPerStore(storeId, pageNum, sortBy, isDesc);
-        List<ReviewPerStoreResponseDto> reviewDtoList = adminStoreService.getReviewListPerStore(authenticationUser, storeId, pageNum, sortBy, isDesc);
+        List<ReviewPerStoreResponseDto> reviewDtoList = adminStoreService.getReviewListPerStore(authenticationUser, storeId, pageNum, isDesc);
 
         log.info("특정 매장 모든 리뷰 조회-controller-reviewDtoList 생성 완료");
         return ResponseEntity.status(StatusCode.CREATED.code)

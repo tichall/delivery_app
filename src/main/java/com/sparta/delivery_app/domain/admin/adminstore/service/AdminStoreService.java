@@ -36,7 +36,7 @@ public class AdminStoreService {
     private final OrderAdaptor orderAdaptor;
 
     public PageMenuPerStoreResponseDto getMenuListPerStore(
-            Long storeId, AuthenticationUser authenticationUser, Integer pageNum, Boolean isDesc) {
+            Long storeId, AuthenticationUser authenticationUser, final Integer pageNum, final Boolean isDesc) {
         log.info("getMenuListPerStore-service");
 
         //(ADMIN 권한의) 유저 Status 가 ENABLE 인지 확인
@@ -53,11 +53,11 @@ public class AdminStoreService {
 
     //    public PageReviewPerStoreResponseDto getReviewListPerStore(
     public List<ReviewPerStoreResponseDto> getReviewListPerStore(
-            AuthenticationUser authenticationUser, Long storeId, Integer pageNum, String sortBy, Boolean isDesc) {
+            AuthenticationUser authenticationUser, Long storeId, final Integer pageNum, final Boolean isDesc) {
         log.info("특정 매장 모든 리뷰 조회-service 시작");
         //(ADMIN 권한의) 유저 Status 가 ENABLE 인지 확인
         adminUserStatusCheck(authenticationUser);
-//        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, sortBy, isDesc);
+//        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
 
         //storeId 와 OrderStatus.DELIVERY_COMPLETED 로 orderList 가져와서 하나씩 responseDto 에 담기
         List<Order> deliveredOrderList = orderAdaptor.queryOrderListByStoreIdAndOrderStatus(storeId, OrderStatus.DELIVERY_COMPLETED);

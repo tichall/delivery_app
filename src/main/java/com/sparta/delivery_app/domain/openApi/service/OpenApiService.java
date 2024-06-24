@@ -31,7 +31,7 @@ public class OpenApiService {
      * @param isDesc
      * @return
      */
-    public StorePageResponseDto findStores(Integer pageNum, Boolean isDesc) {
+    public StorePageResponseDto findStores(final Integer pageNum, final Boolean isDesc) {
 
         Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
 
@@ -58,7 +58,7 @@ public class OpenApiService {
      * @param isDesc
      * @return
      */
-    public ReviewPageResponseDto findReviews(Integer pageNum, Boolean isDesc) {
+    public ReviewPageResponseDto findReviews(final Integer pageNum, final Boolean isDesc) {
         Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
 
         Page<UserReviews> reviewPage = openApiAdapter.queryReviews(pageable);
