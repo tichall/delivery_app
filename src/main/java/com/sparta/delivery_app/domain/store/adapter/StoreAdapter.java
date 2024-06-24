@@ -1,4 +1,4 @@
-package com.sparta.delivery_app.domain.store.adaptor;
+package com.sparta.delivery_app.domain.store.adapter;
 
 import com.sparta.delivery_app.common.exception.errorcode.StoreErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.StoreDuplicatedException;
@@ -18,7 +18,7 @@ import static com.sparta.delivery_app.common.exception.errorcode.StoreErrorCode.
 
 @Component
 @RequiredArgsConstructor
-public class StoreAdaptor {
+public class StoreAdapter {
 
     private final StoreRepository storeRepository;
 

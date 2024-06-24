@@ -4,7 +4,7 @@ import com.sparta.delivery_app.domain.openApi.dto.StoreDetailsResponseDto;
 import com.sparta.delivery_app.domain.review.entity.ReviewStatus;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import com.sparta.delivery_app.domain.review.repository.UserReviewsRepository;
-import com.sparta.delivery_app.domain.store.adaptor.StoreAdaptor;
+import com.sparta.delivery_app.domain.store.adapter.StoreAdapter;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.store.entity.StoreStatus;
 import com.sparta.delivery_app.domain.store.repository.StoreRepository;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class OpenApiAdapter {
 
     private final StoreRepository storeRepository;
-    private final StoreAdaptor storeAdaptor;
+    private final StoreAdapter storeAdapter;
     private final UserReviewsRepository userReviewsRepository;
 
     /**
@@ -36,7 +36,7 @@ public class OpenApiAdapter {
      */
     public StoreDetailsResponseDto queryMenusByStoreId(Long storeId) {
 
-        Store store = storeAdaptor.queryStoreById(storeId);
+        Store store = storeAdapter.queryStoreById(storeId);
         StoreStatus.checkStoreStatus(store);
 
         return new StoreDetailsResponseDto(store);

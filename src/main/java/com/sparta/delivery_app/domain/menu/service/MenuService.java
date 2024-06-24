@@ -1,10 +1,8 @@
 package com.sparta.delivery_app.domain.menu.service;
 
-import com.sparta.delivery_app.common.exception.errorcode.OrderErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.S3Exception;
-import com.sparta.delivery_app.common.globalcustomexception.StoreMenuMismatchException;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
-import com.sparta.delivery_app.domain.menu.adaptor.MenuAdaptor;
+import com.sparta.delivery_app.domain.menu.adapter.MenuAdapter;
 import com.sparta.delivery_app.domain.menu.dto.request.MenuAddRequestDto;
 import com.sparta.delivery_app.domain.menu.dto.request.MenuModifyRequestDto;
 import com.sparta.delivery_app.domain.menu.dto.response.MenuAddResponseDto;
@@ -12,9 +10,9 @@ import com.sparta.delivery_app.domain.menu.dto.response.MenuModifyResponseDto;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
 import com.sparta.delivery_app.domain.s3.service.S3Uploader;
 import com.sparta.delivery_app.domain.s3.util.S3Utils;
-import com.sparta.delivery_app.domain.store.adaptor.StoreAdaptor;
+import com.sparta.delivery_app.domain.store.adapter.StoreAdapter;
 import com.sparta.delivery_app.domain.store.entity.Store;
-import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
+import com.sparta.delivery_app.domain.user.adapter.UserAdapter;
 import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,16 +21,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 
-import static com.sparta.delivery_app.domain.user.entity.UserStatus.checkManagerEnable;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MenuService {
 
-    private final MenuAdaptor menuAdaptor;
-    private final StoreAdaptor storeAdaptor;
-    private final UserAdaptor userAdaptor;
+    private final MenuAdapter menuAdaptor;
+    private final StoreAdapter storeAdaptor;
+    private final UserAdapter userAdaptor;
     private final S3Uploader s3Uploader;
 
     /**
@@ -88,6 +85,7 @@ public class MenuService {
         }
 
         Menu updateMenu = menu.updateMenu(requestDto);
+
         return MenuModifyResponseDto.of(updateMenu);
     }
 

@@ -6,10 +6,10 @@ import com.sparta.delivery_app.common.globalcustomexception.ReviewDuplicatedExce
 import com.sparta.delivery_app.common.globalcustomexception.ReviewNotFoundException;
 import com.sparta.delivery_app.common.globalcustomexception.S3Exception;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
-import com.sparta.delivery_app.domain.order.adaptor.OrderAdaptor;
+import com.sparta.delivery_app.domain.order.adapter.OrderAdapter;
 import com.sparta.delivery_app.domain.order.entity.Order;
 import com.sparta.delivery_app.domain.order.entity.OrderStatus;
-import com.sparta.delivery_app.domain.review.adaptor.UserReviewsAdaptor;
+import com.sparta.delivery_app.domain.review.adapter.UserReviewsAdapter;
 import com.sparta.delivery_app.domain.review.dto.request.UserReviewAddRequestDto;
 import com.sparta.delivery_app.domain.review.dto.request.UserReviewModifyRequestDto;
 import com.sparta.delivery_app.domain.review.dto.response.UserReviewAddResponseDto;
@@ -18,7 +18,7 @@ import com.sparta.delivery_app.domain.review.entity.ReviewStatus;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import com.sparta.delivery_app.domain.s3.service.S3Uploader;
 import com.sparta.delivery_app.domain.s3.util.S3Utils;
-import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
+import com.sparta.delivery_app.domain.user.adapter.UserAdapter;
 import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,10 +31,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class UserReviewsService {
 
-    private final UserReviewsAdaptor userReviewsAdaptor;
-    private final OrderAdaptor orderAdaptor;
-    private final UserAdaptor userAdaptor;
+    private final UserReviewsAdapter userReviewsAdaptor;
+    private final OrderAdapter orderAdaptor;
+    private final UserAdapter userAdaptor;
     private final S3Uploader s3Uploader;
+
 
     @Transactional
     public UserReviewAddResponseDto addReview(MultipartFile file, final Long orderId, final UserReviewAddRequestDto requestDto, AuthenticationUser user) {

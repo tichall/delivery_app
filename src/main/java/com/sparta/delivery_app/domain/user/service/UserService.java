@@ -3,8 +3,8 @@ package com.sparta.delivery_app.domain.user.service;
 import com.sparta.delivery_app.common.exception.errorcode.UserErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.UserPasswordMismatchException;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
-import com.sparta.delivery_app.domain.user.adaptor.PasswordHistoryAdaptor;
-import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
+import com.sparta.delivery_app.domain.user.adapter.PasswordHistoryAdapter;
+import com.sparta.delivery_app.domain.user.adapter.UserAdapter;
 import com.sparta.delivery_app.domain.user.dto.request.*;
 import com.sparta.delivery_app.domain.user.dto.response.ConsumersSignupResponseDto;
 import com.sparta.delivery_app.domain.user.dto.response.ManagersSignupResponseDto;
@@ -25,8 +25,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserAdaptor userAdaptor;
-    private final PasswordHistoryAdaptor passwordHistoryAdaptor;
+    private final UserAdapter userAdapter;
+    private final PasswordHistoryAdapter passwordHistoryAdapter;
     private final PasswordEncoder passwordEncoder;
 
     /**
@@ -35,7 +35,7 @@ public class UserService {
      * @return 회원가입 정보 email, nickname
      */
     public ConsumersSignupResponseDto consumersUserAdd(final ConsumersSignupRequestDto requestDto) {
-        userAdaptor.checkDuplicateEmail(requestDto.email());
+        userAdapter.checkDuplicateEmail(requestDto.email());
 
         User userData = User.saveUser(requestDto);
 
@@ -43,8 +43,8 @@ public class UserService {
                 userData, passwordEncoder.encode(requestDto.password())
         );
 
-        userAdaptor.saveUser(userData);
-        passwordHistoryAdaptor.savePasswordHistory(passwordHistory);
+        userAdapter.saveUser(userData);
+        passwordHistoryAdapter.savePasswordHistory(passwordHistory);
 
         return ConsumersSignupResponseDto.of(userData);
     }
@@ -55,7 +55,7 @@ public class UserService {
      * @return 회원가입 정보 email, nickname
      */
     public ManagersSignupResponseDto managersUserAdd(final ManagersSignupRequestDto requestDto) {
-        userAdaptor.checkDuplicateEmail(requestDto.email());
+        userAdapter.checkDuplicateEmail(requestDto.email());
 
         User userData = User.saveUser(requestDto);
 
@@ -63,8 +63,8 @@ public class UserService {
                 userData, passwordEncoder.encode(requestDto.password())
         );
 
-        userAdaptor.saveUser(userData);
-        passwordHistoryAdaptor.savePasswordHistory(passwordHistoryData);
+        userAdapter.saveUser(userData);
+        passwordHistoryAdapter.savePasswordHistory(passwordHistoryData);
         return ManagersSignupResponseDto.of(userData);
     }
 
@@ -75,8 +75,8 @@ public class UserService {
      */
     @Transactional
     public void resignUser(AuthenticationUser user, final UserResignRequestDto userResignRequestDto) {
-        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
-        PasswordHistory passwordHistory = passwordHistoryAdaptor.queryPasswordHistoryTop1ByUser(findUser);
+        User findUser = userAdapter.queryUserByEmailAndStatus(user.getUsername());
+        PasswordHistory passwordHistory = passwordHistoryAdapter.queryPasswordHistoryTop1ByUser(findUser);
 
         if (!passwordEncoder.matches(userResignRequestDto.password(), passwordHistory.getPassword())) {
             log.error("기존 비밀번호와 불일치");
@@ -94,8 +94,8 @@ public class UserService {
      */
     @Transactional
     public UserProfileModifyResponseDto modifyProfileUser(AuthenticationUser user,final  UserProfileModifyRequestDto requestDto) {
-        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
-        PasswordHistory passwordHistory = passwordHistoryAdaptor.queryPasswordHistoryTop1ByUser(findUser);
+        User findUser = userAdapter.queryUserByEmailAndStatus(user.getUsername());
+        PasswordHistory passwordHistory = passwordHistoryAdapter.queryPasswordHistoryTop1ByUser(findUser);
 
         if (!passwordEncoder.matches(requestDto.password(), passwordHistory.getPassword())) {
             log.error("기존 비밀번호와 불일치");
@@ -113,8 +113,8 @@ public class UserService {
      */
     @Transactional
     public void modifyPasswordUser(AuthenticationUser user, final UserPasswordModifyRequestDto requestDto) {
-        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
-        List<PasswordHistory> passwordhistoryList = passwordHistoryAdaptor.queryPasswordHistoryTop4ByUser(findUser);
+        User findUser = userAdapter.queryUserByEmailAndStatus(user.getUsername());
+        List<PasswordHistory> passwordhistoryList = passwordHistoryAdapter.queryPasswordHistoryTop4ByUser(findUser);
 
         for (int i = 0; i < passwordhistoryList.size(); i++) {
             if ((i == 0) && !passwordEncoder.matches(requestDto.password(), passwordhistoryList.get(i).getPassword())) {
@@ -128,6 +128,6 @@ public class UserService {
         }
 
         PasswordHistory passwordHistory = PasswordHistory.savePasswordHistory(findUser, passwordEncoder.encode(requestDto.newPassword()));
-        passwordHistoryAdaptor.savePasswordHistory(passwordHistory);
+        passwordHistoryAdapter.savePasswordHistory(passwordHistory);
     }
 }

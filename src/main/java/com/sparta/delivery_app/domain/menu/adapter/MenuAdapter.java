@@ -1,4 +1,4 @@
-package com.sparta.delivery_app.domain.menu.adaptor;
+package com.sparta.delivery_app.domain.menu.adapter;
 
 import com.sparta.delivery_app.common.exception.errorcode.MenuErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.MenuNotFoundException;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class MenuAdaptor {
+public class MenuAdapter {
 
     private final MenuRepository menuRepository;
 

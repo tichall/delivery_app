@@ -1,4 +1,4 @@
-package com.sparta.delivery_app.domain.review.adaptor;
+package com.sparta.delivery_app.domain.review.adapter;
 
 import com.sparta.delivery_app.common.exception.errorcode.ReviewErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.ReviewDuplicatedException;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class UserReviewsAdaptor {
+public class UserReviewsAdapter {
 
     private final UserReviewsRepository userReviewsRepository;
 

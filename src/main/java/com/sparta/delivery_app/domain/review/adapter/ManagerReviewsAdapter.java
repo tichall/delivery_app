@@ -1,20 +1,17 @@
-package com.sparta.delivery_app.domain.review.adaptor;
+package com.sparta.delivery_app.domain.review.adapter;
 
 import com.sparta.delivery_app.common.exception.errorcode.ReviewErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.ReviewNotFoundException;
 import com.sparta.delivery_app.common.globalcustomexception.ReviewStatusException;
 import com.sparta.delivery_app.domain.review.entity.ManagerReviews;
 import com.sparta.delivery_app.domain.review.entity.ManagerReviewsStatus;
-import com.sparta.delivery_app.domain.review.entity.ReviewStatus;
-import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import com.sparta.delivery_app.domain.review.repository.ManagerReviewsRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ManagerReviewsAdaptor {
+public class ManagerReviewsAdapter {
 
     private final ManagerReviewsRepository managerReviewsRepository;
 

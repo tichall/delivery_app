@@ -7,7 +7,7 @@ import com.sparta.delivery_app.common.security.errorcode.SecurityErrorCode;
 import com.sparta.delivery_app.common.security.exception.CustomSecurityException;
 import com.sparta.delivery_app.common.security.jwt.dto.AuthRequestDto;
 import com.sparta.delivery_app.common.security.jwt.dto.TokenDto;
-import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
+import com.sparta.delivery_app.domain.user.adapter.UserAdapter;
 import com.sparta.delivery_app.domain.user.entity.User;
 import com.sparta.delivery_app.domain.user.entity.UserStatus;
 import jakarta.servlet.FilterChain;
@@ -30,14 +30,14 @@ import static com.sparta.delivery_app.common.security.jwt.JwtConstants.REFRESH_T
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final ObjectMapper objectMapper;
     private final JwtUtil jwtUtil;
-    private final UserAdaptor userAdaptor;
+    private final UserAdapter userAdapter;
 
 
-    public JwtAuthenticationFilter(ObjectMapper objectMapper, JwtUtil jwtUtil, UserAdaptor userAdaptor
+    public JwtAuthenticationFilter(ObjectMapper objectMapper, JwtUtil jwtUtil, UserAdapter userAdapter
     ) {
         this.objectMapper = objectMapper;
         this.jwtUtil = jwtUtil;
-        this.userAdaptor = userAdaptor;
+        this.userAdapter = userAdapter;
         setFilterProcessesUrl("/api/v1/users/login");
     }
 
@@ -64,7 +64,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
         log.info("로그인 성공 및 JWT 토큰 발행");
 
-        User user = userAdaptor.queryUserByEmail(authResult.getName());
+        User user = userAdapter.queryUserByEmail(authResult.getName());
 
         if (user.getUserStatus() == UserStatus.DISABLE) {
             request.setAttribute("exception", new CustomSecurityException(SecurityErrorCode.RESIGN_USER));
@@ -75,7 +75,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String refreshTokenValue = tokenDto.getRefreshToken().substring(7);
         user.updateRefreshToken(refreshTokenValue);
 
-        userAdaptor.saveUser(user);
+        userAdapter.saveUser(user);
 
         loginSuccessResponse(response, tokenDto);
     }

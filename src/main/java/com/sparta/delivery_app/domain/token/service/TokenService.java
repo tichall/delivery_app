@@ -2,11 +2,10 @@ package com.sparta.delivery_app.domain.token.service;
 
 import com.sparta.delivery_app.common.globalcustomexception.TokenNotFoundException;
 import com.sparta.delivery_app.common.security.errorcode.SecurityErrorCode;
-import com.sparta.delivery_app.common.security.exception.CustomSecurityException;
 import com.sparta.delivery_app.common.security.jwt.JwtUtil;
 import com.sparta.delivery_app.common.security.jwt.dto.TokenDto;
 import com.sparta.delivery_app.domain.token.dto.TokenResponseDto;
-import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
+import com.sparta.delivery_app.domain.user.adapter.UserAdapter;
 import com.sparta.delivery_app.domain.user.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TokenService {
 
     private final JwtUtil jwtUtil;
-    private final UserAdaptor userAdaptor;
+    private final UserAdapter userAdapter;
 
     public String validateTokenExpire(HttpServletRequest request) {
         String accessTokenHeader = jwtUtil.getAccessTokenFromHeader(request);
@@ -41,7 +40,7 @@ public class TokenService {
     @Transactional
     public TokenResponseDto getFindUser(String refreshTokenHeader) {
         String email = jwtUtil.getUserInfoFromToken(refreshTokenHeader).getSubject();
-        User user = userAdaptor.queryUserByEmailAndStatus(email);
+        User user = userAdapter.queryUserByEmailAndStatus(email);
 
         if (user.getRefreshToken() == null) {
             throw new TokenNotFoundException(SecurityErrorCode.NOT_FOUND_TOKEN);

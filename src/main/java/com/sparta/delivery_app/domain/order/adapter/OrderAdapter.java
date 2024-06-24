@@ -1,4 +1,4 @@
-package com.sparta.delivery_app.domain.order.adaptor;
+package com.sparta.delivery_app.domain.order.adapter;
 
 import com.sparta.delivery_app.common.exception.errorcode.OrderErrorCode;
 import com.sparta.delivery_app.common.exception.errorcode.ReviewErrorCode;
@@ -20,7 +20,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class OrderAdaptor {
+public class OrderAdapter {
 
     private final OrderRepository orderRepository;
 
