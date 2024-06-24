@@ -78,7 +78,6 @@ public class AdminStoreService {
             }
         }
 
-
         return PageReviewPerStoreResponseDto.of(reviewDtoList, choiceStore);
     }
 
@@ -91,20 +90,26 @@ public class AdminStoreService {
      * @return
      */
     public PageTotalPricePerStoreResponseDto getEarning(
-            AuthenticationUser authenticationUser, Boolean isDesc,Integer pageNum,
+            AuthenticationUser authenticationUser, Boolean isDesc, Integer pageNum,
              Long storeId) {
 
         adminUserStatusCheck(authenticationUser);
 
-        Store findStore = storeAdapter.queryStoreById(storeId);
-        List<Menu> menuList = findStore.getMenuList();
+        // 스토어를 찾는다.
+        // 해당 스토어 아이디로 메뉴들을 찾는다.
+        // 해당 메뉴 아이디로 주문 내역을 찾는다.
+        // 주문 내역을 가져와 팔린 개수를 카운트한다.
+        // page 안에 dto를 넣어 반환한다..?
 
-        Map<Long, TotalPricePerStoreResponseDto> earningMap = new HashMap<>();
+        Store findStore = storeAdapter.queryStoreById(storeId);
+        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
+
+        Page<Menu> menuPage = menuAdapter.queryMenuListByStoreId(findStore.getId(), pageable);
+        PageUtil.validatePage(pageNum, menuPage);
 
         Long allMenuTotalEarning = 0L;
 
-        for (Menu menu : menuList) {
-            // 해당 매뉴의 판매수
+        Page<TotalPricePerStoreResponseDto> responsePage = menuPage.map(menu -> {
             Integer count = 0;
             List<OrderItem> orderItemList = orderItemRepository.findAllByMenu(menu);
 
@@ -117,12 +122,14 @@ public class AdminStoreService {
             // 메뉴별 수익
             Long specificMenuSum = menu.getMenuPrice() * count;
             //모든 메뉴 수익(특정매장 수익)
-            allMenuTotalEarning += specificMenuSum;
+            return TotalPricePerStoreResponseDto.of(menu, specificMenuSum);
+        });
 
-            TotalPricePerStoreResponseDto responseDto = TotalPricePerStoreResponseDto.of(menu, specificMenuSum);
-            earningMap.put(menu.getId(), responseDto);
+        for (TotalPricePerStoreResponseDto r : responsePage.getContent()) {
+            allMenuTotalEarning += r.getMenuTotalPrice();
         }
-        return PageTotalPricePerStoreResponseDto.of(pageNum, findStore, allMenuTotalEarning, earningMap);
+
+        return PageTotalPricePerStoreResponseDto.of(pageNum, findStore, allMenuTotalEarning, responsePage);
     }
 
     //(ADMIN 권한의) 유저 Status 가 ENABLE 인지 확인

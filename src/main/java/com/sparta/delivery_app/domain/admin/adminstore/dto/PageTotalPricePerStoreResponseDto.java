@@ -2,10 +2,13 @@ package com.sparta.delivery_app.domain.admin.adminstore.dto;
 
 
 import com.sparta.delivery_app.domain.admin.adminstore.dto.TotalPricePerStoreResponseDto;
+import com.sparta.delivery_app.domain.menu.entity.Menu;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.data.domain.Page;
 
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -16,23 +19,22 @@ public class PageTotalPricePerStoreResponseDto {
      * 페이징 처리 responseDto
      */
     private Integer currentPage;
-    private int totalMenu;
+    private Long totalMenu;
     private Long storeId;
     private String storeName;
     private Long specificStoreEarning;
-    private Map<Long, TotalPricePerStoreResponseDto> earningMap;
+    private List<TotalPricePerStoreResponseDto> earningMap;
 
     public static PageTotalPricePerStoreResponseDto of(
-            Integer currentPage, Store store, Long specificStoreEarning,
-            Map<Long, TotalPricePerStoreResponseDto> earningMap) {
+            Integer currentPage, Store store, Long specificStoreEarning, Page<TotalPricePerStoreResponseDto> menuPage) {
 
         return PageTotalPricePerStoreResponseDto.builder()
                 .currentPage(currentPage)
-                .totalMenu(earningMap.size())
+                .totalMenu(menuPage.getTotalElements())
                 .storeId(store.getId())
                 .storeName(store.getStoreName())
-                .earningMap(earningMap)
                 .specificStoreEarning(specificStoreEarning)
+                .earningMap(menuPage.stream().toList())
                 .build();
 
     }

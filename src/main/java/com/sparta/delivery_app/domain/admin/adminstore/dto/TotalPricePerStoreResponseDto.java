@@ -13,6 +13,7 @@ public class TotalPricePerStoreResponseDto {
     /**
      * menu hashMap 에 value 로 들어갈 responseDto
      */
+    private Long menuId;
     private String menuName;
     private Long menuPrice;
     private MenuStatus menuStatus;
@@ -20,6 +21,7 @@ public class TotalPricePerStoreResponseDto {
 
     public static TotalPricePerStoreResponseDto of(Menu menu, Long menuTotalPrice) {
         return TotalPricePerStoreResponseDto.builder()
+                .menuId(menu.getId())
                 .menuName(menu.getMenuName())
                 .menuPrice(menu.getMenuPrice())
                 .menuStatus(menu.getMenuStatus())
