@@ -23,7 +23,7 @@ public class PageUtil {
         return PageRequest.of(pageNum - 1, pageSize, sort);
     }
 
-    public static <T> String validatePage(Integer pageNum, Page<T> page) {
+    public static <T> String validateAndSummarizePage(Integer pageNum, Page<T> page) {
         if (page.getTotalElements() <= 0) {
             return NO_ELEMENT_MESSAGE;
         }

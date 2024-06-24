@@ -24,9 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.sparta.delivery_app.domain.user.entity.UserStatus.checkManagerEnable;
 
@@ -53,7 +51,7 @@ public class AdminStoreService {
         Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
 
         Page<Menu> menuPage = menuAdapter.queryMenuListByStoreId(storeId, pageable);
-        String totalMenu = PageUtil.validatePage(pageNum, menuPage);
+        String totalMenu = PageUtil.validateAndSummarizePage(pageNum, menuPage);
 
         return PageMenuPerStoreResponseDto.of(pageNum, totalMenu, choiceStore);
     }
@@ -84,7 +82,7 @@ public class AdminStoreService {
         int end = Math.min((start + pageable.getPageSize()), reviewDtoList.size());
         Page<ReviewPerStoreResponseDto> reviewPage = new PageImpl<>(reviewDtoList.subList(start, end), pageable, reviewDtoList.size());
 
-        String totalReview = PageUtil.validatePage(pageNum, reviewPage);
+        String totalReview = PageUtil.validateAndSummarizePage(pageNum, reviewPage);
 
         return PageReviewPerStoreResponseDto.of(pageNum, totalReview, choiceStore, reviewPage);
     }
@@ -107,7 +105,7 @@ public class AdminStoreService {
         Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
 
         Page<Menu> menuPage = menuAdapter.queryMenuListByStoreId(findStore.getId(), pageable);
-        String totalMenu = PageUtil.validatePage(pageNum, menuPage);
+        String totalMenu = PageUtil.validateAndSummarizePage(pageNum, menuPage);
 
         Long allMenuTotalEarning = 0L;
 

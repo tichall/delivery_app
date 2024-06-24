@@ -95,7 +95,7 @@ public class OrderService {
 
         Page<Order> orderPage = orderAdapter.queryOrdersByUserId(pageable, findUser.getId());
 
-        String totalOrder = PageUtil.validatePage(pageNum, orderPage);
+        String totalOrder = PageUtil.validateAndSummarizePage(pageNum, orderPage);
         return OrderPageResponseDto.of(pageNum, totalOrder, orderPage);
     }
 
