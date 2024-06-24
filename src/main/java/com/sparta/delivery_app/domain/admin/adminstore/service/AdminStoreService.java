@@ -2,13 +2,17 @@ package com.sparta.delivery_app.domain.admin.adminstore.service;
 
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.domain.admin.adminstore.dto.PageMenuPerStoreResponseDto;
+import com.sparta.delivery_app.domain.admin.adminstore.dto.PageTotalPricePerStoreResponseDto;
 import com.sparta.delivery_app.domain.admin.adminstore.dto.ReviewPerStoreResponseDto;
+import com.sparta.delivery_app.domain.admin.adminstore.dto.TotalPricePerStoreResponseDto;
 import com.sparta.delivery_app.domain.commen.page.util.PageUtil;
 import com.sparta.delivery_app.domain.menu.adaptor.MenuAdaptor;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
 import com.sparta.delivery_app.domain.order.adaptor.OrderAdaptor;
 import com.sparta.delivery_app.domain.order.entity.Order;
+import com.sparta.delivery_app.domain.order.entity.OrderItem;
 import com.sparta.delivery_app.domain.order.entity.OrderStatus;
+import com.sparta.delivery_app.domain.order.repository.OrderItemRepository;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import com.sparta.delivery_app.domain.store.adaptor.StoreAdaptor;
 import com.sparta.delivery_app.domain.store.entity.Store;
@@ -20,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +39,7 @@ public class AdminStoreService {
     private final StoreAdaptor storeAdaptor;
     private final UserAdaptor userAdaptor;
     private final OrderAdaptor orderAdaptor;
+    private final OrderItemRepository orderItemRepository;
 
     public PageMenuPerStoreResponseDto getMenuListPerStore(
             Long storeId, AuthenticationUser authenticationUser, final Integer pageNum, final Boolean isDesc) {
@@ -88,4 +94,49 @@ public class AdminStoreService {
         User adminUser = userAdaptor.queryUserByEmail(email);
         checkManagerEnable(adminUser);
     }
+
+
+    /**
+     * 특정 매장 메뉴별 총 판매 금액 조회
+     * @param pageNum
+     * @param sortBy
+     * @param isDesc
+     * @param storeId
+     * @return
+     */
+    public PageTotalPricePerStoreResponseDto getEarning(
+            Integer pageNum, String sortBy,
+            Boolean isDesc, Long storeId) {
+        Store findStore = storeAdaptor.queryStoreById(storeId);
+        List<Menu> menuList = findStore.getMenuList();
+
+        Map<Long, TotalPricePerStoreResponseDto> earningMap = new HashMap<>();
+
+        for(Menu menu : menuList) {
+            // 해당 매뉴의 판매수
+            Integer count = 0;
+            List<OrderItem> itemList = orderItemRepository.findAllByMenu(menu);
+
+            for(OrderItem item : itemList) {
+                if(item.getOrder().getOrderStatus().equals(OrderStatus.DELIVERY_COMPLETED)) {
+                    count += item.getQuantity();
+                }
+            }
+
+            Long sum = menu.getMenuPrice() * count;
+
+            TotalPricePerStoreResponseDto responseDto = TotalPricePerStoreResponseDto.of(menu, sum);
+
+            earningMap.put(menu.getId(), responseDto);
+        }
+
+        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, sortBy, isDesc);
+
+        Page<OrderItem> orderItemPage = orderItemRepository.findAll(pageable);
+
+        PageUtil.validatePage(pageNum, orderItemPage);
+
+        return PageTotalPricePerStoreResponseDto.of(pageNum, findStore, earningMap);
+    }
+
 }
