@@ -1,8 +1,8 @@
 package com.sparta.delivery_app.domain.token.service;
 
-
-import com.sparta.delivery_app.common.exception.errorcode.JwtPropertiesErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.TokenNotFoundException;
+import com.sparta.delivery_app.common.security.errorcode.SecurityErrorCode;
+import com.sparta.delivery_app.common.security.exception.CustomSecurityException;
 import com.sparta.delivery_app.common.security.jwt.JwtUtil;
 import com.sparta.delivery_app.common.security.jwt.dto.TokenDto;
 import com.sparta.delivery_app.domain.token.dto.TokenResponseDto;
@@ -27,12 +27,14 @@ public class TokenService {
 
         //access 또는 refresh가 없는 경우
         if (accessTokenHeader == null || refreshTokenHeader == null) {
-            throw new TokenNotFoundException(JwtPropertiesErrorCode.EXPIRED_JWT_TOKEN);
+            throw new TokenNotFoundException(SecurityErrorCode.NOT_FOUND_TOKEN);
         }
+
         //refresh token이 유효하지 않은 경우
         if (!jwtUtil.validateToken(request, refreshTokenHeader)) {
-            throw new TokenNotFoundException(JwtPropertiesErrorCode.TOKEN_NOT_FOUND);
+            throw new TokenNotFoundException(SecurityErrorCode.INVALID_JWT_SIGNATURE);
         }
+        System.out.println("444444");
         return refreshTokenHeader;
     }
 
