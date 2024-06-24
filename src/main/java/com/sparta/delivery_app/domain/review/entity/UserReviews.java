@@ -54,9 +54,8 @@ public class UserReviews extends BaseTimeEntity {
         this.reviewStatus = reviewStatus;
     }
 
-    //Entity -> DTO로 변환
     @Builder
-    public static UserReviews of(Order order, User user, UserReviewRequestDto requestDto) {
+    public static UserReviews saveReview(Order order, User user, UserReviewRequestDto requestDto) {
         return UserReviews.builder()
                 .content(requestDto.getContent())
                 .reviewImagePath(requestDto.getReviewImagePath())
@@ -67,10 +66,11 @@ public class UserReviews extends BaseTimeEntity {
                 .build();
     }
 
-    public void updateReview(UserReviewRequestDto requestDto) {
+    public UserReviews updateReview(UserReviewRequestDto requestDto) {
         this.content = requestDto.getContent();
         this.reviewImagePath = requestDto.getReviewImagePath();
         this.rating = requestDto.getRating();
+        return this;
     }
 
     public void deleteReview() {

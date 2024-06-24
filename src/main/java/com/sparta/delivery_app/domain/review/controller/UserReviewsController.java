@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1/reviews")
 public class UserReviewsController {
 
     private final UserReviewsService userReviewsService;
 
-    @PostMapping("/orders/{orderId}/reviews")
+    @PostMapping("/{orderId}")
     public ResponseEntity<RestApiResponse<UserReviewResponseDto>> create(
-            @PathVariable Long orderId,
+            @PathVariable final Long orderId,
             @Valid @RequestBody UserReviewRequestDto requestDto,
             @AuthenticationPrincipal AuthenticationUser user) {
 
@@ -33,21 +33,21 @@ public class UserReviewsController {
                 .body(RestApiResponse.of("리뷰가 등록되었습니다.", responseDto));
     }
 
-    @PutMapping("/reviews/{reviewId}")
+    @PutMapping("/{orderId}")
     public ResponseEntity<RestApiResponse<UserReviewResponseDto>> update(
-            @PathVariable Long reviewId,
+            @PathVariable final Long orderId,
             @Valid @RequestBody UserReviewRequestDto requestDto,
             @AuthenticationPrincipal AuthenticationUser user) {
 
-        UserReviewResponseDto responseDto = userReviewsService.modifyReview(reviewId, requestDto, user);
+        UserReviewResponseDto responseDto = userReviewsService.modifyReview(orderId, requestDto, user);
 
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("리뷰가 수정되었습니다.", responseDto));
     }
 
-    @DeleteMapping("/reviews/{reviewId}")
+    @DeleteMapping("{reviewId}")
     public ResponseEntity<RestApiResponse<Object>> delete(
-            @PathVariable Long reviewId,
+            @PathVariable final Long reviewId,
             @AuthenticationPrincipal AuthenticationUser user) {
 
         userReviewsService.deleteReview(reviewId, user);

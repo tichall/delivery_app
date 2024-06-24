@@ -1,13 +1,15 @@
 package com.sparta.delivery_app.domain.review.service;
 
 import com.sparta.delivery_app.common.exception.errorcode.ReviewErrorCode;
-import com.sparta.delivery_app.common.globalcustomexception.ReviewAccessDeniedException;
+import com.sparta.delivery_app.common.globalcustomexception.ReviewNotFoundException;
+import com.sparta.delivery_app.common.globalcustomexception.ReviewStatusException;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.domain.order.adaptor.OrderAdaptor;
 import com.sparta.delivery_app.domain.order.entity.Order;
 import com.sparta.delivery_app.domain.review.adaptor.UserReviewsAdaptor;
 import com.sparta.delivery_app.domain.review.dto.request.UserReviewRequestDto;
 import com.sparta.delivery_app.domain.review.dto.response.UserReviewResponseDto;
+import com.sparta.delivery_app.domain.review.entity.ReviewStatus;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
 import com.sparta.delivery_app.domain.user.entity.User;
@@ -25,44 +27,62 @@ public class UserReviewsService {
     private final OrderAdaptor orderAdaptor;
     private final UserAdaptor userAdaptor;
 
-    public UserReviewResponseDto addReview(Long orderId, UserReviewRequestDto requestDto, AuthenticationUser user) {
+    public UserReviewResponseDto addReview(final Long orderId, UserReviewRequestDto requestDto, AuthenticationUser user) {
+        // 주문이 등록되어있는가? -> 주문이 없다면 예외
         Order order = orderAdaptor.queryOrderById(orderId);
+
+        // 사용자 확인
         User userData = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
-        UserReviews userReviews = UserReviews.of(order, userData, requestDto);
 
-        userReviewsAdaptor.saveReview(userReviews);
+        UserReviews savedReview = UserReviews.saveReview(order, userData, requestDto);
 
-        return UserReviewResponseDto.of(userReviews);
+        userReviewsAdaptor.saveReview(savedReview);
+
+        return UserReviewResponseDto.of(savedReview);
+    }
+
+    public UserReviewResponseDto modifyReview(final Long orderId, UserReviewRequestDto requestDto, AuthenticationUser user) {
+        // 주문이 등록되어있는가? -> 주문이 없다면 예외
+        Order order = orderAdaptor.queryOrderById(orderId);
+
+        // 사용자 확인
+        User userData = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
+
+        // 사용자 리뷰가 있는지 확인
+        UserReviews userReviews = order.getUserReviews();
+        if (userReviews == null) {
+            throw new ReviewNotFoundException(ReviewErrorCode.INVALID_REVIEW);
+        }
+
+        // 사용자 리뷰가 삭제되어 있을때 예외
+        if (userReviews.getReviewStatus().equals(ReviewStatus.DISABLE)) {
+            throw new ReviewStatusException(ReviewErrorCode.DELETED_REVIEW);
+        }
+
+//        수정권한 확인
+//        if (!userReviews.getUser().getId().equals(userData.getId())) {
+//            throw new ReviewAccessDeniedException(ReviewErrorCode.NOT_AUTHORITY_TO_UPDATE_REVIEW);
+//        }
+
+        // 리뷰 업데이트(return this 사용)
+        UserReviews updatedReview = userReviews.updateReview(requestDto);
+
+        //entity -> Dto 로 변환 후 리턴
+        return UserReviewResponseDto.of(updatedReview);
     }
 
     @Transactional
-    public UserReviewResponseDto modifyReview(Long reviewId, UserReviewRequestDto requestDto, AuthenticationUser user) {
+    public void deleteReview(final Long reviewId, AuthenticationUser user) {
 
+        // 리뷰ID 존재하는지 확인 + 이미 삭제가 되었는지 확인
         UserReviews userReviews = userReviewsAdaptor.checkValidReviewByIdAndReviewStatus(reviewId);
+
+        // 사용자 확인
         User userData = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
 
-        if (!userReviews.getUser().getId().equals(userData.getId())) {
-            throw new ReviewAccessDeniedException(ReviewErrorCode.NOT_AUTHORITY_TO_UPDATE_REVIEW);
-        }
-
-        userReviews.updateReview(requestDto);
-
-        return new UserReviewResponseDto(userReviews.getOrder().getStore().getStoreName(),
-                userReviews.getUser().getNickName(),
-                userReviews.getContent(),
-                userReviews.getReviewImagePath(),
-                userReviews.getRating());
-    }
-
-    @Transactional
-    public void deleteReview(Long reviewId, AuthenticationUser user) {
-
-        UserReviews userReviews = userReviewsAdaptor.checkValidReviewByIdAndReviewStatus(reviewId);
-        User userData = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
-
-        if (!userReviews.getUser().getId().equals(userData.getId())) {
-            throw new ReviewAccessDeniedException(ReviewErrorCode.NOT_AUTHORITY_TO_DELETE_REVIEW);
-        }
+//        if (!userReviews.getUser().getId().equals(userData.getId())) {
+//            throw new ReviewAccessDeniedException(ReviewErrorCode.NOT_AUTHORITY_TO_DELETE_REVIEW);
+//        }
 
         userReviews.deleteReview();
     }
