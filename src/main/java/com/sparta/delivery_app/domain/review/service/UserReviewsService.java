@@ -5,17 +5,17 @@ import com.sparta.delivery_app.common.globalcustomexception.ReviewAccessDeniedEx
 import com.sparta.delivery_app.common.globalcustomexception.ReviewDuplicatedException;
 import com.sparta.delivery_app.common.globalcustomexception.ReviewNotFoundException;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
-import com.sparta.delivery_app.domain.order.adaptor.OrderAdaptor;
+import com.sparta.delivery_app.domain.order.adapter.OrderAdapter;
 import com.sparta.delivery_app.domain.order.entity.Order;
 import com.sparta.delivery_app.domain.order.entity.OrderStatus;
-import com.sparta.delivery_app.domain.review.adaptor.UserReviewsAdaptor;
+import com.sparta.delivery_app.domain.review.adapter.UserReviewsAdapter;
 import com.sparta.delivery_app.domain.review.dto.request.UserReviewAddRequestDto;
 import com.sparta.delivery_app.domain.review.dto.request.UserReviewModifyRequestDto;
 import com.sparta.delivery_app.domain.review.dto.response.UserReviewAddResponseDto;
 import com.sparta.delivery_app.domain.review.dto.response.UserReviewModifyResponseDto;
 import com.sparta.delivery_app.domain.review.entity.ReviewStatus;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
-import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
+import com.sparta.delivery_app.domain.user.adapter.UserAdapter;
 import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,16 +27,16 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserReviewsService {
 
-    private final UserReviewsAdaptor userReviewsAdaptor;
-    private final OrderAdaptor orderAdaptor;
-    private final UserAdaptor userAdaptor;
+    private final UserReviewsAdapter userReviewsAdapter;
+    private final OrderAdapter orderAdapter;
+    private final UserAdapter userAdapter;
 
     public UserReviewAddResponseDto addReview(final Long orderId, final UserReviewAddRequestDto requestDto, AuthenticationUser user) {
         // 사용자 확인
-        User userData = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
+        User userData = userAdapter.queryUserByEmailAndStatus(user.getUsername());
 
         // 주문이 등록되어있는가? -> 주문이 없다면 예외
-        Order order = orderAdaptor.queryOrderById(orderId);
+        Order order = orderAdapter.queryOrderById(orderId);
         if (!order.getUser().getId().equals(userData.getId())) {
             throw new ReviewAccessDeniedException(ReviewErrorCode.NOT_AUTHORITY_TO_CREATED_REVIEW);
         }
@@ -52,7 +52,7 @@ public class UserReviewsService {
 
         UserReviews savedReview = UserReviews.saveReview(order, userData, requestDto);
 
-        userReviewsAdaptor.saveReview(savedReview);
+        userReviewsAdapter.saveReview(savedReview);
 
         return UserReviewAddResponseDto.of(savedReview);
     }
@@ -60,10 +60,10 @@ public class UserReviewsService {
     @Transactional
     public UserReviewModifyResponseDto modifyReview(final Long orderId, final UserReviewModifyRequestDto requestDto, AuthenticationUser user) {
         // 사용자 확인
-        User userData = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
+        User userData = userAdapter.queryUserByEmailAndStatus(user.getUsername());
 
         // 주문이 등록되어있는가? -> 주문이 없다면 예외
-        Order order = orderAdaptor.queryOrderById(orderId);
+        Order order = orderAdapter.queryOrderById(orderId);
         if (!order.getUser().getId().equals(userData.getId())) {
             throw new ReviewAccessDeniedException(ReviewErrorCode.NOT_AUTHORITY_TO_UPDATE_REVIEW);
         }
@@ -93,10 +93,10 @@ public class UserReviewsService {
     public void deleteReview(final Long reviewId, AuthenticationUser user) {
 
         // 사용자 확인
-        User userData = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
+        User userData = userAdapter.queryUserByEmailAndStatus(user.getUsername());
 
         // 리뷰ID 존재하는지 확인 + 이미 삭제가 되었는지 확인
-        UserReviews userReviews = userReviewsAdaptor.checkValidReviewByIdAndReviewStatus(reviewId);
+        UserReviews userReviews = userReviewsAdapter.checkValidReviewByIdAndReviewStatus(reviewId);
 
         if (!userReviews.getUser().getId().equals(userData.getId())) {
             throw new ReviewAccessDeniedException(ReviewErrorCode.NOT_AUTHORITY_TO_DELETE_REVIEW);

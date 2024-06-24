@@ -16,7 +16,7 @@ public class ReviewPerStoreResponseDto {
 
     //기본 속성
     private Long orderId;
-    private Long storeId;
+//    private Long storeId;
 
     //userReview 속성
     private Long userReviewId;
@@ -33,12 +33,11 @@ public class ReviewPerStoreResponseDto {
     private String managerReviewContent;
     private ManagerReviewsStatus managerReviewsStatus;
 
-    public static ReviewPerStoreResponseDto of(Long storeId, UserReviews userReview) {
+    public static ReviewPerStoreResponseDto of(UserReviews userReview) {
 
         ManagerReviews managerReview = userReview.getManagerReviews();
 
         return ReviewPerStoreResponseDto.builder()
-                .storeId(storeId)
                 .orderId(userReview.getOrder().getId())
                 .userReviewId(userReview.getId())
                 .rating(userReview.getRating())

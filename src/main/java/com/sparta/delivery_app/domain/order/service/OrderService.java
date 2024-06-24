@@ -4,11 +4,11 @@ import com.sparta.delivery_app.common.exception.errorcode.OrderErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.TotalPriceException;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.domain.commen.page.util.PageUtil;
-import com.sparta.delivery_app.domain.menu.adaptor.MenuAdaptor;
+import com.sparta.delivery_app.domain.menu.adapter.MenuAdapter;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
 import com.sparta.delivery_app.domain.menu.entity.MenuStatus;
 import com.sparta.delivery_app.domain.menu.service.MenuService;
-import com.sparta.delivery_app.domain.order.adaptor.OrderAdaptor;
+import com.sparta.delivery_app.domain.order.adapter.OrderAdapter;
 import com.sparta.delivery_app.domain.order.dto.request.MenuItemRequestDto;
 import com.sparta.delivery_app.domain.order.dto.request.OrderAddRequestDto;
 import com.sparta.delivery_app.domain.order.dto.response.OrderAddResponseDto;
@@ -17,9 +17,9 @@ import com.sparta.delivery_app.domain.order.dto.response.OrderPageResponseDto;
 import com.sparta.delivery_app.domain.order.entity.Order;
 import com.sparta.delivery_app.domain.order.entity.OrderItem;
 import com.sparta.delivery_app.domain.order.entity.OrderStatus;
-import com.sparta.delivery_app.domain.store.adaptor.StoreAdaptor;
+import com.sparta.delivery_app.domain.store.adapter.StoreAdapter;
 import com.sparta.delivery_app.domain.store.entity.Store;
-import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
+import com.sparta.delivery_app.domain.user.adapter.UserAdapter;
 import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,10 +34,10 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-    private final OrderAdaptor orderAdaptor;
-    private final UserAdaptor userAdaptor;
-    private final StoreAdaptor storeAdaptor;
-    private final MenuAdaptor menuAdaptor;
+    private final OrderAdapter orderAdapter;
+    private final UserAdapter userAdapter;
+    private final StoreAdapter storeAdapter;
+    private final MenuAdapter menuAdapter;
     private final MenuService menuService;
 
     /**
@@ -48,8 +48,8 @@ public class OrderService {
      */
     @Transactional
     public OrderAddResponseDto addOrder(AuthenticationUser user, final OrderAddRequestDto requestDto) {
-        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
-        Store store = storeAdaptor.queryStoreById(requestDto.storeId());
+        User findUser = userAdapter.queryUserByEmailAndStatus(user.getUsername());
+        Store store = storeAdapter.queryStoreById(requestDto.storeId());
         Long totalPrice;
 
         Order currentOrder = Order.saveOrder(findUser, store);
@@ -61,7 +61,7 @@ public class OrderService {
             throw new TotalPriceException(OrderErrorCode.TOTAL_PRICE_ERROR);
         }
 
-        orderAdaptor.saveOrder(currentOrder);
+        orderAdapter.saveOrder(currentOrder);
         return OrderAddResponseDto.of(currentOrder, totalPrice);
     }
 
@@ -72,8 +72,8 @@ public class OrderService {
      * @return OrderGetResponseDto 조회된 주문 정보
      */
     public OrderGetResponseDto findOrder(AuthenticationUser user, final Long orderId) {
-        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
-        Order findOrder = orderAdaptor.queryOrderByIdAndUserId(findUser.getId(), orderId);
+        User findUser = userAdapter.queryUserByEmailAndStatus(user.getUsername());
+        Order findOrder = orderAdapter.queryOrderByIdAndUserId(findUser.getId(), orderId);
         return OrderGetResponseDto.of(findOrder);
     }
 
@@ -89,11 +89,11 @@ public class OrderService {
             final Integer pageNum,
             final Boolean isDesc
     ) {
-        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
+        User findUser = userAdapter.queryUserByEmailAndStatus(user.getUsername());
 
         Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
 
-        Page<Order> orderPage = orderAdaptor.queryOrdersByUserId(pageable, findUser.getId());
+        Page<Order> orderPage = orderAdapter.queryOrdersByUserId(pageable, findUser.getId());
 
         PageUtil.validatePage(pageNum, orderPage);
         return OrderPageResponseDto.of(pageNum, orderPage);
@@ -104,7 +104,7 @@ public class OrderService {
      */
     @Transactional
     public void changeStatus(final Long orderId) {
-        Order findOrder = orderAdaptor.queryOrderById(orderId);
+        Order findOrder = orderAdapter.queryOrderById(orderId);
         findOrder.changeOrderStatus(OrderStatus.DELIVERY_COMPLETED);
     }
 
@@ -113,9 +113,9 @@ public class OrderService {
      */
     @Transactional
     public void changeStatusPrepare(final Long orderId, AuthenticationUser user) {
-        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
-        storeAdaptor.queryStoreId(findUser);
-        Order findOrder = orderAdaptor.queryOrderById(orderId);
+        User findUser = userAdapter.queryUserByEmailAndStatus(user.getUsername());
+        storeAdapter.queryStoreId(findUser);
+        Order findOrder = orderAdapter.queryOrderById(orderId);
         findOrder.changeOrderStatus(OrderStatus.IN_PREPARATION);
     }
 
@@ -124,9 +124,9 @@ public class OrderService {
      */
     @Transactional
     public void changeStatusDelivered(final Long orderId, AuthenticationUser user) {
-        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
-        storeAdaptor.queryStoreId(findUser);
-        Order findOrder = orderAdaptor.queryOrderById(orderId);
+        User findUser = userAdapter.queryUserByEmailAndStatus(user.getUsername());
+        storeAdapter.queryStoreId(findUser);
+        Order findOrder = orderAdapter.queryOrderById(orderId);
         findOrder.changeOrderStatus(OrderStatus.DELIVERY_COMPLETED);
     }
 
@@ -140,7 +140,7 @@ public class OrderService {
             Long menuId = menuItemRequestDto.menuId();
             Integer quantity = menuItemRequestDto.quantity();
 
-            Menu menu = menuAdaptor.queryMenuById(menuId);
+            Menu menu = menuAdapter.queryMenuById(menuId);
 
             menu.checkStoreMenuMatch(menu, currentOrder.getStore().getId());
 

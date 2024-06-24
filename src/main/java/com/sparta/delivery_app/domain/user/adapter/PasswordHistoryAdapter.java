@@ -1,4 +1,4 @@
-package com.sparta.delivery_app.domain.user.adaptor;
+package com.sparta.delivery_app.domain.user.adapter;
 
 import com.sparta.delivery_app.common.exception.errorcode.CommonErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.global.GlobalServerException;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class PasswordHistoryAdaptor {
+public class PasswordHistoryAdapter {
     private final PasswordHistoryRepository passwordHistoryRepository;
 
     public PasswordHistory queryPasswordHistoryTop1ByUser(User user) {

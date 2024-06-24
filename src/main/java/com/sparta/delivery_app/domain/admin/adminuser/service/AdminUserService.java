@@ -2,7 +2,7 @@ package com.sparta.delivery_app.domain.admin.adminuser.service;
 
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.domain.admin.adminuser.dto.AdminUserResponseDto;
-import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
+import com.sparta.delivery_app.domain.user.adapter.UserAdapter;
 import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,19 +21,19 @@ import static com.sparta.delivery_app.domain.user.entity.UserStatus.checkManager
 @Service
 public class AdminUserService {
 
-    private final UserAdaptor userAdaptor;
+    private final UserAdapter userAdapter;
 
     public List<AdminUserResponseDto> getAllUserList(
             int page, int size, AuthenticationUser authenticationUser) {
 
         //ADMIN 권한의 유저 Status 가 ENABLE 인지 확인
         String email = authenticationUser.getUsername();
-        User enableUser = userAdaptor.queryUserByEmail(email);
+        User enableUser = userAdapter.queryUserByEmail(email);
         checkManagerEnable(enableUser);
 
         //페이지 정보 추출
         Pageable pageable = PageRequest.of(page, size);
-        Page<User> userPage = userAdaptor.queryAllUserPage(pageable);
+        Page<User> userPage = userAdapter.queryAllUserPage(pageable);
         String pageInfo = userPage.getNumber() + "/" + userPage.getTotalPages();
 
         //user 정보 추출
