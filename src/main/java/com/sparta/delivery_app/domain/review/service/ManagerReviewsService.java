@@ -71,6 +71,8 @@ public class ManagerReviewsService {
 
         // 주문 존재 확인
         Order orderData = orderAdaptor.queryOrderById(orderId);
+
+        // 가게 사장과 유저가 같은 사람인지 확인( 사장=유저(manager) 여야함)
         if (!orderData.getStore().getUser().getId().equals(userData.getId())) {
             throw new ReviewAccessDeniedException(ReviewErrorCode.NOT_AUTHORITY_TO_UPDATE_REVIEW);
         }

@@ -2,6 +2,7 @@ package com.sparta.delivery_app.domain.review.service;
 
 import com.sparta.delivery_app.common.exception.errorcode.ReviewErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.ReviewAccessDeniedException;
+import com.sparta.delivery_app.common.globalcustomexception.ReviewDuplicatedException;
 import com.sparta.delivery_app.common.globalcustomexception.ReviewNotFoundException;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.domain.order.adaptor.OrderAdaptor;
@@ -12,6 +13,7 @@ import com.sparta.delivery_app.domain.review.dto.request.UserReviewModifyRequest
 import com.sparta.delivery_app.domain.review.dto.request.UserReviewAddRequestDto;
 import com.sparta.delivery_app.domain.review.dto.response.UserReviewModifyResponseDto;
 import com.sparta.delivery_app.domain.review.dto.response.UserReviewAddResponseDto;
+import com.sparta.delivery_app.domain.review.entity.ManagerReviews;
 import com.sparta.delivery_app.domain.review.entity.ReviewStatus;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
@@ -43,6 +45,12 @@ public class UserReviewsService {
         // 배달 상태 확인
         OrderStatus.checkOrderStatus(order);
 
+        // 주문에 이미 리뷰가 존재하는지 확인
+        UserReviews userReviews = order.getUserReviews();
+        if (userReviews != null) {
+            throw new ReviewDuplicatedException(ReviewErrorCode.REVIEW_ALREADY_REGISTERED_ERROR);
+        }
+
         UserReviews savedReview = UserReviews.saveReview(order, userData, requestDto);
 
         userReviewsAdaptor.saveReview(savedReview);
@@ -67,7 +75,7 @@ public class UserReviewsService {
             throw new ReviewNotFoundException(ReviewErrorCode.INVALID_REVIEW);
         }
 
-//        수정권한 확인
+        // 수정권한 확인
         if (!userReviews.getUser().getId().equals(userData.getId())) {
             throw new ReviewAccessDeniedException(ReviewErrorCode.NOT_AUTHORITY_TO_UPDATE_REVIEW);
         }
