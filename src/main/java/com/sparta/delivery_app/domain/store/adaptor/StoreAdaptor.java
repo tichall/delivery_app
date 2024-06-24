@@ -42,7 +42,7 @@ public class StoreAdaptor {
                 );
     }
 
-    public Store queryStoreId(User user) {
+    public Store queryStoreId(User user) { // 메서드명 변경 필요 -> queryStoreByUser
         return storeRepository.findStoreByUser(user).orElseThrow(() ->
                 new StoreNotFoundException(StoreErrorCode.INVALID_STORE)
         );
@@ -62,13 +62,4 @@ public class StoreAdaptor {
         storeRepository.save(store);
     }
 
-    public Store findById(Long storeId) {
-        Optional<Store> store = storeRepository.findById(storeId);
-
-        if (!store.isEmpty()) {
-            throw new StoreNotFoundException(StoreErrorCode.INVALID_STORE);
-        }
-
-        return store.get();
-    }
 }
