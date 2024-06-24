@@ -12,8 +12,6 @@ public record UserReviewModifyRequestDto(
         @Size(min = 10, max = 255)
         String content,
 
-        String reviewImagePath,
-
         @NotNull(message = "별점을 등록해 주세요.")
         @Min(1) @Max(5)
         int rating

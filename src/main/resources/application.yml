@@ -1,6 +1,6 @@
 spring:
   application:
-    name: delivery_app
+  name: delivery_app
 
 ---
 spring:
@@ -15,7 +15,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         #show_sql: true
@@ -24,6 +24,24 @@ spring:
           CharSet: utf-8
           characterEncoding: utf-8
           useUnicode: true
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
+      enabled: true
+
+
+cloud:
+  aws:
+    s3:
+      bucket: b2-delivery-app
+    credentials:
+      accessKey: ${AWS_ACCESS_KEY}
+      secretKey: ${AWS_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
 
 logging.level:
   root: info

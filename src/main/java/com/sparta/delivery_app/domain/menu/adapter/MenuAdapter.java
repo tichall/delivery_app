@@ -64,4 +64,8 @@ public class MenuAdapter {
         return menuRepository.findAllMenuByStoreId(storeId, pageable);
     }
 
+    public void deleteTempMenu(Menu menu) {
+        menuRepository.delete(menu);
+    }
+
 }

@@ -15,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -33,10 +36,11 @@ public class MenuController {
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping
     public ResponseEntity<RestApiResponse<MenuAddResponseDto>> menuAdd(
-            @Valid @RequestBody final MenuAddRequestDto requestDto,
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            @Valid @RequestPart final MenuAddRequestDto requestDto,
             @AuthenticationPrincipal AuthenticationUser user
             ) {
-        final MenuAddResponseDto responseDto =  menuService.addMenu(requestDto, user);
+        final MenuAddResponseDto responseDto =  menuService.addMenu(file, requestDto, user);
 
         return ResponseEntity.status(StatusCode.CREATED.code)
                 .body(RestApiResponse.of("메뉴 등록에 성공 했습니다.", responseDto));
@@ -52,11 +56,12 @@ public class MenuController {
     @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/{menuId}")
     public ResponseEntity<RestApiResponse<MenuModifyResponseDto>> menuModify(
+            @RequestPart(value = "file", required = false) MultipartFile file,
             @PathVariable final Long menuId,
-            @Valid @RequestBody final MenuModifyRequestDto requestDto,
+            @Valid @RequestPart final MenuModifyRequestDto requestDto,
             @AuthenticationPrincipal AuthenticationUser user
     ) {
-        final MenuModifyResponseDto responseDto = menuService.modifyMenu(menuId, requestDto, user);
+        final MenuModifyResponseDto responseDto = menuService.modifyMenu(file, menuId, requestDto, user);
 
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("메뉴 수정에 성공 했습니다.", responseDto));
