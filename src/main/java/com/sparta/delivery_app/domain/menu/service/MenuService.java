@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 
 import static com.sparta.delivery_app.domain.user.entity.UserStatus.checkManagerEnable;
 
@@ -47,7 +46,7 @@ public class MenuService {
 
         Store findStore = storeAdaptor.queryStoreId(findUser);
 
-        Menu menu = Menu.of(findStore, requestDto);
+        Menu menu = Menu.saveMenu(findStore, requestDto);
         menuAdaptor.saveMenu(menu);
 
         if (S3Utils.isFileExists(file)) {
@@ -71,22 +70,24 @@ public class MenuService {
      * @return responseDto
      */
     @Transactional
-    public MenuModifyResponseDto modifyMenu(MultipartFile file, Long menuId, final MenuModifyRequestDto requestDto, AuthenticationUser user) {
+    public MenuModifyResponseDto modifyMenu(MultipartFile file, final Long menuId, final MenuModifyRequestDto requestDto, AuthenticationUser user) {
         User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
 
-        Store findStore = storeAdaptor.queryStoreId(findUser);
+        Store store = storeAdaptor.queryStoreId(findUser);
         Menu menu = menuAdaptor.queryMenuByIdAndMenuStatus(menuId);
 
-        checkStoreMenuMatch(menu, findStore.getId());
+        menu.checkStoreMenuMatch(menu, store.getId());
         if (S3Utils.isFileExists(file)) {
             try {
-                String menuImagePath = s3Uploader.saveMenuImage(file, findStore.getId(), menu.getId());
+                String menuImagePath = s3Uploader.saveMenuImage(file, store.getId(), menu.getId());
                 menu.updateMenuImagePath(menuImagePath);
             } catch(S3Exception e) {
                 throw new S3Exception(e.getErrorCode());
             }
         }
+
         menu.updateMenu(requestDto);
+//        Menu updateMenu = menu.updateMenu(requestDto);
         return MenuModifyResponseDto.of(menu);
     }
 
@@ -96,37 +97,13 @@ public class MenuService {
      * @param user
      */
     @Transactional
-    public void deleteMenu(Long menuId, AuthenticationUser user) {
-        User findUser = checkUserAuth(user);
+    public void deleteMenu(final Long menuId, AuthenticationUser user) {
+        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
 
         Store store = storeAdaptor.queryStoreId(findUser);
         Menu menu = menuAdaptor.queryMenuByIdAndMenuStatus(menuId);
 
-        checkStoreMenuMatch(menu, store.getId());
+        menu.checkStoreMenuMatch(menu, store.getId());
         menu.deleteMenu();
     }
-
-    /**
-     * 해당 메뉴가 사용자의 매장에 등록된 메뉴가 맞는지 검증
-     * @param menu
-     * @param storeId
-     */
-    public void checkStoreMenuMatch(Menu menu, Long storeId) {
-        if(!menu.getStore().getId().equals(storeId)) {
-            throw new StoreMenuMismatchException(OrderErrorCode.STORE_MENU_MISMATCH);
-        }
-    }
-
-    /**
-     * 사용자 인증
-     * @param user
-     * @return
-     */
-    private User checkUserAuth(AuthenticationUser user) {
-        User findUser = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
-        checkManagerEnable(findUser);
-
-        return findUser;
-    }
-
 }

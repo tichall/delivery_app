@@ -57,7 +57,7 @@ public class MenuController {
     @PutMapping("/{menuId}")
     public ResponseEntity<RestApiResponse<MenuModifyResponseDto>> menuModify(
             @RequestPart(value = "file", required = false) MultipartFile file,
-            @PathVariable Long menuId,
+            @PathVariable final Long menuId,
             @Valid @RequestPart final MenuModifyRequestDto requestDto,
             @AuthenticationPrincipal AuthenticationUser user
     ) {
@@ -75,7 +75,7 @@ public class MenuController {
     @PreAuthorize("hasRole('MANAGER')")
     @DeleteMapping("/{menuId}")
     public ResponseEntity<RestApiResponse<Void>> menuDelete(
-            @PathVariable Long menuId,
+            @PathVariable final Long menuId,
             @AuthenticationPrincipal AuthenticationUser user
     ) {
         menuService.deleteMenu(menuId, user);

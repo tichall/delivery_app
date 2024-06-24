@@ -1,5 +1,7 @@
 package com.sparta.delivery_app.domain.menu.entity;
 
+import com.sparta.delivery_app.common.exception.errorcode.OrderErrorCode;
+import com.sparta.delivery_app.common.globalcustomexception.StoreMenuMismatchException;
 import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
 import com.sparta.delivery_app.domain.menu.dto.request.MenuAddRequestDto;
 import com.sparta.delivery_app.domain.menu.dto.request.MenuModifyRequestDto;
@@ -51,8 +53,14 @@ public class Menu extends BaseTimeEntity {
         this.menuStatus = menuStatus;
     }
 
+    /**
+     * 메뉴 저장
+     * @param store
+     * @param requestDto
+     * @return
+     */
     @Builder
-    public static Menu of(Store store, final MenuAddRequestDto requestDto) {
+    public static Menu saveMenu(Store store, final MenuAddRequestDto requestDto) {
         return Menu.builder()
                 .store(store)
                 .menuName(requestDto.menuName())
@@ -62,17 +70,38 @@ public class Menu extends BaseTimeEntity {
                 .build();
     }
 
-    public void updateMenu(final MenuModifyRequestDto requestDto) {
+    public void updateMenuImagePath(String menuImagePath) {
+        this.menuImagePath = menuImagePath;
+    }
+
+    /**
+     * 메뉴 업데이트
+     * @param requestDto
+     * @return
+     */
+    public Menu updateMenu(final MenuModifyRequestDto requestDto) {
         this.menuName = requestDto.menuName();
         this.menuPrice = requestDto.menuPrice();
         this.menuInfo = requestDto.menuInfo();
+
+        return this;
     }
 
+    /**
+     * 메뉴 상태를 DISABLE로 변경
+     */
     public void deleteMenu() {
         this.menuStatus = MenuStatus.DISABLE;
     }
 
-    public void updateMenuImagePath(String menuImagePath) {
-        this.menuImagePath = menuImagePath;
+    /**
+     * 해당 메뉴가 사용자의 매장에 등록된 메뉴가 맞는지 검증
+     * @param menu
+     * @param storeId
+     */
+    public void checkStoreMenuMatch(Menu menu, Long storeId) {
+        if(!menu.getStore().getId().equals(storeId)) {
+            throw new StoreMenuMismatchException(OrderErrorCode.STORE_MENU_MISMATCH);
+        }
     }
 }

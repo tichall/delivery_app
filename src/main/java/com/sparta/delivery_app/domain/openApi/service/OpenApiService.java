@@ -48,7 +48,7 @@ public class OpenApiService {
      * @param storeId
      * @return
      */
-    public StoreDetailsResponseDto findMenus(Long storeId) {
+    public StoreDetailsResponseDto findMenus(final Long storeId) {
 
         return openApiAdapter.queryMenusByStoreId(storeId);
     }
