@@ -12,4 +12,6 @@ public interface UserReviewsRepository extends JpaRepository<UserReviews, Long> 
     Optional<Long> findManagerReviewIdById(Long reviewId);
 
     Page<UserReviews> findAllByReviewStatus(Pageable pageable, ReviewStatus reviewStatus);
+
+    UserReviews findUserReviewsByOrderId(Long orderId);
 }

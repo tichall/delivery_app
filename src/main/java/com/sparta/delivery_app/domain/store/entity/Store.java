@@ -66,15 +66,19 @@ public class Store extends BaseTimeEntity {
         this.status = status;
     }
 
-    public Store(final RegisterStoreRequestDto requestDto, User user) {
-        this.storeName = requestDto.storeName();
-        this.storeAddress = requestDto.storeAddress();
-        this.storeInfo = requestDto.storeInfo();
-        this.storeRegistrationNumber = requestDto.storeRegistrationNumber();
-        this.minTotalPrice = requestDto.minTotalPrice();
-        this.user = user;
-        this.status = StoreStatus.ENABLE;
+    @Builder
+    public static Store of (final RegisterStoreRequestDto requestDto, User user) {
+        return Store.builder()
+                .storeName(requestDto.storeName())
+                .storeAddress(requestDto.storeAddress())
+                .storeInfo(requestDto.storeInfo())
+                .storeRegistrationNumber(requestDto.storeRegistrationNumber())
+                .minTotalPrice(requestDto.minTotalPrice())
+                .user(user)
+                .status(StoreStatus.ENABLE)
+                .build();
     }
+
 
     public void modifyStore(final ModifyStoreRequestDto requestDto) {
         this.storeName = requestDto.storeName();
