@@ -11,13 +11,13 @@ import java.util.List;
 @Builder
 public class OrderPageResponseDto {
     private Integer currentPage;
-    private Long totalOrder;
+    private String totalOrder;
     private List<OrderGetResponseDto> orderList;
 
-    public static OrderPageResponseDto of(Integer currentPage, Page<Order> orderPage) {
+    public static OrderPageResponseDto of(Integer currentPage, String totalOrder, Page<Order> orderPage) {
         return OrderPageResponseDto.builder()
                 .currentPage(currentPage)
-                .totalOrder(orderPage.getTotalElements())
+                .totalOrder(totalOrder)
                 .orderList(orderPage.getContent().stream().map(OrderGetResponseDto::of).toList())
                 .build();
     }

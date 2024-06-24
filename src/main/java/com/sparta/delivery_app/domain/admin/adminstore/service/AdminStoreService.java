@@ -19,13 +19,12 @@ import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.sparta.delivery_app.domain.user.entity.UserStatus.checkManagerEnable;
 
@@ -52,9 +51,9 @@ public class AdminStoreService {
         Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
 
         Page<Menu> menuPage = menuAdapter.queryMenuListByStoreId(storeId, pageable);
-        PageUtil.validatePage(pageNum, menuPage);
+        String totalMenu = PageUtil.validateAndSummarizePage(pageNum, menuPage);
 
-        return PageMenuPerStoreResponseDto.of(pageNum, choiceStore);
+        return PageMenuPerStoreResponseDto.of(pageNum, totalMenu, choiceStore);
     }
 
     public PageReviewPerStoreResponseDto getReviewListPerStore(
@@ -64,7 +63,6 @@ public class AdminStoreService {
         adminUserStatusCheck(authenticationUser);
         Store choiceStore = storeAdapter.queryStoreById(storeId);
 
-        //storeId 와 OrderStatus.DELIVERY_COMPLETED 로 orderList 가져와서 하나씩 responseDto 에 담기
         List<Order> deliveredOrderList = orderAdapter.queryOrderListByStoreIdAndOrderStatus(storeId, OrderStatus.DELIVERY_COMPLETED);
         List<ReviewPerStoreResponseDto> reviewDtoList = new ArrayList<>();
 
@@ -78,8 +76,15 @@ public class AdminStoreService {
             }
         }
 
+        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
 
-        return PageReviewPerStoreResponseDto.of(reviewDtoList, choiceStore);
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), reviewDtoList.size());
+        Page<ReviewPerStoreResponseDto> reviewPage = new PageImpl<>(reviewDtoList.subList(start, end), pageable, reviewDtoList.size());
+
+        String totalReview = PageUtil.validateAndSummarizePage(pageNum, reviewPage);
+
+        return PageReviewPerStoreResponseDto.of(pageNum, totalReview, choiceStore, reviewPage);
     }
 
     /**
@@ -91,20 +96,20 @@ public class AdminStoreService {
      * @return
      */
     public PageTotalPricePerStoreResponseDto getEarning(
-            AuthenticationUser authenticationUser, Boolean isDesc,Integer pageNum,
+            AuthenticationUser authenticationUser, Boolean isDesc, Integer pageNum,
              Long storeId) {
 
         adminUserStatusCheck(authenticationUser);
 
         Store findStore = storeAdapter.queryStoreById(storeId);
-        List<Menu> menuList = findStore.getMenuList();
+        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
 
-        Map<Long, TotalPricePerStoreResponseDto> earningMap = new HashMap<>();
+        Page<Menu> menuPage = menuAdapter.queryMenuListByStoreId(findStore.getId(), pageable);
+        String totalMenu = PageUtil.validateAndSummarizePage(pageNum, menuPage);
 
         Long allMenuTotalEarning = 0L;
 
-        for (Menu menu : menuList) {
-            // 해당 매뉴의 판매수
+        Page<TotalPricePerStoreResponseDto> responsePage = menuPage.map(menu -> {
             Integer count = 0;
             List<OrderItem> orderItemList = orderItemRepository.findAllByMenu(menu);
 
@@ -117,12 +122,14 @@ public class AdminStoreService {
             // 메뉴별 수익
             Long specificMenuSum = menu.getMenuPrice() * count;
             //모든 메뉴 수익(특정매장 수익)
-            allMenuTotalEarning += specificMenuSum;
+            return TotalPricePerStoreResponseDto.of(menu, specificMenuSum);
+        });
 
-            TotalPricePerStoreResponseDto responseDto = TotalPricePerStoreResponseDto.of(menu, specificMenuSum);
-            earningMap.put(menu.getId(), responseDto);
+        for (TotalPricePerStoreResponseDto r : responsePage.getContent()) {
+            allMenuTotalEarning += r.getMenuTotalPrice();
         }
-        return PageTotalPricePerStoreResponseDto.of(pageNum, findStore, allMenuTotalEarning, earningMap);
+
+        return PageTotalPricePerStoreResponseDto.of(pageNum, totalMenu, findStore, allMenuTotalEarning, responsePage);
     }
 
     //(ADMIN 권한의) 유저 Status 가 ENABLE 인지 확인

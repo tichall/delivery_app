@@ -15,11 +15,12 @@ import java.util.List;
 public class PageMenuPerStoreResponseDto {
 
     private final Integer pageNum;
+    private final String totalMenu;
     private final Long storeId;
     private final String storeName;
     private final List<MenuPerStoreResponseDto> menuPerStoreList;
 
-    public static PageMenuPerStoreResponseDto of(Integer pageNum,Store store) {
+    public static PageMenuPerStoreResponseDto of(Integer pageNum, String totalMenu, Store store) {
         List<Order> orderList = store.getOrderList();
 
         List<MenuPerStoreResponseDto> menuDtoList = store.getMenuList().stream()
@@ -30,7 +31,7 @@ public class PageMenuPerStoreResponseDto {
                 .toList();
 
         return new PageMenuPerStoreResponseDto(
-                pageNum, store.getId(),
+                pageNum, totalMenu, store.getId(),
                 store.getStoreName(), menuDtoList
         );
     }

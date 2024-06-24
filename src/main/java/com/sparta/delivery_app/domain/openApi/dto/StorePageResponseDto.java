@@ -13,13 +13,13 @@ import java.util.List;
 public class StorePageResponseDto {
 
     private Integer currentPage;
-    private Long totalStore;
+    private String totalStore;
     private List<StoreListReadResponseDto> storeList;
 
-    public static StorePageResponseDto of(Integer currentPage, Page<Store> storePage) {
+    public static StorePageResponseDto of(Integer currentPage, String totalStore, Page<Store> storePage) {
         return StorePageResponseDto.builder()
                 .currentPage(currentPage)
-                .totalStore(storePage.getTotalElements())
+                .totalStore(totalStore)
                 .storeList(storePage.getContent().stream()
                         .map(StoreListReadResponseDto::of).toList())
                 .build();
