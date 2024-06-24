@@ -47,14 +47,15 @@ public class MenuService {
         Store findStore = storeAdaptor.queryStoreId(findUser);
 
         Menu menu = Menu.saveMenu(findStore, requestDto);
-        menuAdaptor.saveMenu(menu);
+        menuAdaptor.saveMenu(menu); // 파일 경로를 메뉴 아이디로 지정해주기 위해 저장
 
+        // 파일이 존재한다면
         if (S3Utils.isFileExists(file)) {
             try {
-                String menuImagePath = s3Uploader.saveMenuImage(file, findStore.getId(), menu.getId());
-                menu.updateMenuImagePath(menuImagePath);
-            } catch(S3Exception e) {
-                menuAdaptor.deleteTempMenu(menu);
+                String menuImagePath = s3Uploader.saveMenuImage(file, findStore.getId(), menu.getId()); // 파일을 S3에 업로드한 후 그 링크 반환
+                menu.updateMenuImagePath(menuImagePath); // 반환받은 링크를 menu DB에 저장
+            } catch(S3Exception e) { // 파일 업로드 중 오류가 발생한 경우
+                menuAdaptor.deleteTempMenu(menu); // 저장되어 있는 메뉴 데이터 삭제
                 throw new S3Exception(e.getErrorCode());
             }
         }

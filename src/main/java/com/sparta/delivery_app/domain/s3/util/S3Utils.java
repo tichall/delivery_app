@@ -12,11 +12,10 @@ import java.util.List;
 public class S3Utils {
 
     private static final String URL_PREFIX = "Delivery";
-    // 메뉴 이미지 저장 경로 store/{storeId}/menu/{menuId}
+
     private static final String STORE_DIR = "store";
     private static final String MENU_IMAGE_DIR = "menu";
 
-    // 리뷰 이미지 저장 경로 user/{userId}/review/{reviewId}
     private static final String USER_DIR = "user";
     private static final String REVIEW_IMAGE_DIR = "review";
     private static final String PROFILE_IMAGE_DIR = "profile";
@@ -43,6 +42,10 @@ public class S3Utils {
         }
     }
 
+    /**
+     * 메뉴 이미지 저장 경로 생성
+     * store/{storeId}/menu/{menuId}
+     */
     public static String createMenuImageDir(Long storeId, Long menuId) {
         return URL_PREFIX + "/"
                 + STORE_DIR + "/"
@@ -51,6 +54,10 @@ public class S3Utils {
                 + menuId + "/";
     }
 
+    /**
+     * 리뷰 이미지 저장 경로 생성
+     * user/{userId}/review/{reviewId}
+     */
     public static String createReviewImageDir(Long userId, Long reviewId) {
         return URL_PREFIX + "/"
                 + USER_DIR + "/"

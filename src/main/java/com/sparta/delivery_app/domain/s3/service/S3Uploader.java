@@ -32,11 +32,11 @@ public class S3Uploader {
             return DEFAULT_MESSAGE;
         }
 
-        S3Utils.validateImageExtension(file.getOriginalFilename());
+        S3Utils.validateImageExtension(file.getOriginalFilename()); // 파일 확장자 검사
 
-        String imageDir = S3Utils.createMenuImageDir(storeId, menuId);
-        deleteFileFromS3(imageDir);
-        return uploadFileToS3(file, imageDir);
+        String imageDir = S3Utils.createMenuImageDir(storeId, menuId); // 파일 저장 경로 생성
+        deleteFileFromS3(imageDir); // 해당 경로에 파일 존재하면 삭제
+        return uploadFileToS3(file, imageDir); // 실제 S3에 업로드
     }
 
     public String saveReviewImage(MultipartFile file, Long userId, Long reviewId) {
