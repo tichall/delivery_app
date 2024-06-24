@@ -43,7 +43,7 @@ public class OrderAdaptor {
     /**
      * 해당 유저의 주문인지 검증
      */
-    public Order queryOrderByIdAndUserID(Long userId, Long orderId) {
+    public Order queryOrderByIdAndUserId(Long userId, Long orderId) {
         Order order = queryOrderById(orderId);
         if (!order.getUser().getId().equals(userId)) {
             throw new OrderAccessDeniedException(OrderErrorCode.ORDER_ACCESS_DENIED);

@@ -4,6 +4,7 @@ import com.sparta.delivery_app.common.globalResponse.RestApiResponse;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.common.status.StatusCode;
 import com.sparta.delivery_app.domain.admin.adminstore.dto.PageMenuPerStoreResponseDto;
+import com.sparta.delivery_app.domain.admin.adminstore.dto.ReviewPerStoreResponseDto;
 import com.sparta.delivery_app.domain.admin.adminstore.service.AdminStoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -30,32 +33,34 @@ public class AdminStoreController {
     public ResponseEntity<RestApiResponse<PageMenuPerStoreResponseDto>> getMenuListPerStore
     (@PathVariable Long storeId,
      @AuthenticationPrincipal AuthenticationUser authenticationUser,
-     @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
-     @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") String sortBy,
-     @RequestParam(value = "isDesc", required = false, defaultValue = "true") Boolean isDesc) {
-        log.info("특정매장 모든메뉴 조회");
+     @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
+     @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc) {
+        log.info("특정매장 모든메뉴 조회-controller");
 
         PageMenuPerStoreResponseDto responseDto = adminStoreService.getMenuListPerStore(storeId,
-                authenticationUser, pageNum, sortBy, isDesc);
+                authenticationUser, pageNum, isDesc);
         return ResponseEntity.status(StatusCode.CREATED.code)
                 .body(RestApiResponse.of("조회 성공", responseDto));
     }
 
 
     //매장별 리뷰 다건 조회(폐업 매장과 삭제 리뷰 포함)
-    // 2. 각 매장에대한 리뷰("/api/v1/admin/stores/{storeId}/reviews")
-//    @GetMapping("/{storeId}/reviews")
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/{storeId}/reviews")
 //    public ResponseEntity<RestApiResponseM<PageReviewPerStoreResponseDto>> getReviewListPerStore
-//    (@PathVariable Long storeId,
-//     @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
-//     @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") String sortBy,
-//     @RequestParam(value = "isDesc", required = false, defaultValue = "true") Boolean isDesc) {
-//        log.info("특정 매장 모든 리뷰 조회");
-//
-//        PageReviewPerStoreResponseDto responseDto = adminStoreService.getReviewListPerStore(storeId, pageNum, sortBy, isDesc);
-//        return ResponseEntity.status(StatusCode.CREATED.code)
-//                .body(RestApiResponse.of("조회 성공", responseDto));
-//    }
+    public ResponseEntity<RestApiResponse<List<ReviewPerStoreResponseDto>>> getReviewListPerStore
+    (@PathVariable Long storeId,
+     @AuthenticationPrincipal AuthenticationUser authenticationUser,
+     @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
+     @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc) {
+        log.info("특정 매장 모든 리뷰 조회-controller");
 
+//        PageReviewPerStoreResponseDto responseDto = adminStoreService.getReviewListPerStore(storeId, pageNum, sortBy, isDesc);
+        List<ReviewPerStoreResponseDto> reviewDtoList = adminStoreService.getReviewListPerStore(authenticationUser, storeId, pageNum, isDesc);
+
+        log.info("특정 매장 모든 리뷰 조회-controller-reviewDtoList 생성 완료");
+        return ResponseEntity.status(StatusCode.CREATED.code)
+                .body(RestApiResponse.of("조회 성공", reviewDtoList));
+    }
 
 }

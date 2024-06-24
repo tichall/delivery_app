@@ -52,7 +52,7 @@ public class MenuController {
     @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/{menuId}")
     public ResponseEntity<RestApiResponse<MenuModifyResponseDto>> menuModify(
-            @PathVariable Long menuId,
+            @PathVariable final Long menuId,
             @Valid @RequestBody final MenuModifyRequestDto requestDto,
             @AuthenticationPrincipal AuthenticationUser user
     ) {
@@ -70,7 +70,7 @@ public class MenuController {
     @PreAuthorize("hasRole('MANAGER')")
     @DeleteMapping("/{menuId}")
     public ResponseEntity<RestApiResponse<Void>> menuDelete(
-            @PathVariable Long menuId,
+            @PathVariable final Long menuId,
             @AuthenticationPrincipal AuthenticationUser user
     ) {
         menuService.deleteMenu(menuId, user);

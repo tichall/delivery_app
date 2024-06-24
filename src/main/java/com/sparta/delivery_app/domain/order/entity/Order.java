@@ -2,6 +2,7 @@ package com.sparta.delivery_app.domain.order.entity;
 
 
 import com.sparta.delivery_app.domain.commen.BaseTimeCreateEntity;
+import com.sparta.delivery_app.domain.order.dto.request.OrderAddRequestDto;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.user.entity.User;
@@ -44,6 +45,14 @@ public class Order extends BaseTimeCreateEntity {
         this.user = user;
         this.store = store;
         this.orderStatus = orderStatus;
+    }
+
+    public static Order saveOrder(User user, Store store) {
+        return Order.builder()
+                .user(user)
+                .store(store)
+                .orderStatus(OrderStatus.ORDER_COMPLETED)
+                .build();
     }
 
     public void addOrderItem(OrderItem orderItem) {

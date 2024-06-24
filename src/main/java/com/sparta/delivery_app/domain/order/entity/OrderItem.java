@@ -39,4 +39,12 @@ public class OrderItem {
         this.priceAtTime = menu.getMenuPrice();
     }
 
+    public static OrderItem saveOrderItem(Order order, Menu menu, Integer quantity) {
+        return OrderItem.builder()
+                .order(order)
+                .menu(menu)
+                .quantity(quantity)
+                .build();
+    }
+
 }
