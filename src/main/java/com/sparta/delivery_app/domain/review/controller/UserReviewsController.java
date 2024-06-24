@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -25,11 +26,12 @@ public class UserReviewsController {
 
     @PostMapping("/{orderId}")
     public ResponseEntity<RestApiResponse<UserReviewAddResponseDto>> create(
+            @RequestPart(value = "file", required = false) MultipartFile file,
             @PathVariable final Long orderId,
-            @Valid @RequestBody final UserReviewAddRequestDto requestDto,
+            @Valid @RequestPart final UserReviewAddRequestDto requestDto,
             @AuthenticationPrincipal AuthenticationUser user) {
 
-        UserReviewAddResponseDto responseDto = userReviewsService.addReview(orderId, requestDto, user);
+        UserReviewAddResponseDto responseDto = userReviewsService.addReview(file, orderId, requestDto, user);
 
         return ResponseEntity.status(StatusCode.CREATED.code)
                 .body(RestApiResponse.of("리뷰가 등록되었습니다.", responseDto));
@@ -37,11 +39,12 @@ public class UserReviewsController {
 
     @PatchMapping("/{orderId}")
     public ResponseEntity<RestApiResponse<UserReviewModifyResponseDto>> update(
+            @RequestPart(value = "file", required = false) MultipartFile file,
             @PathVariable final Long orderId,
-            @Valid @RequestBody final UserReviewModifyRequestDto requestDto,
+            @Valid @RequestPart final UserReviewModifyRequestDto requestDto,
             @AuthenticationPrincipal AuthenticationUser user) {
 
-        UserReviewModifyResponseDto responseDto = userReviewsService.modifyReview(orderId, requestDto, user);
+        UserReviewModifyResponseDto responseDto = userReviewsService.modifyReview(file, orderId, requestDto, user);
 
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("리뷰가 수정되었습니다.", responseDto));

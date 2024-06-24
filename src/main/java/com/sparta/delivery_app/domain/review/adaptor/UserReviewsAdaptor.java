@@ -54,4 +54,11 @@ public class UserReviewsAdaptor {
         return userReviewsRepository.findById(reviewId).orElseThrow(() ->
                 new ReviewNotFoundException(ReviewErrorCode.INVALID_REVIEW));
     }
+
+    /**
+     * 이미지 업로드 중 문제 발생 시 임시 등록한 리뷰 삭제
+     */
+    public void deleteTempReview(UserReviews tempReview) {
+        userReviewsRepository.delete(tempReview);
+    }
 }

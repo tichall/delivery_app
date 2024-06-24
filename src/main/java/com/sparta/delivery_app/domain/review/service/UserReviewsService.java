@@ -4,6 +4,7 @@ import com.sparta.delivery_app.common.exception.errorcode.ReviewErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.ReviewAccessDeniedException;
 import com.sparta.delivery_app.common.globalcustomexception.ReviewDuplicatedException;
 import com.sparta.delivery_app.common.globalcustomexception.ReviewNotFoundException;
+import com.sparta.delivery_app.common.globalcustomexception.S3Exception;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.domain.order.adaptor.OrderAdaptor;
 import com.sparta.delivery_app.domain.order.entity.Order;
@@ -15,12 +16,15 @@ import com.sparta.delivery_app.domain.review.dto.response.UserReviewAddResponseD
 import com.sparta.delivery_app.domain.review.dto.response.UserReviewModifyResponseDto;
 import com.sparta.delivery_app.domain.review.entity.ReviewStatus;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
+import com.sparta.delivery_app.domain.s3.service.S3Uploader;
+import com.sparta.delivery_app.domain.s3.util.S3Utils;
 import com.sparta.delivery_app.domain.user.adaptor.UserAdaptor;
 import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -30,8 +34,10 @@ public class UserReviewsService {
     private final UserReviewsAdaptor userReviewsAdaptor;
     private final OrderAdaptor orderAdaptor;
     private final UserAdaptor userAdaptor;
+    private final S3Uploader s3Uploader;
 
-    public UserReviewAddResponseDto addReview(final Long orderId, final UserReviewAddRequestDto requestDto, AuthenticationUser user) {
+    @Transactional
+    public UserReviewAddResponseDto addReview(MultipartFile file, final Long orderId, final UserReviewAddRequestDto requestDto, AuthenticationUser user) {
         // 사용자 확인
         User userData = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
 
@@ -53,12 +59,21 @@ public class UserReviewsService {
         UserReviews savedReview = UserReviews.saveReview(order, userData, requestDto);
 
         userReviewsAdaptor.saveReview(savedReview);
+        if (S3Utils.isFileExists(file)) {
+            try {
+                String reviewImagePath = s3Uploader.saveReviewImage(file, userData.getId(), savedReview.getId());
+                savedReview.updateReviewImagePath(reviewImagePath);
+            } catch(S3Exception e) {
+                userReviewsAdaptor.deleteTempReview(savedReview);
+                throw new S3Exception(e.getErrorCode());
+            }
+        }
 
         return UserReviewAddResponseDto.of(savedReview);
     }
 
     @Transactional
-    public UserReviewModifyResponseDto modifyReview(final Long orderId, final UserReviewModifyRequestDto requestDto, AuthenticationUser user) {
+    public UserReviewModifyResponseDto modifyReview(MultipartFile file, final Long orderId, final UserReviewModifyRequestDto requestDto, AuthenticationUser user) {
         // 사용자 확인
         User userData = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
 
@@ -82,6 +97,14 @@ public class UserReviewsService {
         // 사용자 리뷰가 삭제되어 있을때 예외
         ReviewStatus.checkReviewStatus(userReviews);
 
+        if (S3Utils.isFileExists(file)) {
+            try {
+                String menuImagePath = s3Uploader.saveReviewImage(file, userData.getId(), userReviews.getId());
+                userReviews.updateReviewImagePath(menuImagePath);
+            } catch(S3Exception e) {
+                throw new S3Exception(e.getErrorCode());
+            }
+        }
         // 리뷰 업데이트(return this 사용)
         UserReviews updatedReview = userReviews.updateReview(requestDto);
 
