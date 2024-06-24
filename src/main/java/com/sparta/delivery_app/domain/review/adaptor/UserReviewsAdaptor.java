@@ -55,4 +55,7 @@ public class UserReviewsAdaptor {
                 new ReviewNotFoundException(ReviewErrorCode.INVALID_REVIEW));
     }
 
+    public UserReviews queryUserReviewByOrderId(Long orderId) {
+        return userReviewsRepository.findUserReviewsByOrderId(orderId);
+    }
 }
