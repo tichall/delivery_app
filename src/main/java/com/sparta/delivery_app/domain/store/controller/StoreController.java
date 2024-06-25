@@ -39,6 +39,7 @@ public class StoreController {
 
     }
 
+
     @PreAuthorize("hasRole('MANAGER')")
     @PutMapping
     public ResponseEntity<RestApiResponse<ModifyStoreResponseDto>> modifyStore(
