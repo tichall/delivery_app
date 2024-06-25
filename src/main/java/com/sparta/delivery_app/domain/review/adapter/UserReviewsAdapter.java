@@ -1,7 +1,6 @@
 package com.sparta.delivery_app.domain.review.adapter;
 
 import com.sparta.delivery_app.common.exception.errorcode.ReviewErrorCode;
-import com.sparta.delivery_app.common.globalcustomexception.ReviewDuplicatedException;
 import com.sparta.delivery_app.common.globalcustomexception.ReviewNotFoundException;
 import com.sparta.delivery_app.common.globalcustomexception.ReviewStatusException;
 import com.sparta.delivery_app.domain.review.entity.ReviewStatus;
@@ -34,17 +33,6 @@ public class UserReviewsAdapter {
         }
 
         return userReviews;
-    }
-
-    public void validateManagerReviewExistsByReviewId(Long reviewId) {
-        if (!userReviewsRepository.findManagerReviewIdById(reviewId).isEmpty()) {
-            throw new ReviewDuplicatedException(ReviewErrorCode.REVIEW_ALREADY_REGISTERED_ERROR);
-        }
-    }
-
-    public Long validateManagerReviewDoesNotExistByReviewId(Long reviewId) {
-        return userReviewsRepository.findManagerReviewIdById(reviewId).orElseThrow(() ->
-                new ReviewNotFoundException(ReviewErrorCode.INVALID_REVIEW));
     }
 
     /**
