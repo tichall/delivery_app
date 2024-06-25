@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class S3Utils {
@@ -30,7 +31,7 @@ public class S3Utils {
     /**
      * 파일 확장자 검사
      */
-    public static void validateImageExtension(String fileName) {
+    public static String getValidateImageExtension(String fileName) {
         List<String> validExtensionList = Arrays.asList("jpg", "jpeg", "png","webp");
 
         int extensionIndex = fileName.lastIndexOf(".");
@@ -40,6 +41,8 @@ public class S3Utils {
         if(!validExtensionList.contains(extension)) {
             throw new S3Exception(S3ErrorCode.INVALID_EXTENSION);
         }
+
+        return extension;
     }
 
     /**
@@ -66,4 +69,7 @@ public class S3Utils {
                 + reviewId + "/";
     }
 
+    public static String createFileName(String extension) {
+        return UUID.randomUUID().toString().concat(extension);
+    }
 }

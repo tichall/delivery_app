@@ -32,11 +32,12 @@ public class S3Uploader {
             return DEFAULT_MESSAGE;
         }
 
-        S3Utils.validateImageExtension(file.getOriginalFilename()); // 파일 확장자 검사
-
+        String extension = S3Utils.getValidateImageExtension(file.getOriginalFilename()); // 파일 확장자 검사
         String imageDir = S3Utils.createMenuImageDir(storeId, menuId); // 파일 저장 경로 생성
         deleteFileFromS3(imageDir); // 해당 경로에 파일 존재하면 삭제
-        return uploadFileToS3(file, imageDir); // 실제 S3에 업로드
+
+        String uploadFileName = imageDir + S3Utils.createFileName(extension);
+        return uploadFileToS3(file, uploadFileName); // 실제 S3에 업로드
     }
 
     public String saveReviewImage(MultipartFile file, Long userId, Long reviewId) {
@@ -44,27 +45,26 @@ public class S3Uploader {
             return DEFAULT_MESSAGE;
         }
 
-        S3Utils.validateImageExtension(file.getOriginalFilename());
+        String extension = S3Utils.getValidateImageExtension(file.getOriginalFilename());
+        String imageDir = S3Utils.createMenuImageDir(userId, reviewId);
 
-        String imageDir = S3Utils.createReviewImageDir(userId, reviewId);
         deleteFileFromS3(imageDir);
-        return uploadFileToS3(file, imageDir);
+
+        String uploadFileName = imageDir + S3Utils.createFileName(extension);
+        return uploadFileToS3(file, uploadFileName);
     }
 
-    private String uploadFileToS3(MultipartFile file, String imageDir) {
-        String fileName = imageDir + file.getOriginalFilename() + "_"
-                + System.currentTimeMillis();
-
+    private String uploadFileToS3(MultipartFile file, String uploadFileName) {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(file.getContentType());
 
         try (InputStream inputStream = file.getInputStream()) {
-            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
+            amazonS3Client.putObject(new PutObjectRequest(bucket, uploadFileName, inputStream, objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (Exception e) {
             log.error("이미지 업로드 중 오류가 발생했습니다.", e);
             throw new S3Exception(S3ErrorCode.IMAGE_STREAM_ERROR);
         }
-        return amazonS3Client.getUrl(bucket, fileName).toString();
+        return amazonS3Client.getUrl(bucket, uploadFileName).toString();
     }
 
     public void deleteFileFromS3(String imageDir) {
@@ -88,4 +88,5 @@ public class S3Uploader {
             }
         }
     }
+
 }

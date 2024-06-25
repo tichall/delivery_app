@@ -356,7 +356,7 @@ public class TestDB {
             Order order1 = Order.builder()
                     .user(consumer)
                     .store(store1)
-                    .orderStatus(OrderStatus.ORDER_COMPLETED)
+                    .orderStatus(OrderStatus.DELIVERY_COMPLETED)
                     .build();
             save(order1);
 
@@ -378,7 +378,7 @@ public class TestDB {
             Order order2 = Order.builder()
                     .user(consumer)
                     .store(store1)
-                    .orderStatus(OrderStatus.ORDER_COMPLETED)
+                    .orderStatus(OrderStatus.DELIVERY_COMPLETED)
                     .build();
             save(order2);
 
