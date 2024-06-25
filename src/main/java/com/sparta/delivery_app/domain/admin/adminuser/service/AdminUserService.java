@@ -2,6 +2,8 @@ package com.sparta.delivery_app.domain.admin.adminuser.service;
 
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.domain.admin.adminuser.dto.AdminUserResponseDto;
+import com.sparta.delivery_app.domain.admin.adminuser.dto.PageAdminUserResponseDto;
+import com.sparta.delivery_app.domain.commen.page.util.PageUtil;
 import com.sparta.delivery_app.domain.user.adapter.UserAdapter;
 import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.sparta.delivery_app.domain.commen.page.util.PageUtil.*;
 import static com.sparta.delivery_app.domain.user.entity.UserStatus.checkManagerEnable;
 
 @Slf4j
@@ -23,24 +26,22 @@ public class AdminUserService {
 
     private final UserAdapter userAdapter;
 
-    public List<AdminUserResponseDto> getAllUserList(
-            int page, int size, AuthenticationUser authenticationUser) {
-
+    public PageAdminUserResponseDto getAllUserList(
+            AuthenticationUser authenticationUser, Boolean isDesc, Integer pageNum)
+    {
         //ADMIN 권한의 유저 Status 가 ENABLE 인지 확인
         String email = authenticationUser.getUsername();
         User enableUser = userAdapter.queryUserByEmail(email);
         checkManagerEnable(enableUser);
 
-        //페이지 정보 추출
-        Pageable pageable = PageRequest.of(page, size);
-        Page<User> userPage = userAdapter.queryAllUserPage(pageable);
-        String pageInfo = userPage.getNumber() + "/" + userPage.getTotalPages();
+        //페이징
+        Pageable pageable = createPageable(pageNum, PAGE_SIZE_FIVE, isDesc);
+        Page<User> allUser = userAdapter.queryAllUserPage(pageable);
+        String totalUser = validateAndSummarizePage(pageNum,allUser);
 
         //user 정보 추출
-        List<AdminUserResponseDto> responseDtoList = userPage.getContent().stream()
-                .map(user -> new AdminUserResponseDto(user, pageInfo))
-                .collect(Collectors.toList());
+        Page<AdminUserResponseDto> responseDtoPage = allUser.map(AdminUserResponseDto::of);
 
-        return responseDtoList;
+        return PageAdminUserResponseDto.of(pageNum, responseDtoPage, totalUser);
     }
 }

@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.sparta.delivery_app.domain.commen.page.util.PageUtil.*;
 import static com.sparta.delivery_app.domain.user.entity.UserStatus.checkManagerEnable;
 
 @Slf4j
@@ -48,10 +49,10 @@ public class AdminStoreService {
         adminUserStatusCheck(authenticationUser);
 
         Store choiceStore = storeAdapter.queryStoreById(storeId);
-        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
+        Pageable pageable = createPageable(pageNum, PAGE_SIZE_FIVE, isDesc);
 
         Page<Menu> menuPage = menuAdapter.queryMenuListByStoreId(storeId, pageable);
-        String totalMenu = PageUtil.validateAndSummarizePage(pageNum, menuPage);
+        String totalMenu = validateAndSummarizePage(pageNum, menuPage);
 
         return PageMenuPerStoreResponseDto.of(pageNum, totalMenu, choiceStore);
     }
@@ -76,13 +77,13 @@ public class AdminStoreService {
             }
         }
 
-        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
+        Pageable pageable = createPageable(pageNum, PAGE_SIZE_FIVE, isDesc);
 
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), reviewDtoList.size());
         Page<ReviewPerStoreResponseDto> reviewPage = new PageImpl<>(reviewDtoList.subList(start, end), pageable, reviewDtoList.size());
 
-        String totalReview = PageUtil.validateAndSummarizePage(pageNum, reviewPage);
+        String totalReview = validateAndSummarizePage(pageNum, reviewPage);
 
         return PageReviewPerStoreResponseDto.of(pageNum, totalReview, choiceStore, reviewPage);
     }
@@ -102,10 +103,10 @@ public class AdminStoreService {
         adminUserStatusCheck(authenticationUser);
 
         Store findStore = storeAdapter.queryStoreById(storeId);
-        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
+        Pageable pageable = createPageable(pageNum, PAGE_SIZE_FIVE, isDesc);
 
         Page<Menu> menuPage = menuAdapter.queryMenuListByStoreId(findStore.getId(), pageable);
-        String totalMenu = PageUtil.validateAndSummarizePage(pageNum, menuPage);
+        String totalMenu = validateAndSummarizePage(pageNum, menuPage);
 
         Long allMenuTotalEarning = 0L;
 

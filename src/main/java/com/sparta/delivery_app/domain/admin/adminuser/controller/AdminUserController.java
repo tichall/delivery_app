@@ -3,6 +3,7 @@ package com.sparta.delivery_app.domain.admin.adminuser.controller;
 import com.sparta.delivery_app.common.globalResponse.RestApiResponse;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.common.status.StatusCode;
+import com.sparta.delivery_app.domain.admin.adminuser.dto.PageAdminUserResponseDto;
 import com.sparta.delivery_app.domain.admin.adminuser.service.AdminUserService;
 import com.sparta.delivery_app.domain.admin.adminuser.dto.AdminUserResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -30,16 +31,17 @@ public class AdminUserController {
      * 회원 목록 전체 조회
      */
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping ///페이지 바꾸고 싶을 땐 api/admin/users?page=6&size=20 등으로 접속
-    public ResponseEntity<RestApiResponse<List<AdminUserResponseDto>>> allUserList(
+    @GetMapping// 다른 페이지나 오름차순 조회하고 싶으면 /api/v1/admin/users?pageNum=2&isDesc=false 등오로 가능
+    public ResponseEntity<RestApiResponse<PageAdminUserResponseDto>> allUserList(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
-            @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "5") int size) {
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "isDesc", required = false, defaultValue = "true") Boolean isDesc
+    ) {
         log.info("ADMIN-UserController");
 
-        List<AdminUserResponseDto> allUserList = adminUserService.getAllUserList(page - 1, size, authenticationUser);
+        PageAdminUserResponseDto allUser = adminUserService.getAllUserList(authenticationUser, isDesc, pageNum);
         return ResponseEntity.status(StatusCode.CREATED.code)
-                .body(RestApiResponse.of("조회 성공", allUserList));
+                .body(RestApiResponse.of("조회 성공", allUser));
     }
 
 }
