@@ -25,6 +25,7 @@ public class UserReviews extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
+    @Column(length = 400)
     private String reviewImagePath;
 
     @Column(nullable = false)
