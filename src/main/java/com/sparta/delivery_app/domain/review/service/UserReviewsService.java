@@ -60,6 +60,7 @@ public class UserReviewsService {
         UserReviews savedReview = UserReviews.saveReview(order, userData, requestDto);
 
         userReviewsAdaptor.saveReview(savedReview);
+
         if (S3Utils.isFileExists(file)) {
             try {
                 String reviewImagePath = s3Uploader.saveReviewImage(file, userData.getId(), savedReview.getId());
@@ -106,6 +107,7 @@ public class UserReviewsService {
                 throw new S3Exception(e.getErrorCode());
             }
         }
+
         // 리뷰 업데이트(return this 사용)
         UserReviews updatedReview = userReviews.updateReview(requestDto);
 
