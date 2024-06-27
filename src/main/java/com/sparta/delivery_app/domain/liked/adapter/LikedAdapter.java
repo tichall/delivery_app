@@ -2,8 +2,8 @@ package com.sparta.delivery_app.domain.liked.adapter;
 
 import com.sparta.delivery_app.common.exception.errorcode.LikedErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.LikedNotFoundException;
-import com.sparta.delivery_app.domain.liked.entity.Liked;
-import com.sparta.delivery_app.domain.liked.repository.LikedRepository;
+import com.sparta.delivery_app.domain.liked.entity.StoreLiked;
+import com.sparta.delivery_app.domain.liked.repository.StoreLikedRepository;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -13,22 +13,22 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class LikedAdapter {
 
-    private final LikedRepository likedRepository;
+    private final StoreLikedRepository storeLikedRepository;
 
-    public void saveLiked(Liked liked) {
-        likedRepository.save(liked);
+    public void saveLiked(StoreLiked storeLiked) {
+        storeLikedRepository.save(storeLiked);
     }
 
-    public void deleteLiked(Liked liked) {
-        likedRepository.delete(liked);
+    public void deleteLiked(StoreLiked storeLiked) {
+        storeLikedRepository.delete(storeLiked);
     }
 
-    public Liked queryLikedByStoreId(Long storeId) {
-        return likedRepository.findByStoreId(storeId).orElseThrow(() ->
+    public StoreLiked queryLikedByStoreId(Long storeId) {
+        return storeLikedRepository.findByStoreId(storeId).orElseThrow(() ->
                 new LikedNotFoundException(LikedErrorCode.LIKED_UNREGISTERED_ERROR));
     }
 
     public boolean existsByStoreAndUser(Store store, User user) {
-        return likedRepository.existsByStoreAndUser(store, user);
+        return storeLikedRepository.existsByStoreAndUser(store, user);
     }
 }

@@ -5,7 +5,7 @@ import com.sparta.delivery_app.common.globalcustomexception.LikedDuplicatedExcep
 import com.sparta.delivery_app.common.globalcustomexception.LikedNotFoundException;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.domain.liked.adapter.LikedAdapter;
-import com.sparta.delivery_app.domain.liked.entity.Liked;
+import com.sparta.delivery_app.domain.liked.entity.StoreLiked;
 import com.sparta.delivery_app.domain.store.adapter.StoreAdapter;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.user.adapter.UserAdapter;
@@ -33,8 +33,8 @@ public class LikedService {
             throw new LikedDuplicatedException(LikedErrorCode.LIKED_ALREADY_REGISTERED_ERROR);
         }
 
-        Liked liked = new Liked(store, findUser);
-        likedAdapter.saveLiked(liked);
+        StoreLiked storeLiked = new StoreLiked(store, findUser);
+        likedAdapter.saveLiked(storeLiked);
     }
 
     @Transactional
@@ -46,7 +46,7 @@ public class LikedService {
             throw new LikedNotFoundException(LikedErrorCode.LIKED_UNREGISTERED_ERROR);
         }
 
-        Liked findLiked = likedAdapter.queryLikedByStoreId(storeId);
-        likedAdapter.deleteLiked(findLiked);
+        StoreLiked findStoreLiked = likedAdapter.queryLikedByStoreId(storeId);
+        likedAdapter.deleteLiked(findStoreLiked);
     }
 }
