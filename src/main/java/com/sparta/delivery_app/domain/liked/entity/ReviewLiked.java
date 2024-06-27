@@ -20,12 +20,16 @@ public class ReviewLiked extends Liked {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
+    @JoinColumn(name = "review_id")
     private UserReviews userReviews;
 
     @Builder
     public ReviewLiked(UserReviews userReviews, User user) {
         super(user);
+        this.userReviews = userReviews;
+    }
+
+    public void updateUserReviews(UserReviews userReviews) {
         this.userReviews = userReviews;
     }
 }

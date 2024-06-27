@@ -448,7 +448,7 @@ public class TestDB {
 
             StoreLiked storeLiked2 = StoreLiked.builder()
                     .user(consumer)
-                    .store(store1)
+                    .store(store2)
                     .build();
             save(storeLiked2);
 

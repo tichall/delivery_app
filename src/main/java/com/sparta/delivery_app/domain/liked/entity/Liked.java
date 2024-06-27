@@ -26,7 +26,7 @@ public abstract class Liked {
         this.isLiked = true;
     }
 
-    public void updateIsLiked(Boolean isLiked) {
+    public void updateIsLiked() {
         this.isLiked = !isLiked;
     }
 }

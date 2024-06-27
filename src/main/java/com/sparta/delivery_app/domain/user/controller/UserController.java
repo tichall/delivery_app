@@ -31,7 +31,7 @@ public class UserController {
      * @param requestDto
      * @return
      */
-    @PostMapping("/consumers")
+    @PostMapping("/consumers/signup")
     public ResponseEntity<RestApiResponse<ConsumersSignupResponseDto>> ConsumersSignupRequestDto(
             @Valid @RequestBody final ConsumersSignupRequestDto requestDto) {
         ConsumersSignupResponseDto responseDto = userService.consumersUserAdd(requestDto);
@@ -47,7 +47,7 @@ public class UserController {
      * @param requestDto
      * @return
      */
-    @PostMapping("/managers")
+    @PostMapping("/managers/signup")
     public ResponseEntity<RestApiResponse<ManagersSignupResponseDto>> managersSignupRequestDto(
             @Valid @RequestBody final ManagersSignupRequestDto requestDto) {
         ManagersSignupResponseDto responseDto = userService.managersUserAdd(requestDto);

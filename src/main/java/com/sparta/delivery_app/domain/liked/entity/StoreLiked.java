@@ -27,4 +27,8 @@ public class StoreLiked extends Liked {
         super(user);
         this.store = store;
     }
+
+    public void updateStore(Store store) {
+        this.store = store;;
+    }
 }

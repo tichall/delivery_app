@@ -11,4 +11,6 @@ public interface StoreLikedRepository extends JpaRepository<StoreLiked, Long> {
     boolean existsByStoreAndUser(Store store, User user);
 
     Optional<StoreLiked> findByStoreId(Long storeId);
+
+    Optional<StoreLiked> findByStoreIdAndUserId(Long storeId, Long userId);
 }
