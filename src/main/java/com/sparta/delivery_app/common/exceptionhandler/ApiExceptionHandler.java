@@ -4,6 +4,7 @@ import com.sparta.delivery_app.common.exception.errorcode.ErrorCode;
 import com.sparta.delivery_app.common.exception.errorcode.S3ErrorCode;
 import com.sparta.delivery_app.common.globalResponse.ErrorResponse;
 import com.sparta.delivery_app.common.globalcustomexception.S3Exception;
+import com.sparta.delivery_app.common.globalcustomexception.SelfLikedException;
 import com.sparta.delivery_app.common.globalcustomexception.TotalPriceException;
 import com.sparta.delivery_app.common.globalcustomexception.global.*;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +63,13 @@ public class ApiExceptionHandler {
         log.error("S3Exception 발생");
         return sendErrorResponse(e.getErrorCode());
     }
+
+    @ExceptionHandler(SelfLikedException.class)
+    protected ResponseEntity<ErrorResponse> s3Exception(SelfLikedException e) {
+        log.error("SelfLikedException 발생");
+        return sendErrorResponse(e.getErrorCode());
+    }
+
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     protected ResponseEntity<ErrorResponse> maxUploadSizeExceededException(MaxUploadSizeExceededException e) {

@@ -1,7 +1,7 @@
 package com.sparta.delivery_app.domain.liked.service;
 
 import com.sparta.delivery_app.common.exception.errorcode.LikedErrorCode;
-import com.sparta.delivery_app.common.globalcustomexception.LikedNotFoundException;
+import com.sparta.delivery_app.common.globalcustomexception.SelfLikedException;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.domain.liked.adapter.LikedAdapter;
 import com.sparta.delivery_app.domain.liked.entity.Liked;
@@ -48,26 +48,17 @@ public class LikedService {
         UserReviews userReviews = userReviewsAdapter.checkValidReviewByIdAndReviewStatus(reviewId);
         User findUser = userAdapter.queryUserByEmailAndStatus(user.getUsername());
 
+        // 자기 자신의 리뷰인 경우 예외 처리
+        if (userReviews.getUser().equals(findUser)) {
+            throw new SelfLikedException(LikedErrorCode.SELF_LIKED_REGISTERED_ERROR);
+        }
+
         Optional<ReviewLiked> findReviewLiked =  likedAdapter.getReviewLiked(userReviews.getId(), findUser.getId());
         ReviewLiked reviewLiked = (ReviewLiked) toggleLiked(findReviewLiked, findUser, ReviewLiked.class);
         reviewLiked.updateUserReviews(userReviews);
 
         likedAdapter.saveLiked(reviewLiked);
         return reviewLiked.getIsLiked();
-    }
-
-
-    @Transactional
-    public void deleteLiked(AuthenticationUser user, final Long storeId) {
-        Store store = storeAdapter.queryStoreById(storeId);
-        User findUser = userAdapter.queryUserByEmailAndStatus(user.getUsername());
-
-        if (!likedAdapter.existsByStoreAndUser(store, findUser)) {
-            throw new LikedNotFoundException(LikedErrorCode.LIKED_UNREGISTERED_ERROR);
-        }
-
-        StoreLiked findStoreLiked = likedAdapter.queryLikedByStoreId(storeId);
-        likedAdapter.deleteLiked(findStoreLiked);
     }
 
     private <T extends Liked> Liked toggleLiked(Optional<T> liked, User user, Class<T> likedClass) {

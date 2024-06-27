@@ -57,18 +57,4 @@ public class LikedController {
         }
     }
 
-    /**
-     * 좋아요 삭제
-     */
-    @PreAuthorize("hasRole('CONSUMER')")
-    @DeleteMapping("/{storeId}")
-    public ResponseEntity<RestApiResponse<Object>> likedDelete(
-            @AuthenticationPrincipal AuthenticationUser user,
-            @PathVariable final Long storeId
-    ) {
-        likedService.deleteLiked(user, storeId);
-        return ResponseEntity.status(StatusCode.OK.code)
-                .body(RestApiResponse.of("관심 매장 등록이 취소되었습니다."));
-
-    }
 }
