@@ -1,0 +1,34 @@
+### 일반 유저 2 회원가입
+POST http://localhost:8080/api/v1/users/consumers/signup
+Content-Type: application/json
+
+{
+  "email": "sy@gmail.com",
+  "password": "Passw0rd!",
+  "name": "이서연",
+  "nickName": "서연",
+  "address": "address_702782093f0a"
+}
+
+### 일반 유저 1 로그인
+GET http://localhost:8080/api/v1/users/login
+Content-Type: application/json
+
+{
+  "email":"b2@gmail.com",
+  "password":"Passw0rd!"
+}
+
+> {% client.global.set("user1Auth", response.headers.valueOf("Authorization")); %}
+
+
+### 일반 유저 2 로그인
+GET http://localhost:8080/api/v1/users/login
+Content-Type: application/json
+
+{
+  "email":"sy@gmail.com",
+  "password":"Passw0rd!"
+}
+
+> {% client.global.set("user2Auth", response.headers.valueOf("Authorization")); %}
