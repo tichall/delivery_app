@@ -12,17 +12,19 @@ public class UserReviewAddResponseDto {
 
     private String storeName;
     private String userName;
+    private int rating;
     private String content;
     private String reviewImagePath;
-    private int rating;
+    private Integer totalReviewLiked;
 
     public static UserReviewAddResponseDto of(UserReviews userReviews) {
         return UserReviewAddResponseDto.builder()
                 .storeName(userReviews.getOrder().getStore().getStoreName())
                 .userName(userReviews.getUser().getNickName())
+                .rating(userReviews.getRating())
                 .content(userReviews.getContent())
                 .reviewImagePath(userReviews.getReviewImagePath())
-                .rating(userReviews.getRating())
+                .totalReviewLiked(userReviews.getReviewLikedList().size())
                 .build();
     }
 

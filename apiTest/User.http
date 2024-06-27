@@ -32,3 +32,25 @@ Content-Type: application/json
 }
 
 > {% client.global.set("user2Auth", response.headers.valueOf("Authorization")); %}
+
+
+### Store 1 사장님 로그인
+GET http://localhost:8080/api/v1/users/login
+Content-Type: application/json
+
+{
+  "email":"b2manager1@gmail.com",
+  "password":"Passw0rd!!"
+}
+> {% client.global.set("manager1Auth", response.headers.valueOf("Authorization")); %}
+
+
+### 관리자 로그인
+GET http://localhost:8080/api/v1/users/login
+Content-Type: application/json
+
+{
+    "email":"admin@gmail.com",
+    "password":"adminpassword!"
+}
+> {% client.global.set("adminAuth", response.headers.valueOf("Authorization")); %}
