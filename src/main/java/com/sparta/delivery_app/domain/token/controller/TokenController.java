@@ -23,6 +23,7 @@ public class TokenController {
 
     private final TokenService tokenService;
 
+    // Access Token 만료 시 호출하는 API
     @PostMapping("/reissue")
     public ResponseEntity<RestApiResponse<TokenResponseDto>> refreshTokenReissue(HttpServletRequest request) {
         log.info("access token 재발급");

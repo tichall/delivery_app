@@ -3,7 +3,7 @@ package com.sparta.delivery_app.domain.order.service;
 import com.sparta.delivery_app.common.exception.errorcode.OrderErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.TotalPriceException;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
-import com.sparta.delivery_app.domain.commen.page.util.PageUtil;
+import com.sparta.delivery_app.domain.common.Page.PageUtil;
 import com.sparta.delivery_app.domain.menu.adapter.MenuAdapter;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
 import com.sparta.delivery_app.domain.menu.entity.MenuStatus;
@@ -30,6 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.sparta.delivery_app.domain.common.Page.PageConstants.PAGE_SIZE_FIVE;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -38,7 +40,6 @@ public class OrderService {
     private final UserAdapter userAdapter;
     private final StoreAdapter storeAdapter;
     private final MenuAdapter menuAdapter;
-    private final MenuService menuService;
 
     /**
      * 주문 생성
@@ -91,21 +92,12 @@ public class OrderService {
     ) {
         User findUser = userAdapter.queryUserByEmailAndStatus(user.getUsername());
 
-        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
+        Pageable pageable = PageUtil.createPageable(pageNum, PAGE_SIZE_FIVE, isDesc);
 
         Page<Order> orderPage = orderAdapter.queryOrdersByUserId(pageable, findUser.getId());
 
         String totalOrder = PageUtil.validateAndSummarizePage(pageNum, orderPage);
         return OrderPageResponseDto.of(pageNum, totalOrder, orderPage);
-    }
-
-    /**
-     * 검증 없이 주문 상태를 배달 완료로 변경
-     */
-    @Transactional
-    public void changeStatus(final Long orderId) {
-        Order findOrder = orderAdapter.queryOrderById(orderId);
-        findOrder.changeOrderStatus(OrderStatus.DELIVERY_COMPLETED);
     }
 
     /**
@@ -141,13 +133,10 @@ public class OrderService {
             Integer quantity = menuItemRequestDto.quantity();
 
             Menu menu = menuAdapter.queryMenuById(menuId);
-
             menu.checkStoreMenuMatch(menu, currentOrder.getStore().getId());
-
             MenuStatus.checkMenuStatus(menu);
 
             OrderItem orderItem = OrderItem.saveOrderItem(currentOrder, menu, quantity);
-
             currentOrder.addOrderItem(orderItem);
         }
     }

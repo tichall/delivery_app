@@ -28,6 +28,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         log.error("Jwt 인증 도중 예외 발생");
         Exception exception = (Exception) request.getAttribute("exception");
 
+        // 리프레쉬 토큰이 DB에 저장되어 있지 않은 경우
         if (exception instanceof CustomSecurityException e) {
             sendErrorResponse(response, e.getErrorCode());
             return;
