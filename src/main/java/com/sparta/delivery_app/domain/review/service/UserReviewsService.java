@@ -6,6 +6,8 @@ import com.sparta.delivery_app.common.globalcustomexception.ReviewDuplicatedExce
 import com.sparta.delivery_app.common.globalcustomexception.ReviewNotFoundException;
 import com.sparta.delivery_app.common.globalcustomexception.S3Exception;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
+import com.sparta.delivery_app.domain.common.Page.PageUtil;
+import com.sparta.delivery_app.domain.openApi.dto.ReviewPageResponseDto;
 import com.sparta.delivery_app.domain.order.adapter.OrderAdapter;
 import com.sparta.delivery_app.domain.order.entity.Order;
 import com.sparta.delivery_app.domain.order.entity.OrderStatus;
@@ -16,15 +18,21 @@ import com.sparta.delivery_app.domain.review.dto.response.UserReviewAddResponseD
 import com.sparta.delivery_app.domain.review.dto.response.UserReviewModifyResponseDto;
 import com.sparta.delivery_app.domain.review.entity.ReviewStatus;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
+import com.sparta.delivery_app.domain.review.repository.UserReviewsRepository;
+import com.sparta.delivery_app.domain.review.repository.UserReviewsSearchCond;
 import com.sparta.delivery_app.domain.s3.service.S3Uploader;
 import com.sparta.delivery_app.domain.s3.util.S3Utils;
 import com.sparta.delivery_app.domain.user.adapter.UserAdapter;
 import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import static com.sparta.delivery_app.domain.common.Page.PageConstants.PAGE_SIZE_FIVE;
 
 @Slf4j
 @Service
@@ -32,6 +40,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserReviewsService {
 
     private final UserReviewsAdapter userReviewsAdaptor;
+    private final UserReviewsRepository userReviewsRepository;
     private final OrderAdapter orderAdaptor;
     private final UserAdapter userAdaptor;
     private final S3Uploader s3Uploader;
@@ -129,5 +138,16 @@ public class UserReviewsService {
         }
 
         userReviews.deleteReview();
+    }
+
+    public ReviewPageResponseDto getLikedUserReviews(AuthenticationUser user, Integer pageNum, Boolean isDesc) {
+        // 사용자 확인
+        User userData = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
+        Pageable pageable = PageUtil.createPageable(pageNum, PAGE_SIZE_FIVE, isDesc);
+        UserReviewsSearchCond cond = UserReviewsSearchCond.builder().likedUserId(userData.getId()).build();
+
+        Page<UserReviews> reviewPage = userReviewsRepository.searchLikedUserReviews(cond, pageable);
+        String totalLikedReview = PageUtil.validateAndSummarizePage(pageNum, reviewPage);
+        return ReviewPageResponseDto.of(pageNum, totalLikedReview, reviewPage);
     }
 }

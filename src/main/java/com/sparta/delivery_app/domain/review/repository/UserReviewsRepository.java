@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface UserReviewsRepository extends JpaRepository<UserReviews, Long> {
+public interface UserReviewsRepository extends JpaRepository<UserReviews, Long>, UserReviewsRepositoryCustom {
     Optional<Long> findManagerReviewIdById(Long reviewId);
 
     Page<UserReviews> findAllByReviewStatus(Pageable pageable, ReviewStatus reviewStatus);
