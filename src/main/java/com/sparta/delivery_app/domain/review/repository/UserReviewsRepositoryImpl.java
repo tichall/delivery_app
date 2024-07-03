@@ -34,6 +34,7 @@ public class UserReviewsRepositoryImpl implements UserReviewsRepositoryCustom {
                 .on(userReviews.eq(reviewLiked.userReviews))
                 .where(
                         likedUserIdEq(cond.getLikedUserId()),
+                        checkIsLiked(),
                         checkUserReviewsStatus()
                 )
                 .offset(pageable.getOffset())
@@ -53,12 +54,22 @@ public class UserReviewsRepositoryImpl implements UserReviewsRepositoryCustom {
 
     private JPAQuery<Long> countQuery(UserReviewsSearchCond cond) {
         return jpaQueryFactory.select(Wildcard.count)
-                .from(reviewLiked)
-                .where(likedUserIdEq(cond.getLikedUserId()));
+                .from(userReviews)
+                .rightJoin(reviewLiked)
+                .on(userReviews.eq(reviewLiked.userReviews))
+                .where(
+                        likedUserIdEq(cond.getLikedUserId()),
+                        checkIsLiked(),
+                        checkUserReviewsStatus()
+                );
     }
 
     private BooleanExpression likedUserIdEq(Long likedUserId) {
         return Objects.nonNull(likedUserId) ? reviewLiked.user.id.eq(likedUserId) : null;
+    }
+
+    private BooleanExpression checkIsLiked() {
+        return reviewLiked.isLiked.eq(true);
     }
 
     private BooleanExpression checkUserReviewsStatus() {

@@ -1,6 +1,5 @@
 package com.sparta.delivery_app;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.delivery_app.config.TestConfig;
 import com.sparta.delivery_app.domain.common.Page.PageConstants;
 import com.sparta.delivery_app.domain.common.Page.PageUtil;
