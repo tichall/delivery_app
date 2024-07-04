@@ -1,6 +1,6 @@
 package com.sparta.delivery_app.domain.user.entity;
 
-import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
+import com.sparta.delivery_app.domain.common.BaseTimeEntity;
 import com.sparta.delivery_app.domain.liked.entity.StoreLiked;
 import com.sparta.delivery_app.domain.review.entity.ManagerReviews;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
@@ -19,7 +19,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "user")
+@Table(name = "member")
 public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

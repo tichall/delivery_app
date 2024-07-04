@@ -2,7 +2,6 @@ package com.sparta.delivery_app.domain.admin.adminstore.service;
 
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.domain.admin.adminstore.dto.*;
-import com.sparta.delivery_app.domain.commen.page.util.PageUtil;
 import com.sparta.delivery_app.domain.menu.adapter.MenuAdapter;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
 import com.sparta.delivery_app.domain.order.adapter.OrderAdapter;
@@ -26,7 +25,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sparta.delivery_app.domain.commen.page.util.PageUtil.*;
+import static com.sparta.delivery_app.domain.common.Page.PageConstants.PAGE_SIZE_FIVE;
+import static com.sparta.delivery_app.domain.common.Page.PageUtil.*;
 import static com.sparta.delivery_app.domain.user.entity.UserStatus.checkManagerEnable;
 
 @Slf4j

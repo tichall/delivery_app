@@ -1,6 +1,6 @@
 package com.sparta.delivery_app.domain.store.entity;
 
-import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
+import com.sparta.delivery_app.domain.common.BaseTimeEntity;
 import com.sparta.delivery_app.domain.liked.entity.StoreLiked;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
 import com.sparta.delivery_app.domain.order.entity.Order;

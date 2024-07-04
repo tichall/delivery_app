@@ -58,15 +58,8 @@ public class OrderController {
                 .body(RestApiResponse.of(responseDto));
     }
 
-    @PutMapping("/{orderId}/delivered")
-    public ResponseEntity<RestApiResponse<Void>> orderDelivery(@PathVariable final Long orderId) {
-        orderService.changeStatus(orderId);
-        return ResponseEntity.status(StatusCode.OK.getCode())
-                .body(RestApiResponse.of("주문이 배달 완료되었습니다."));
-    }
-
     @PreAuthorize("hasRole('MANAGER')")
-    @PostMapping("/{orderId}/prepare")
+    @PutMapping("/{orderId}/prepare")
     public ResponseEntity<RestApiResponse<Void>> orderPrepare(@PathVariable final Long orderId, @AuthenticationPrincipal AuthenticationUser user) {
         orderService.changeStatusPrepare(orderId, user);
         return ResponseEntity.status(StatusCode.OK.getCode())
@@ -74,7 +67,7 @@ public class OrderController {
     }
 
     @PreAuthorize("hasRole('MANAGER')")
-    @PostMapping("/{orderId}/delivered")
+    @PutMapping("/{orderId}/delivered")
     public ResponseEntity<RestApiResponse<Void>> orderDelivered(@PathVariable final Long orderId, @AuthenticationPrincipal AuthenticationUser user) {
         orderService.changeStatusDelivered(orderId, user);
         return ResponseEntity.status(StatusCode.OK.getCode())

@@ -3,7 +3,7 @@ package com.sparta.delivery_app.domain.openApi.service;
 
 import com.sparta.delivery_app.common.exception.errorcode.PageErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.OpenApiAccessDeniedException;
-import com.sparta.delivery_app.domain.commen.page.util.PageUtil;
+import com.sparta.delivery_app.domain.common.Page.PageUtil;
 import com.sparta.delivery_app.domain.openApi.adapter.OpenApiAdapter;
 import com.sparta.delivery_app.domain.openApi.dto.ReviewPageResponseDto;
 import com.sparta.delivery_app.domain.openApi.dto.StoreDetailsResponseDto;
@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import static com.sparta.delivery_app.domain.common.Page.PageConstants.PAGE_SIZE_FIVE;
 
 @Slf4j
 @Service
@@ -33,7 +35,7 @@ public class OpenApiService {
      */
     public StorePageResponseDto findStores(final Integer pageNum, final Boolean isDesc) {
 
-        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
+        Pageable pageable = PageUtil.createPageable(pageNum, PAGE_SIZE_FIVE, isDesc);
 
         Page<Store> storePage = openApiAdapter.queryStores(pageable);
 
@@ -59,7 +61,7 @@ public class OpenApiService {
      * @return
      */
     public ReviewPageResponseDto findReviews(final Integer pageNum, final Boolean isDesc) {
-        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
+        Pageable pageable = PageUtil.createPageable(pageNum, PAGE_SIZE_FIVE, isDesc);
 
         Page<UserReviews> reviewPage = openApiAdapter.queryReviews(pageable);
 

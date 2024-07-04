@@ -1,6 +1,6 @@
 package com.sparta.delivery_app.domain.user.entity;
 
-import com.sparta.delivery_app.domain.commen.BaseTimeCreateEntity;
+import com.sparta.delivery_app.domain.common.BaseTimeCreateEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
