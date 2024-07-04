@@ -6,4 +6,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface UserReviewsRepositoryCustom {
     Page<UserReviews> searchLikedUserReviews(UserReviewsSearchCond cond, Pageable pageable);
+
+    Long countTotalLikedUserReviews(Long userId);
 }

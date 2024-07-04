@@ -6,4 +6,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface StoreRepositoryCustom {
     Page<Store> searchLikedStore(StoreSearchCond cond, Pageable pageable);
+
+    Long countTotalLikedStore(Long userId);
 }

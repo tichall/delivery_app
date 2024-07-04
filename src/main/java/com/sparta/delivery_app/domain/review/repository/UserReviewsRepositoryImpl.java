@@ -47,21 +47,23 @@ public class UserReviewsRepositoryImpl implements UserReviewsRepositoryCustom {
 
         List<UserReviews> userReviewsList = query.fetch();
 
-        Long totalElements = countQuery(cond).fetch().get(0);
+        Long totalElements = countTotalLikedUserReviews(cond.getLikedUserId());
 
         return PageableExecutionUtils.getPage(userReviewsList, pageable, () -> totalElements);
     }
 
-    private JPAQuery<Long> countQuery(UserReviewsSearchCond cond) {
+    @Override
+    public Long countTotalLikedUserReviews(Long userId) {
         return jpaQueryFactory.select(Wildcard.count)
                 .from(userReviews)
                 .rightJoin(reviewLiked)
                 .on(userReviews.eq(reviewLiked.userReviews))
                 .where(
-                        likedUserIdEq(cond.getLikedUserId()),
+                        likedUserIdEq(userId),
                         checkIsLiked(),
                         checkUserReviewsStatus()
-                );
+                )
+                .fetchOne();
     }
 
     private BooleanExpression likedUserIdEq(Long likedUserId) {
