@@ -2,6 +2,7 @@ package com.sparta.delivery_app;
 
 import com.sparta.delivery_app.config.TestConfig;
 import com.sparta.delivery_app.domain.common.Page.PageConstants;
+import com.sparta.delivery_app.domain.common.Page.PageSortBy;
 import com.sparta.delivery_app.domain.common.Page.PageUtil;
 import com.sparta.delivery_app.domain.liked.entity.ReviewLiked;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
@@ -125,7 +126,7 @@ public class UserReviewsRepositoryTest {
     @Test
     void 좋아요한_리뷰_조회하기() {
         // given
-        Pageable pageable = PageUtil.createPageable(1, PageConstants.PAGE_SIZE_FIVE, true);
+        Pageable pageable = PageUtil.createPageable(1, PageConstants.PAGE_SIZE_FIVE, PageSortBy.SORT_BY_CREATED_AT.getSortBy(), true);
         UserReviewsSearchCond cond = UserReviewsSearchCond.builder()
                 .likedUserId(testUser2.getId())
                         .build();

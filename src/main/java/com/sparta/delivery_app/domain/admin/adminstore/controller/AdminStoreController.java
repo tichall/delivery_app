@@ -35,11 +35,12 @@ public class AdminStoreController {
     (@PathVariable final Long storeId,
      @AuthenticationPrincipal AuthenticationUser authenticationUser,
      @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
+     @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") final String sortBy,
      @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc) {
         log.info("특정매장 모든메뉴 조회-controller");
 
         PageMenuPerStoreResponseDto responseDto = adminStoreService.getMenuListPerStore(storeId,
-                authenticationUser, pageNum, isDesc);
+                authenticationUser, pageNum, sortBy, isDesc);
         return ResponseEntity.status(StatusCode.CREATED.code)
                 .body(RestApiResponse.of("조회 성공", responseDto));
     }
@@ -59,10 +60,11 @@ public class AdminStoreController {
      @PathVariable final Long storeId,
      @AuthenticationPrincipal AuthenticationUser authenticationUser,
      @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
+     @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") final String sortBy,
      @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc) {
         log.info("특정 매장 모든 리뷰 조회-controller");
 
-        PageReviewPerStoreResponseDto responseDto = adminStoreService.getReviewListPerStore(authenticationUser, storeId, pageNum, isDesc);
+        PageReviewPerStoreResponseDto responseDto = adminStoreService.getReviewListPerStore(authenticationUser, storeId, pageNum, sortBy, isDesc);
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("조회 성공", responseDto));
     }
@@ -81,9 +83,10 @@ public class AdminStoreController {
             @PathVariable final Long storeId,
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") final String sortBy,
             @RequestParam(value = "isDesc", required = false, defaultValue = "true") Boolean isDesc
     ) {
-        PageTotalPricePerStoreResponseDto map = adminStoreService.getEarning(authenticationUser, isDesc, pageNum, storeId);
+        PageTotalPricePerStoreResponseDto map = adminStoreService.getEarning(authenticationUser, storeId, pageNum, sortBy, isDesc);
 
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("성공", map));

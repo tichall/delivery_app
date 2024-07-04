@@ -45,8 +45,13 @@ public class LikedController {
      */
     @PreAuthorize("hasRole('CONSUMER')")
     @GetMapping("/stores")
-    public ResponseEntity<RestApiResponse<LikedStorePageResponseDto>> getLikedStores(@AuthenticationPrincipal AuthenticationUser user, @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum, @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc                                                        ) {
-        LikedStorePageResponseDto responseDto = likedService.getLikedStores(user, pageNum, isDesc);
+    public ResponseEntity<RestApiResponse<LikedStorePageResponseDto>> getLikedStores(
+            @AuthenticationPrincipal AuthenticationUser user,
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") final String sortBy,
+            @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc
+    ) {
+        LikedStorePageResponseDto responseDto = likedService.getLikedStores(user, pageNum, sortBy, isDesc);
 
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of(responseDto));
@@ -79,10 +84,11 @@ public class LikedController {
     public ResponseEntity<RestApiResponse<ReviewPageResponseDto>> getLikedUserReviews(
             @AuthenticationPrincipal AuthenticationUser user,
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") final String sortBy,
             @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc
     ) {
 
-        ReviewPageResponseDto responseDto = likedService.getLikedUserReviews(user, pageNum, isDesc);
+        ReviewPageResponseDto responseDto = likedService.getLikedUserReviews(user, pageNum, sortBy, isDesc);
 
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("좋아요한 리뷰 조회에 성공했습니다.", responseDto));

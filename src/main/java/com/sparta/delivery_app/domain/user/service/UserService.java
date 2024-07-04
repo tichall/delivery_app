@@ -3,12 +3,15 @@ package com.sparta.delivery_app.domain.user.service;
 import com.sparta.delivery_app.common.exception.errorcode.UserErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.UserPasswordMismatchException;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
+import com.sparta.delivery_app.domain.review.repository.UserReviewsRepository;
+import com.sparta.delivery_app.domain.store.repository.StoreRepository;
 import com.sparta.delivery_app.domain.user.adapter.PasswordHistoryAdapter;
 import com.sparta.delivery_app.domain.user.adapter.UserAdapter;
 import com.sparta.delivery_app.domain.user.dto.request.*;
 import com.sparta.delivery_app.domain.user.dto.response.ConsumersSignupResponseDto;
 import com.sparta.delivery_app.domain.user.dto.response.ManagersSignupResponseDto;
 import com.sparta.delivery_app.domain.user.dto.response.UserProfileModifyResponseDto;
+import com.sparta.delivery_app.domain.user.dto.response.UserProfileReadResponseDto;
 import com.sparta.delivery_app.domain.user.entity.PasswordHistory;
 import com.sparta.delivery_app.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,9 @@ public class UserService {
     private final UserAdapter userAdapter;
     private final PasswordHistoryAdapter passwordHistoryAdapter;
     private final PasswordEncoder passwordEncoder;
+
+    private final StoreRepository storeRepository;
+    private final UserReviewsRepository userReviewsRepository;
 
     /**
      * consumers 회원가입
@@ -84,6 +90,14 @@ public class UserService {
         }
 
         findUser.updateResignUser();
+    }
+
+    public UserProfileReadResponseDto readUserProfile(AuthenticationUser user) {
+        User findUser = userAdapter.queryUserByEmailAndStatus(user.getUsername());
+        Long totalLikedStores = storeRepository.countTotalLikedStore(findUser.getId());
+        Long totalLikedUserReviews = userReviewsRepository.countTotalLikedUserReviews(findUser.getId());
+
+        return UserProfileReadResponseDto.of(findUser, totalLikedStores, totalLikedUserReviews);
     }
 
     /**

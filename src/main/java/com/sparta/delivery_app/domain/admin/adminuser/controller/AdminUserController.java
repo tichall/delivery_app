@@ -34,12 +34,13 @@ public class AdminUserController {
     @GetMapping// 다른 페이지나 오름차순 조회하고 싶으면 /api/v1/admin/users?pageNum=2&isDesc=false 등오로 가능
     public ResponseEntity<RestApiResponse<PageAdminUserResponseDto>> allUserList(
             @AuthenticationPrincipal AuthenticationUser authenticationUser,
-            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") final String sortBy,
             @RequestParam(value = "isDesc", required = false, defaultValue = "true") Boolean isDesc
     ) {
         log.info("ADMIN-UserController");
 
-        PageAdminUserResponseDto allUser = adminUserService.getAllUserList(authenticationUser, isDesc, pageNum);
+        PageAdminUserResponseDto allUser = adminUserService.getAllUserList(authenticationUser, pageNum, sortBy, isDesc);
         return ResponseEntity.status(StatusCode.CREATED.code)
                 .body(RestApiResponse.of("조회 성공", allUser));
     }

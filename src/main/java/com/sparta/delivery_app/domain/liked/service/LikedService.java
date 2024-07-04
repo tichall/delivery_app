@@ -63,13 +63,13 @@ public class LikedService {
     /**
      * 좋아요한 매장 전체 조회
      */
-    public LikedStorePageResponseDto getLikedStores(AuthenticationUser user, Integer pageNum, Boolean isDesc) {
+    public LikedStorePageResponseDto getLikedStores(AuthenticationUser user, Integer pageNum, String sortBy, Boolean isDesc) {
         User findUser = userAdapter.queryUserByEmailAndStatus(user.getUsername());
 
         StoreSearchCond cond = StoreSearchCond.builder()
                 .likedUserId(findUser.getId())
                 .build();
-        Pageable pageable = PageUtil.createPageable(pageNum, PageConstants.PAGE_SIZE_FIVE, isDesc);
+        Pageable pageable = PageUtil.createPageable(pageNum, PageConstants.PAGE_SIZE_FIVE, sortBy, isDesc);
 
         Page<Store> storePage = storeRepository.searchLikedStore(cond, pageable);
         String totalLikedStore = PageUtil.validateAndSummarizePage(pageNum, storePage);
@@ -101,13 +101,13 @@ public class LikedService {
     /**
      * 좋아요한 리뷰 전체 조회
      */
-    public ReviewPageResponseDto getLikedUserReviews(AuthenticationUser user, Integer pageNum, Boolean isDesc) {
+    public ReviewPageResponseDto getLikedUserReviews(AuthenticationUser user, Integer pageNum, String sortBy, Boolean isDesc) {
         User findUser = userAdapter.queryUserByEmailAndStatus(user.getUsername());
 
         UserReviewsSearchCond cond = UserReviewsSearchCond.builder()
                 .likedUserId(findUser.getId())
                 .build();
-        Pageable pageable = PageUtil.createPageable(pageNum, PAGE_SIZE_FIVE, isDesc);
+        Pageable pageable = PageUtil.createPageable(pageNum, PAGE_SIZE_FIVE, sortBy,isDesc);
 
         Page<UserReviews> reviewPage = userReviewsRepository.searchLikedUserReviews(cond, pageable);
         String totalLikedReview = PageUtil.validateAndSummarizePage(pageNum, reviewPage);

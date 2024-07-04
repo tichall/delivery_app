@@ -46,21 +46,23 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom{
 
         List<Store> storeList = query.fetch();
 
-        Long totalElements = countQuery(cond).fetchOne();
+        Long totalElements = countTotalLikedStore(cond.getLikedUserId());
 
         return PageableExecutionUtils.getPage(storeList, pageable, () -> totalElements);
     }
 
-    private JPAQuery<Long> countQuery(StoreSearchCond cond) {
+    @Override
+    public Long countTotalLikedStore(Long userId) {
         return jpaQueryFactory.select(Wildcard.count)
                 .from(store)
                 .rightJoin(storeLiked)
                 .on(store.eq(storeLiked.store))
                 .where(
-                        likedUserIdEq(cond.getLikedUserId()),
+                        likedUserIdEq(userId),
                         checkIsLiked(),
                         checkStoreStatus()
-                );
+                )
+                .fetchOne();
     }
 
     private BooleanExpression likedUserIdEq(Long likedUserId) {
