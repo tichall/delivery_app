@@ -23,7 +23,7 @@ public class AdminUserService {
     private final UserAdapter userAdapter;
 
     public PageAdminUserResponseDto getAllUserList(
-            AuthenticationUser authenticationUser, Boolean isDesc, Integer pageNum)
+            AuthenticationUser authenticationUser, Integer pageNum, String sortBy,  Boolean isDesc)
     {
         //ADMIN 권한의 유저 Status 가 ENABLE 인지 확인
         String email = authenticationUser.getUsername();
@@ -31,7 +31,7 @@ public class AdminUserService {
         checkManagerEnable(enableUser);
 
         //페이징
-        Pageable pageable = createPageable(pageNum, PAGE_SIZE_FIVE, isDesc);
+        Pageable pageable = createPageable(pageNum, PAGE_SIZE_FIVE, sortBy, isDesc);
         Page<User> allUser = userAdapter.queryAllUserPage(pageable);
         String totalUser = validateAndSummarizePage(pageNum,allUser);
 

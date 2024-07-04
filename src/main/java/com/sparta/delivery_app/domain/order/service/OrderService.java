@@ -88,11 +88,12 @@ public class OrderService {
     public OrderPageResponseDto findOrders(
             AuthenticationUser user,
             final Integer pageNum,
+            final String sortBy,
             final Boolean isDesc
     ) {
         User findUser = userAdapter.queryUserByEmailAndStatus(user.getUsername());
 
-        Pageable pageable = PageUtil.createPageable(pageNum, PAGE_SIZE_FIVE, isDesc);
+        Pageable pageable = PageUtil.createPageable(pageNum, PAGE_SIZE_FIVE, sortBy, isDesc);
 
         Page<Order> orderPage = orderAdapter.queryOrdersByUserId(pageable, findUser.getId());
 

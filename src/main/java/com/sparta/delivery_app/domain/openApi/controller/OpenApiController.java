@@ -26,12 +26,13 @@ public class OpenApiController {
     @GetMapping("/stores")
     public ResponseEntity<RestApiResponse<StorePageResponseDto>> storeList(
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") final String sortBy,
             @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc
     ) {
 
         openApiService.useToken();
 
-        StorePageResponseDto responseDto = openApiService.findStores(pageNum, isDesc);
+        StorePageResponseDto responseDto = openApiService.findStores(pageNum, sortBy, isDesc);
 
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("전체 매장 조회에 성공했습니다.", responseDto));
@@ -63,11 +64,12 @@ public class OpenApiController {
     @GetMapping("/reviews")
     public ResponseEntity<RestApiResponse<ReviewPageResponseDto>> reviewList(
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") final String sortBy,
             @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc
     ) {
         openApiService.useToken();
 
-        ReviewPageResponseDto responseDto = openApiService.findReviews(pageNum, isDesc);
+        ReviewPageResponseDto responseDto = openApiService.findReviews(pageNum, sortBy, isDesc);
 
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("전체 리뷰 조회에 성공했습니다.", responseDto));

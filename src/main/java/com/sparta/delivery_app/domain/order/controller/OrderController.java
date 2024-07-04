@@ -50,9 +50,10 @@ public class OrderController {
     public ResponseEntity<RestApiResponse<OrderPageResponseDto>> orderPage(
             @AuthenticationPrincipal AuthenticationUser user,
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") final String sortBy,
             @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc) {
 
-        OrderPageResponseDto responseDto = orderService.findOrders(user,pageNum, isDesc);
+        OrderPageResponseDto responseDto = orderService.findOrders(user, pageNum, sortBy, isDesc);
 
         return ResponseEntity.status(StatusCode.OK.getCode())
                 .body(RestApiResponse.of(responseDto));

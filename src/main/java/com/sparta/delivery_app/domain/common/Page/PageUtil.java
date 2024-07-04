@@ -11,13 +11,15 @@ import static com.sparta.delivery_app.domain.common.Page.PageConstants.*;
 
 public class PageUtil {
 
-    public static Pageable createPageable(Integer pageNum, Integer pageSize, Boolean isDesc) {
+    public static Pageable createPageable(Integer pageNum, Integer pageSize, String sortBy, Boolean isDesc) {
         if (pageNum < 1) {
             throw new PageNotFoundException(PageErrorCode.INVALID_PAGE_NUMBER);
         }
 
+        String pageSortBy = PageSortBy.getPageSortBy(sortBy);
+
         Sort.Direction direction = isDesc ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, SORT_BY_CREATED_AT);
+        Sort sort = Sort.by(direction, pageSortBy);
 
         return PageRequest.of(pageNum - 1, pageSize, sort);
     }

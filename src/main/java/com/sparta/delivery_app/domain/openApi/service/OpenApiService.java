@@ -33,9 +33,9 @@ public class OpenApiService {
      * @param isDesc
      * @return
      */
-    public StorePageResponseDto findStores(final Integer pageNum, final Boolean isDesc) {
+    public StorePageResponseDto findStores(final Integer pageNum, final String sortBy, final Boolean isDesc) {
 
-        Pageable pageable = PageUtil.createPageable(pageNum, PAGE_SIZE_FIVE, isDesc);
+        Pageable pageable = PageUtil.createPageable(pageNum, PAGE_SIZE_FIVE, sortBy, isDesc);
 
         Page<Store> storePage = openApiAdapter.queryStores(pageable);
 
@@ -60,8 +60,8 @@ public class OpenApiService {
      * @param isDesc
      * @return
      */
-    public ReviewPageResponseDto findReviews(final Integer pageNum, final Boolean isDesc) {
-        Pageable pageable = PageUtil.createPageable(pageNum, PAGE_SIZE_FIVE, isDesc);
+    public ReviewPageResponseDto findReviews(final Integer pageNum, final String sortBy, final Boolean isDesc) {
+        Pageable pageable = PageUtil.createPageable(pageNum, PAGE_SIZE_FIVE, sortBy, isDesc);
 
         Page<UserReviews> reviewPage = openApiAdapter.queryReviews(pageable);
 

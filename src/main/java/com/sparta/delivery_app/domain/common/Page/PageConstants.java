@@ -7,6 +7,7 @@ public class PageConstants {
 
     // 정렬 기준
     public static final String SORT_BY_CREATED_AT = "createdAt";
+    public static final String SORT_BY_NAME = "name";
 
     public static final String NO_ELEMENT_MESSAGE = "조회된 데이터가 없습니다.";
 
