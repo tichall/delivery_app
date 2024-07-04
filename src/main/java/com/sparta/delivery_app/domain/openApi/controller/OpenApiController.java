@@ -5,6 +5,7 @@ import com.sparta.delivery_app.common.status.StatusCode;
 import com.sparta.delivery_app.domain.openApi.dto.ReviewPageResponseDto;
 import com.sparta.delivery_app.domain.openApi.dto.StoreDetailsResponseDto;
 import com.sparta.delivery_app.domain.openApi.dto.StorePageResponseDto;
+import com.sparta.delivery_app.domain.openApi.dto.StoreTopTenResponseDto;
 import com.sparta.delivery_app.domain.openApi.service.OpenApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +54,19 @@ public class OpenApiController {
 
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("선택하신 매장의 정보 조회에 성공 했습니다.", storeDetails));
+    }
+
+    /**
+     * 좋아요 상위 10개 매장 조회
+     */
+    @GetMapping("/stores/top10")
+    public ResponseEntity<RestApiResponse<StoreTopTenResponseDto>> storeTopTenList() {
+        openApiService.useToken();
+
+        StoreTopTenResponseDto responseDto = openApiService.findTopTenStores();
+
+        return ResponseEntity.status(StatusCode.OK.code)
+                .body(RestApiResponse.of("좋아요 상위 10개 매장 조회가 완료되었습니다.", responseDto));
     }
 
     /**

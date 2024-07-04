@@ -13,6 +13,7 @@ public class StoreListReadResponseDto {
     private String storeAddress;
     private Long minTotalPrice;
     private String storeInfo;
+    private Integer totalStoreLiked;
 
 
     public static StoreListReadResponseDto of(Store store) {
@@ -20,6 +21,8 @@ public class StoreListReadResponseDto {
                 .storeName(store.getStoreName())
                 .storeAddress(store.getStoreAddress())
                 .minTotalPrice(store.getMinTotalPrice())
-                .storeInfo(store.getStoreInfo()).build();
+                .storeInfo(store.getStoreInfo())
+                .totalStoreLiked(store.getStoreLikedList().size())
+                .build();
     }
 }

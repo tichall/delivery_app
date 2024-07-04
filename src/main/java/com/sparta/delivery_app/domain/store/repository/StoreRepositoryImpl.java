@@ -55,14 +55,26 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom{
     public Long countTotalLikedStore(Long userId) {
         return jpaQueryFactory.select(Wildcard.count)
                 .from(store)
-                .rightJoin(storeLiked)
-                .on(store.eq(storeLiked.store))
+                .leftJoin(store.storeLikedList, storeLiked)
                 .where(
                         likedUserIdEq(userId),
                         checkIsLiked(),
                         checkStoreStatus()
                 )
                 .fetchOne();
+    }
+
+    @Override
+    public List<Store> findTotalLikedTopTenStore() {
+        return jpaQueryFactory.selectFrom(store)
+                .leftJoin(store.storeLikedList, storeLiked)
+                .where(
+                        checkIsLiked(),
+                        checkStoreStatus()
+                )
+                .orderBy(new OrderSpecifier<>(Order.DESC, store.storeLikedList.size()))
+                .limit(10L)
+                .fetch();
     }
 
     private BooleanExpression likedUserIdEq(Long likedUserId) {
