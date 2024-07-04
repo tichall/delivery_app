@@ -19,11 +19,11 @@ import com.sparta.delivery_app.domain.store.entity.StoreStatus;
 import com.sparta.delivery_app.domain.user.entity.User;
 import com.sparta.delivery_app.domain.user.entity.UserRole;
 import com.sparta.delivery_app.domain.user.entity.UserStatus;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Import(TestConfig.class)
 public class UserReviewsRepositoryTest {
     @Autowired
-    private EntityManager entityManager;
+    private TestEntityManager entityManager;
 
     @Autowired
     private UserReviewsRepository userReviewsRepository;
@@ -55,7 +55,7 @@ public class UserReviewsRepositoryTest {
                     .userRole(UserRole.CONSUMER)
                     .userStatus(UserStatus.ENABLE)
                     .build();
-        entityManager.persist(testUser);
+        entityManager.persistAndFlush(testUser);
 
         testUser2 = User.builder()
                 .email("test2@gmail.com")
@@ -65,10 +65,9 @@ public class UserReviewsRepositoryTest {
                 .userRole(UserRole.CONSUMER)
                 .userStatus(UserStatus.ENABLE)
                 .build();
-        entityManager.persist(testUser2);
+        entityManager.persistAndFlush(testUser2);
 
         Store testStore = Store.builder()
-            .user(testUser)
             .storeName("이태리식 레스토랑")
             .storeAddress("서울시 강남구")
             .storeRegistrationNumber("111-45-67890")
@@ -76,7 +75,7 @@ public class UserReviewsRepositoryTest {
             .storeInfo("정통 이태리 음식점입니다.")
             .status(StoreStatus.ENABLE)
             .build();
-        entityManager.persist(testStore);
+        entityManager.persistAndFlush(testStore);
 
         Menu menu = Menu.builder()
                     .store(testStore)
@@ -86,7 +85,7 @@ public class UserReviewsRepositoryTest {
                     .menuImagePath("image1/abc")
                     .menuStatus(MenuStatus.ENABLE)
                     .build();
-        entityManager.persist(menu);
+        entityManager.persistAndFlush(menu);
 
         for (int i = 0; i < 10; i++) {
             Order tempOrder = Order.builder()
@@ -94,7 +93,7 @@ public class UserReviewsRepositoryTest {
                     .store(testStore)
                     .orderStatus(OrderStatus.DELIVERY_COMPLETED)
                     .build();
-            entityManager.persist(tempOrder);
+            entityManager.persistAndFlush(tempOrder);
 
             OrderItem tempOrderItem1 = OrderItem.builder()
                     .order(tempOrder)
@@ -112,14 +111,13 @@ public class UserReviewsRepositoryTest {
                     .user(testUser)
                     .reviewStatus(ReviewStatus.ENABLE)
                     .build();
-
-            entityManager.persist(userReviews);
+            entityManager.persistAndFlush(userReviews);
 
             ReviewLiked testLiked = ReviewLiked.builder()
                     .userReviews(userReviews)
                     .user(testUser2)
                     .build();
-            entityManager.persist(testLiked);
+            entityManager.persistAndFlush(testLiked);
         }
     }
 
