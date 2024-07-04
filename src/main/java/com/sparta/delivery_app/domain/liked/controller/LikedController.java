@@ -5,6 +5,7 @@ import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.common.status.StatusCode;
 import com.sparta.delivery_app.domain.liked.dto.LikedStorePageResponseDto;
 import com.sparta.delivery_app.domain.liked.service.LikedService;
+import com.sparta.delivery_app.domain.openApi.dto.ReviewPageResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -68,6 +69,23 @@ public class LikedController {
             return ResponseEntity.status(StatusCode.OK.code)
                     .body(RestApiResponse.of("리뷰 좋아요가 취소되었습니다."));
         }
+    }
+
+    /**
+     * 좋아요한 유저 리뷰 전체 조회
+     */
+    @PreAuthorize("hasRole('CONSUMER')")
+    @GetMapping("/userReviews")
+    public ResponseEntity<RestApiResponse<ReviewPageResponseDto>> getLikedUserReviews(
+            @AuthenticationPrincipal AuthenticationUser user,
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
+            @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc
+    ) {
+
+        ReviewPageResponseDto responseDto = likedService.getLikedUserReviews(user, pageNum, isDesc);
+
+        return ResponseEntity.status(StatusCode.OK.code)
+                .body(RestApiResponse.of("좋아요한 리뷰 조회에 성공했습니다.", responseDto));
     }
 
 }

@@ -10,8 +10,11 @@ import com.sparta.delivery_app.domain.liked.dto.LikedStorePageResponseDto;
 import com.sparta.delivery_app.domain.liked.entity.Liked;
 import com.sparta.delivery_app.domain.liked.entity.ReviewLiked;
 import com.sparta.delivery_app.domain.liked.entity.StoreLiked;
+import com.sparta.delivery_app.domain.openApi.dto.ReviewPageResponseDto;
 import com.sparta.delivery_app.domain.review.adapter.UserReviewsAdapter;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
+import com.sparta.delivery_app.domain.review.repository.UserReviewsRepository;
+import com.sparta.delivery_app.domain.review.repository.UserReviewsSearchCond;
 import com.sparta.delivery_app.domain.store.adapter.StoreAdapter;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.store.repository.StoreRepository;
@@ -27,6 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+import static com.sparta.delivery_app.domain.common.Page.PageConstants.PAGE_SIZE_FIVE;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -37,6 +42,7 @@ public class LikedService {
     private final StoreAdapter storeAdapter;
     private final UserReviewsAdapter userReviewsAdapter;
     private final StoreRepository storeRepository;
+    private final UserReviewsRepository userReviewsRepository;
 
     /**
      * 매장 좋아요 등록
@@ -52,6 +58,23 @@ public class LikedService {
 
         likedAdapter.saveLiked(storeLiked);
         return storeLiked.getIsLiked();
+    }
+
+    /**
+     * 좋아요한 매장 전체 조회
+     */
+    public LikedStorePageResponseDto getLikedStores(AuthenticationUser user, Integer pageNum, Boolean isDesc) {
+        User findUser = userAdapter.queryUserByEmailAndStatus(user.getUsername());
+
+        StoreSearchCond cond = StoreSearchCond.builder()
+                .likedUserId(findUser.getId())
+                .build();
+        Pageable pageable = PageUtil.createPageable(pageNum, PageConstants.PAGE_SIZE_FIVE, isDesc);
+
+        Page<Store> storePage = storeRepository.searchLikedStore(cond, pageable);
+        String totalLikedStore = PageUtil.validateAndSummarizePage(pageNum, storePage);
+
+        return LikedStorePageResponseDto.of(pageNum, totalLikedStore, storePage);
     }
 
     /**
@@ -76,22 +99,20 @@ public class LikedService {
     }
 
     /**
-     * 좋아요한 매장 전체 조회
+     * 좋아요한 리뷰 전체 조회
      */
-    public LikedStorePageResponseDto getLikedStores(AuthenticationUser user, Integer pageNum, Boolean isDesc) {
+    public ReviewPageResponseDto getLikedUserReviews(AuthenticationUser user, Integer pageNum, Boolean isDesc) {
         User findUser = userAdapter.queryUserByEmailAndStatus(user.getUsername());
 
-        StoreSearchCond cond = StoreSearchCond.builder()
+        UserReviewsSearchCond cond = UserReviewsSearchCond.builder()
                 .likedUserId(findUser.getId())
                 .build();
+        Pageable pageable = PageUtil.createPageable(pageNum, PAGE_SIZE_FIVE, isDesc);
 
-        Pageable pageable = PageUtil.createPageable(pageNum, PageConstants.PAGE_SIZE_FIVE, isDesc);
+        Page<UserReviews> reviewPage = userReviewsRepository.searchLikedUserReviews(cond, pageable);
+        String totalLikedReview = PageUtil.validateAndSummarizePage(pageNum, reviewPage);
 
-        Page<Store> storePage = storeRepository.searchLikedStore(cond, pageable);
-
-        String totalLikedStore = PageUtil.validateAndSummarizePage(pageNum, storePage);
-
-        return LikedStorePageResponseDto.of(pageNum, totalLikedStore, storePage);
+        return ReviewPageResponseDto.of(pageNum, totalLikedReview, reviewPage);
     }
 
     private <T extends Liked> Liked toggleLiked(Optional<T> liked, User user, Class<T> likedClass) {

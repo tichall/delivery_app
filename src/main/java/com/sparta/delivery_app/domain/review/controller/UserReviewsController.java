@@ -65,18 +65,4 @@ public class UserReviewsController {
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("리뷰가 삭제되었습니다."));
     }
-
-    @PreAuthorize("hasRole('CONSUMER')")
-    @GetMapping("/liked")
-    public ResponseEntity<RestApiResponse<ReviewPageResponseDto>> likedReviewList(
-            @AuthenticationPrincipal AuthenticationUser user,
-            @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
-            @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc
-    ) {
-
-        ReviewPageResponseDto responseDto = userReviewsService.getLikedUserReviews(user, pageNum, isDesc);
-
-        return ResponseEntity.status(StatusCode.OK.code)
-                .body(RestApiResponse.of("좋아요한 리뷰 조회에 성공했습니다.", responseDto));
-    }
 }

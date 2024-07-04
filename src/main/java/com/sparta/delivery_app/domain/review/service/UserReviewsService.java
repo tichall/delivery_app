@@ -139,15 +139,4 @@ public class UserReviewsService {
 
         userReviews.deleteReview();
     }
-
-    public ReviewPageResponseDto getLikedUserReviews(AuthenticationUser user, Integer pageNum, Boolean isDesc) {
-        // 사용자 확인
-        User userData = userAdaptor.queryUserByEmailAndStatus(user.getUsername());
-        Pageable pageable = PageUtil.createPageable(pageNum, PAGE_SIZE_FIVE, isDesc);
-        UserReviewsSearchCond cond = UserReviewsSearchCond.builder().likedUserId(userData.getId()).build();
-
-        Page<UserReviews> reviewPage = userReviewsRepository.searchLikedUserReviews(cond, pageable);
-        String totalLikedReview = PageUtil.validateAndSummarizePage(pageNum, reviewPage);
-        return ReviewPageResponseDto.of(pageNum, totalLikedReview, reviewPage);
-    }
 }
