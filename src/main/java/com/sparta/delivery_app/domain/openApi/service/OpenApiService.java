@@ -8,14 +8,18 @@ import com.sparta.delivery_app.domain.openApi.adapter.OpenApiAdapter;
 import com.sparta.delivery_app.domain.openApi.dto.ReviewPageResponseDto;
 import com.sparta.delivery_app.domain.openApi.dto.StoreDetailsResponseDto;
 import com.sparta.delivery_app.domain.openApi.dto.StorePageResponseDto;
+import com.sparta.delivery_app.domain.openApi.dto.StoreTopTenResponseDto;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import com.sparta.delivery_app.domain.store.entity.Store;
+import com.sparta.delivery_app.domain.store.repository.StoreRepository;
 import io.github.bucket4j.Bucket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static com.sparta.delivery_app.domain.common.Page.PageConstants.PAGE_SIZE_FIVE;
 
@@ -25,7 +29,9 @@ import static com.sparta.delivery_app.domain.common.Page.PageConstants.PAGE_SIZE
 public class OpenApiService {
 
     private final OpenApiAdapter openApiAdapter;
+    private final StoreRepository repository;
     private final Bucket bucket;
+    private final StoreRepository storeRepository;
 
     /**
      * 전체 매장 조회
@@ -54,6 +60,12 @@ public class OpenApiService {
         return openApiAdapter.queryMenusByStoreId(storeId);
     }
 
+    public StoreTopTenResponseDto findTopTenStores() {
+        List<Store> storeList = storeRepository.findTotalLikedTopTenStore();
+
+        return StoreTopTenResponseDto.of(storeList);
+    }
+
     /**
      * 전체 리뷰 조회
      * @param pageNum
@@ -78,5 +90,4 @@ public class OpenApiService {
             throw new OpenApiAccessDeniedException(PageErrorCode.UNABLE_TO_CONNECT);
         }
     }
-
 }

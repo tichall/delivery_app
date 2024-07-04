@@ -8,4 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 public class StoreSearchCond {
     private Long likedUserId;
+    private Long minTotalPriceLoe;
+    private Long minTotalPriceGoe;
 }

@@ -63,12 +63,15 @@ public class LikedService {
     /**
      * 좋아요한 매장 전체 조회
      */
-    public LikedStorePageResponseDto getLikedStores(AuthenticationUser user, Integer pageNum, String sortBy, Boolean isDesc) {
+    public LikedStorePageResponseDto getLikedStores(AuthenticationUser user, Integer pageNum, String sortBy, Boolean isDesc, Long minTotalPriceLoe, Long minTotalPriceGoe) {
         User findUser = userAdapter.queryUserByEmailAndStatus(user.getUsername());
 
         StoreSearchCond cond = StoreSearchCond.builder()
                 .likedUserId(findUser.getId())
+                .minTotalPriceLoe(minTotalPriceLoe)
+                .minTotalPriceGoe(minTotalPriceGoe)
                 .build();
+
         Pageable pageable = PageUtil.createPageable(pageNum, PageConstants.PAGE_SIZE_FIVE, sortBy, isDesc);
 
         Page<Store> storePage = storeRepository.searchLikedStore(cond, pageable);
@@ -132,4 +135,12 @@ public class LikedService {
             }
         }
     }
+
+//    private void checkValidatePrice(Long minTotalPrice) {
+//        if (minTotalPrice != null) {
+//            if (minTotalPrice < 0) {
+//                throw new
+//            }
+//        }
+//    }
 }
