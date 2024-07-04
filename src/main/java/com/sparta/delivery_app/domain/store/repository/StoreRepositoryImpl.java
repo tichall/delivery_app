@@ -33,6 +33,8 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom{
                 .on(store.eq(storeLiked.store))
                 .where(
                         likedUserIdEq(cond.getLikedUserId()),
+                        minTotalPriceLoe(cond.getMinTotalPriceLoe()),
+                        minTotalPriceGoe(cond.getMinTotalPriceGoe()),
                         checkIsLiked(),
                         checkStoreStatus()
                 )
@@ -46,7 +48,7 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom{
 
         List<Store> storeList = query.fetch();
 
-        Long totalElements = countTotalLikedStore(cond.getLikedUserId());
+        Long totalElements = countQuery(cond);
 
         return PageableExecutionUtils.getPage(storeList, pageable, () -> totalElements);
     }
@@ -77,8 +79,31 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom{
                 .fetch();
     }
 
+    private Long countQuery(StoreSearchCond cond) {
+        return jpaQueryFactory.select(Wildcard.count)
+                .from(store)
+                .rightJoin(storeLiked)
+                .on(store.eq(storeLiked.store))
+                .where(
+                        likedUserIdEq(cond.getLikedUserId()),
+                        minTotalPriceLoe(cond.getMinTotalPriceLoe()),
+                        minTotalPriceGoe(cond.getMinTotalPriceGoe()),
+                        checkIsLiked(),
+                        checkStoreStatus()
+                )
+                .fetchOne();
+    }
+
     private BooleanExpression likedUserIdEq(Long likedUserId) {
         return Objects.nonNull(likedUserId) ? storeLiked.user.id.eq(likedUserId) : null;
+    }
+
+    private BooleanExpression minTotalPriceLoe(Long minTotalPrice) {
+        return Objects.nonNull(minTotalPrice) ? store.minTotalPrice.loe(minTotalPrice) : null;
+    }
+
+    private BooleanExpression minTotalPriceGoe(Long minTotalPrice) {
+        return Objects.nonNull(minTotalPrice) ? store.minTotalPrice.goe(minTotalPrice) : null;
     }
 
     private BooleanExpression checkIsLiked(){

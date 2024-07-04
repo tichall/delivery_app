@@ -49,9 +49,11 @@ public class LikedController {
             @AuthenticationPrincipal AuthenticationUser user,
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
             @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") final String sortBy,
-            @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc
+            @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc,
+            @RequestParam(value = "minTotalPriceLoe", required = false) final Long minTotalPriceLoe,
+            @RequestParam(value = "minTotalPriceGoe", required = false) final Long minTotalPriceGoe
     ) {
-        LikedStorePageResponseDto responseDto = likedService.getLikedStores(user, pageNum, sortBy, isDesc);
+        LikedStorePageResponseDto responseDto = likedService.getLikedStores(user, pageNum, sortBy, isDesc, minTotalPriceLoe, minTotalPriceGoe);
 
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of(responseDto));
