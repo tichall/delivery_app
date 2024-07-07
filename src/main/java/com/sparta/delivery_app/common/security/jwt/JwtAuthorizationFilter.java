@@ -47,13 +47,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             if (findUser.getRefreshToken() != null) {
                 if (isValidateUserEmail(email, findUser)) {
-
                     log.info("Token 인증 완료");
+
                     Claims info = jwtUtil.getUserInfoFromToken(accessTokenValue);
                     setAuthentication(info.getSubject());
                 }
             } else {
-                log.error("유효하지 않는 Refersh Token");
+                log.error("유효하지 않는 Refresh Token");
+                // 키값 문자열 - 객체 저장
                 req.setAttribute("exception", new CustomSecurityException(SecurityErrorCode.INVALID_JWT_SIGNATURE));
             }
         }

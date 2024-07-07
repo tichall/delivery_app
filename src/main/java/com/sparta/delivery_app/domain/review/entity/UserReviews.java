@@ -1,6 +1,7 @@
 package com.sparta.delivery_app.domain.review.entity;
 
-import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
+import com.sparta.delivery_app.domain.common.BaseTimeEntity;
+import com.sparta.delivery_app.domain.liked.entity.ReviewLiked;
 import com.sparta.delivery_app.domain.order.entity.Order;
 import com.sparta.delivery_app.domain.review.dto.request.UserReviewModifyRequestDto;
 import com.sparta.delivery_app.domain.review.dto.request.UserReviewAddRequestDto;
@@ -10,6 +11,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -35,12 +39,15 @@ public class UserReviews extends BaseTimeEntity {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @OneToOne(mappedBy = "userReviews", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "userReviews")
     private ManagerReviews managerReviews;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "userReviews", cascade = CascadeType.ALL)
+    private List<ReviewLiked> reviewLikedList = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

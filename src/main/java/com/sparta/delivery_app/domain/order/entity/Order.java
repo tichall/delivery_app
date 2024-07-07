@@ -1,8 +1,7 @@
 package com.sparta.delivery_app.domain.order.entity;
 
 
-import com.sparta.delivery_app.domain.commen.BaseTimeCreateEntity;
-import com.sparta.delivery_app.domain.order.dto.request.OrderAddRequestDto;
+import com.sparta.delivery_app.domain.common.BaseTimeCreateEntity;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.user.entity.User;

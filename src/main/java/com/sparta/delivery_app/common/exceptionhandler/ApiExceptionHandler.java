@@ -1,12 +1,18 @@
 package com.sparta.delivery_app.common.exceptionhandler;
 
+import com.sparta.delivery_app.common.exception.errorcode.CommonErrorCode;
 import com.sparta.delivery_app.common.exception.errorcode.ErrorCode;
+import com.sparta.delivery_app.common.exception.errorcode.PageErrorCode;
 import com.sparta.delivery_app.common.exception.errorcode.S3ErrorCode;
 import com.sparta.delivery_app.common.globalResponse.ErrorResponse;
 import com.sparta.delivery_app.common.globalcustomexception.S3Exception;
+import com.sparta.delivery_app.common.globalcustomexception.SelfLikedException;
 import com.sparta.delivery_app.common.globalcustomexception.TotalPriceException;
 import com.sparta.delivery_app.common.globalcustomexception.global.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.query.Page;
+import org.hibernate.query.sqm.UnknownPathException;
+import org.springframework.core.NestedExceptionUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -63,10 +69,26 @@ public class ApiExceptionHandler {
         return sendErrorResponse(e.getErrorCode());
     }
 
+    @ExceptionHandler(SelfLikedException.class)
+    protected ResponseEntity<ErrorResponse> s3Exception(SelfLikedException e) {
+        log.error("SelfLikedException 발생");
+        return sendErrorResponse(e.getErrorCode());
+    }
+
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     protected ResponseEntity<ErrorResponse> maxUploadSizeExceededException(MaxUploadSizeExceededException e) {
         log.error("MaxUploadSizeExceededException 발생");
         return sendErrorResponse(S3ErrorCode.FILE_MAX_SIZE_ERROR);
+    }
+
+    /**
+     * 정렬 기준이 잘못된 경우
+     */
+    @ExceptionHandler(UnknownPathException.class)
+    protected ResponseEntity<ErrorResponse> handleUnknownPathException(UnknownPathException e) {
+        log.error("[handleUnknownPathException] cause: {} , message: {}", NestedExceptionUtils.getMostSpecificCause(e), e.getMessage());
+        log.error("{}", e.getMessage());
+        return sendErrorResponse(PageErrorCode.INVALID_SORT_BY);
     }
 
     private static ResponseEntity<ErrorResponse> sendErrorResponse(ErrorCode e) {

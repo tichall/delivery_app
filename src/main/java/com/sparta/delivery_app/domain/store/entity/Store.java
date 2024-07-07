@@ -1,6 +1,7 @@
 package com.sparta.delivery_app.domain.store.entity;
 
-import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
+import com.sparta.delivery_app.domain.common.BaseTimeEntity;
+import com.sparta.delivery_app.domain.liked.entity.StoreLiked;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
 import com.sparta.delivery_app.domain.order.entity.Order;
 import com.sparta.delivery_app.domain.store.dto.request.ModifyStoreRequestDto;
@@ -44,6 +45,9 @@ public class Store extends BaseTimeEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+    private List<StoreLiked> storeLikedList = new ArrayList<>();
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
     private List<Menu> menuList = new ArrayList<>();

@@ -2,7 +2,6 @@ package com.sparta.delivery_app.domain.admin.adminstore.service;
 
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.domain.admin.adminstore.dto.*;
-import com.sparta.delivery_app.domain.commen.page.util.PageUtil;
 import com.sparta.delivery_app.domain.menu.adapter.MenuAdapter;
 import com.sparta.delivery_app.domain.menu.entity.Menu;
 import com.sparta.delivery_app.domain.order.adapter.OrderAdapter;
@@ -26,7 +25,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sparta.delivery_app.domain.commen.page.util.PageUtil.*;
+import static com.sparta.delivery_app.domain.common.Page.PageConstants.PAGE_SIZE_FIVE;
+import static com.sparta.delivery_app.domain.common.Page.PageUtil.*;
 import static com.sparta.delivery_app.domain.user.entity.UserStatus.checkManagerEnable;
 
 @Slf4j
@@ -42,14 +42,13 @@ public class AdminStoreService {
     private final OrderItemRepository orderItemRepository;
 
     public PageMenuPerStoreResponseDto getMenuListPerStore(
-            Long storeId, AuthenticationUser authenticationUser, final Integer pageNum,
-            final Boolean isDesc) {
+            Long storeId, AuthenticationUser authenticationUser, final Integer pageNum, String sortBy, final Boolean isDesc) {
         log.info("getMenuListPerStore-service");
         //(ADMIN 권한의) 유저 Status 가 ENABLE 인지 확인
         adminUserStatusCheck(authenticationUser);
 
         Store choiceStore = storeAdapter.queryStoreById(storeId);
-        Pageable pageable = createPageable(pageNum, PAGE_SIZE_FIVE, isDesc);
+        Pageable pageable = createPageable(pageNum, PAGE_SIZE_FIVE, sortBy, isDesc);
 
         Page<Menu> menuPage = menuAdapter.queryMenuListByStoreId(storeId, pageable);
         String totalMenu = validateAndSummarizePage(pageNum, menuPage);
@@ -58,8 +57,7 @@ public class AdminStoreService {
     }
 
     public PageReviewPerStoreResponseDto getReviewListPerStore(
-            AuthenticationUser authenticationUser, Long storeId, final Integer pageNum,
-            Boolean isDesc) {
+            AuthenticationUser authenticationUser, Long storeId, final Integer pageNum, String sortBy, Boolean isDesc) {
         log.info("특정 매장 모든 리뷰 조회-service 시작");
         adminUserStatusCheck(authenticationUser);
         Store choiceStore = storeAdapter.queryStoreById(storeId);
@@ -77,7 +75,7 @@ public class AdminStoreService {
             }
         }
 
-        Pageable pageable = createPageable(pageNum, PAGE_SIZE_FIVE, isDesc);
+        Pageable pageable = createPageable(pageNum, PAGE_SIZE_FIVE, sortBy, isDesc);
 
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), reviewDtoList.size());
@@ -97,13 +95,12 @@ public class AdminStoreService {
      * @return
      */
     public PageTotalPricePerStoreResponseDto getEarning(
-            AuthenticationUser authenticationUser, Boolean isDesc, Integer pageNum,
-             Long storeId) {
+            AuthenticationUser authenticationUser, Long storeId, Integer pageNum, String sortBy, Boolean isDesc) {
 
         adminUserStatusCheck(authenticationUser);
 
         Store findStore = storeAdapter.queryStoreById(storeId);
-        Pageable pageable = createPageable(pageNum, PAGE_SIZE_FIVE, isDesc);
+        Pageable pageable = createPageable(pageNum, PAGE_SIZE_FIVE, sortBy, isDesc);
 
         Page<Menu> menuPage = menuAdapter.queryMenuListByStoreId(findStore.getId(), pageable);
         String totalMenu = validateAndSummarizePage(pageNum, menuPage);

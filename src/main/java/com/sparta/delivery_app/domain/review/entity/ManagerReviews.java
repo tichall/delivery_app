@@ -1,6 +1,6 @@
 package com.sparta.delivery_app.domain.review.entity;
 
-import com.sparta.delivery_app.domain.commen.BaseTimeEntity;
+import com.sparta.delivery_app.domain.common.BaseTimeEntity;
 import com.sparta.delivery_app.domain.review.dto.request.ManagerReviewAddRequestDto;
 import com.sparta.delivery_app.domain.review.dto.request.ManagerReviewModifyRequestDto;
 import com.sparta.delivery_app.domain.user.entity.User;

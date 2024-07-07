@@ -3,13 +3,15 @@ package com.sparta.delivery_app.domain.openApi.service;
 
 import com.sparta.delivery_app.common.exception.errorcode.PageErrorCode;
 import com.sparta.delivery_app.common.globalcustomexception.OpenApiAccessDeniedException;
-import com.sparta.delivery_app.domain.commen.page.util.PageUtil;
+import com.sparta.delivery_app.domain.common.Page.PageUtil;
 import com.sparta.delivery_app.domain.openApi.adapter.OpenApiAdapter;
 import com.sparta.delivery_app.domain.openApi.dto.ReviewPageResponseDto;
 import com.sparta.delivery_app.domain.openApi.dto.StoreDetailsResponseDto;
 import com.sparta.delivery_app.domain.openApi.dto.StorePageResponseDto;
+import com.sparta.delivery_app.domain.openApi.dto.StoreTopTenResponseDto;
 import com.sparta.delivery_app.domain.review.entity.UserReviews;
 import com.sparta.delivery_app.domain.store.entity.Store;
+import com.sparta.delivery_app.domain.store.repository.StoreRepository;
 import io.github.bucket4j.Bucket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +19,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+import static com.sparta.delivery_app.domain.common.Page.PageConstants.PAGE_SIZE_FIVE;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class OpenApiService {
 
     private final OpenApiAdapter openApiAdapter;
+    private final StoreRepository repository;
     private final Bucket bucket;
+    private final StoreRepository storeRepository;
 
     /**
      * 전체 매장 조회
@@ -31,9 +39,9 @@ public class OpenApiService {
      * @param isDesc
      * @return
      */
-    public StorePageResponseDto findStores(final Integer pageNum, final Boolean isDesc) {
+    public StorePageResponseDto findStores(final Integer pageNum, final String sortBy, final Boolean isDesc) {
 
-        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
+        Pageable pageable = PageUtil.createPageable(pageNum, PAGE_SIZE_FIVE, sortBy, isDesc);
 
         Page<Store> storePage = openApiAdapter.queryStores(pageable);
 
@@ -48,8 +56,14 @@ public class OpenApiService {
      * @return
      */
     public StoreDetailsResponseDto findMenus(final Long storeId) {
-
+//        return storeRepository.findStoreDetails(storeId);
         return openApiAdapter.queryMenusByStoreId(storeId);
+    }
+
+    public StoreTopTenResponseDto findTopTenStores() {
+        List<Store> storeList = storeRepository.findTotalLikedTopTenStore();
+
+        return StoreTopTenResponseDto.of(storeList);
     }
 
     /**
@@ -58,8 +72,8 @@ public class OpenApiService {
      * @param isDesc
      * @return
      */
-    public ReviewPageResponseDto findReviews(final Integer pageNum, final Boolean isDesc) {
-        Pageable pageable = PageUtil.createPageable(pageNum, PageUtil.PAGE_SIZE_FIVE, isDesc);
+    public ReviewPageResponseDto findReviews(final Integer pageNum, final String sortBy, final Boolean isDesc) {
+        Pageable pageable = PageUtil.createPageable(pageNum, PAGE_SIZE_FIVE, sortBy, isDesc);
 
         Page<UserReviews> reviewPage = openApiAdapter.queryReviews(pageable);
 
@@ -76,5 +90,4 @@ public class OpenApiService {
             throw new OpenApiAccessDeniedException(PageErrorCode.UNABLE_TO_CONNECT);
         }
     }
-
 }

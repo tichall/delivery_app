@@ -7,12 +7,12 @@ import com.sparta.delivery_app.domain.user.dto.request.*;
 import com.sparta.delivery_app.domain.user.dto.response.ConsumersSignupResponseDto;
 import com.sparta.delivery_app.domain.user.dto.response.ManagersSignupResponseDto;
 import com.sparta.delivery_app.domain.user.dto.response.UserProfileModifyResponseDto;
+import com.sparta.delivery_app.domain.user.dto.response.UserProfileReadResponseDto;
 import com.sparta.delivery_app.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +31,7 @@ public class UserController {
      * @param requestDto
      * @return
      */
-    @PostMapping("/consumers")
+    @PostMapping("/consumers/signup")
     public ResponseEntity<RestApiResponse<ConsumersSignupResponseDto>> ConsumersSignupRequestDto(
             @Valid @RequestBody final ConsumersSignupRequestDto requestDto) {
         ConsumersSignupResponseDto responseDto = userService.consumersUserAdd(requestDto);
@@ -47,7 +47,7 @@ public class UserController {
      * @param requestDto
      * @return
      */
-    @PostMapping("/managers")
+    @PostMapping("/managers/signup")
     public ResponseEntity<RestApiResponse<ManagersSignupResponseDto>> managersSignupRequestDto(
             @Valid @RequestBody final ManagersSignupRequestDto requestDto) {
         ManagersSignupResponseDto responseDto = userService.managersUserAdd(requestDto);
@@ -75,6 +75,17 @@ public class UserController {
 
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("탈퇴 되었습니다."));
+    }
+
+    @PreAuthorize("hasRole('CONSUMER')")
+    @GetMapping("/profile")
+    public ResponseEntity<RestApiResponse<UserProfileReadResponseDto>> profileRead(
+            @AuthenticationPrincipal AuthenticationUser user
+    ) {
+        UserProfileReadResponseDto responseDto = userService.readUserProfile(user);
+
+        return ResponseEntity.status(StatusCode.OK.code)
+                .body(RestApiResponse.of("프로필 조회가 완료되었습니다.", responseDto));
     }
 
     /**

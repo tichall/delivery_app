@@ -5,6 +5,7 @@ import com.sparta.delivery_app.common.status.StatusCode;
 import com.sparta.delivery_app.domain.openApi.dto.ReviewPageResponseDto;
 import com.sparta.delivery_app.domain.openApi.dto.StoreDetailsResponseDto;
 import com.sparta.delivery_app.domain.openApi.dto.StorePageResponseDto;
+import com.sparta.delivery_app.domain.openApi.dto.StoreTopTenResponseDto;
 import com.sparta.delivery_app.domain.openApi.service.OpenApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,12 +27,13 @@ public class OpenApiController {
     @GetMapping("/stores")
     public ResponseEntity<RestApiResponse<StorePageResponseDto>> storeList(
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") final String sortBy,
             @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc
     ) {
 
         openApiService.useToken();
 
-        StorePageResponseDto responseDto = openApiService.findStores(pageNum, isDesc);
+        StorePageResponseDto responseDto = openApiService.findStores(pageNum, sortBy, isDesc);
 
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("전체 매장 조회에 성공했습니다.", responseDto));
@@ -55,6 +57,19 @@ public class OpenApiController {
     }
 
     /**
+     * 좋아요 상위 10개 매장 조회
+     */
+    @GetMapping("/stores/top10")
+    public ResponseEntity<RestApiResponse<StoreTopTenResponseDto>> storeTopTenList() {
+        openApiService.useToken();
+
+        StoreTopTenResponseDto responseDto = openApiService.findTopTenStores();
+
+        return ResponseEntity.status(StatusCode.OK.code)
+                .body(RestApiResponse.of("좋아요 상위 10개 매장 조회가 완료되었습니다.", responseDto));
+    }
+
+    /**
      * 전체 사용자 리뷰 조회
      * @param pageNum
      * @param isDesc
@@ -63,11 +78,12 @@ public class OpenApiController {
     @GetMapping("/reviews")
     public ResponseEntity<RestApiResponse<ReviewPageResponseDto>> reviewList(
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") final Integer pageNum,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "createdAt") final String sortBy,
             @RequestParam(value = "isDesc", required = false, defaultValue = "true") final Boolean isDesc
     ) {
         openApiService.useToken();
 
-        ReviewPageResponseDto responseDto = openApiService.findReviews(pageNum, isDesc);
+        ReviewPageResponseDto responseDto = openApiService.findReviews(pageNum, sortBy, isDesc);
 
         return ResponseEntity.status(StatusCode.OK.code)
                 .body(RestApiResponse.of("전체 리뷰 조회에 성공했습니다.", responseDto));

@@ -1,34 +1,35 @@
 package com.sparta.delivery_app.domain.liked.adapter;
 
-import com.sparta.delivery_app.common.exception.errorcode.LikedErrorCode;
-import com.sparta.delivery_app.common.globalcustomexception.LikedNotFoundException;
 import com.sparta.delivery_app.domain.liked.entity.Liked;
-import com.sparta.delivery_app.domain.liked.repository.LikedRepository;
-import com.sparta.delivery_app.domain.store.entity.Store;
-import com.sparta.delivery_app.domain.user.entity.User;
+import com.sparta.delivery_app.domain.liked.entity.ReviewLiked;
+import com.sparta.delivery_app.domain.liked.entity.StoreLiked;
+import com.sparta.delivery_app.domain.liked.repository.ReviewLikedRepository;
+import com.sparta.delivery_app.domain.liked.repository.StoreLikedRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class LikedAdapter {
 
-    private final LikedRepository likedRepository;
+    private final StoreLikedRepository storeLikedRepository;
+    private final ReviewLikedRepository reviewLikedRepository;
 
     public void saveLiked(Liked liked) {
-        likedRepository.save(liked);
+        if (liked.getClass().equals(StoreLiked.class)) {
+            storeLikedRepository.save((StoreLiked) liked);
+        } else if (liked.getClass().equals(ReviewLiked.class)) {
+            reviewLikedRepository.save((ReviewLiked) liked);
+        }
     }
 
-    public void deleteLiked(Liked liked) {
-        likedRepository.delete(liked);
+    public Optional<StoreLiked> getStoreLiked(Long storeId, Long userId) {
+        return storeLikedRepository.findByStoreIdAndUserId(storeId, userId);
     }
 
-    public Liked queryLikedByStoreId(Long storeId) {
-        return likedRepository.findByStoreId(storeId).orElseThrow(() ->
-                new LikedNotFoundException(LikedErrorCode.LIKED_UNREGISTERED_ERROR));
-    }
-
-    public boolean existsByStoreAndUser(Store store, User user) {
-        return likedRepository.existsByStoreAndUser(store, user);
+    public Optional<ReviewLiked> getReviewLiked(Long reviewId, Long userId) {
+        return reviewLikedRepository.findByUserReviewsIdAndUserId(reviewId, userId);
     }
 }

@@ -3,6 +3,7 @@ package com.sparta.delivery_app.domain.review.controller;
 import com.sparta.delivery_app.common.globalResponse.RestApiResponse;
 import com.sparta.delivery_app.common.security.AuthenticationUser;
 import com.sparta.delivery_app.common.status.StatusCode;
+import com.sparta.delivery_app.domain.openApi.dto.ReviewPageResponseDto;
 import com.sparta.delivery_app.domain.review.dto.request.UserReviewModifyRequestDto;
 import com.sparta.delivery_app.domain.review.dto.request.UserReviewAddRequestDto;
 import com.sparta.delivery_app.domain.review.dto.response.UserReviewAddResponseDto;
