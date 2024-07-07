@@ -12,4 +12,6 @@ public interface StoreRepositoryCustom {
     Long countTotalLikedStore(Long userId);
 
     List<Store> findTotalLikedTopTenStore();
+
+//    StoreDetailsResponseDto findStoreDetails(Long storeId);
 }

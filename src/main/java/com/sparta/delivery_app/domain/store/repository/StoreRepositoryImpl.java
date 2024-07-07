@@ -2,14 +2,20 @@ package com.sparta.delivery_app.domain.store.repository;
 
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import static com.sparta.delivery_app.domain.menu.entity.QMenu.menu;
 import static com.sparta.delivery_app.domain.store.entity.QStore.store;
 import static com.sparta.delivery_app.domain.liked.entity.QStoreLiked.storeLiked;
+
+import com.sparta.delivery_app.domain.menu.entity.MenuStatus;
+import com.sparta.delivery_app.domain.openApi.dto.MenuListReadResponseDto;
+import com.sparta.delivery_app.domain.openApi.dto.StoreDetailsResponseDto;
 import com.sparta.delivery_app.domain.store.entity.Store;
 import com.sparta.delivery_app.domain.store.entity.StoreStatus;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +35,8 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom{
     @Override
     public Page<Store> searchLikedStore(StoreSearchCond cond, Pageable pageable) {
         JPAQuery<Store> query = jpaQueryFactory.selectFrom(store)
-                .rightJoin(storeLiked)
-                .on(store.eq(storeLiked.store))
+                .leftJoin(store.storeLikedList, storeLiked)
+                .fetchJoin()
                 .where(
                         likedUserIdEq(cond.getLikedUserId()),
                         minTotalPriceLoe(cond.getMinTotalPriceLoe()),
@@ -79,11 +85,42 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom{
                 .fetch();
     }
 
+//    @Override
+//    public StoreDetailsResponseDto findStoreDetails(Long storeId) {
+//         좋아요 표시 되어 있는지
+//         메뉴는 삭제되지 않은 상태인지
+//         서브쿼리 count 절에서 Unsupported expression 에러 발생
+//        StoreDetailsResponseDto responseDto = jpaQueryFactory.select(
+//                Projections.fields(StoreDetailsResponseDto.class,
+//                        store.storeName,
+//                        store.storeAddress,
+//                        store.storeRegistrationNumber,
+//                        store.minTotalPrice,
+//                        store.storeInfo,
+//                        jpaQueryFactory.select(Wildcard.count)
+//                                .from(storeLiked)
+//                                .where(
+//                                        storeLiked.store.id.eq(storeId),
+//                                        checkIsLiked()
+//                                ),
+//                        jpaQueryFactory.select(Projections.constructor(MenuListReadResponseDto.class,
+//                                menu))
+//                                .from(menu)
+//                                .where(menu.store.id.eq(storeId), checkMenuStatus())
+//                        )
+//        )
+//                .from(store)
+//                .where(
+//                        store.id.eq(storeId)
+//                )
+//                .fetchOne();
+//        return responseDto;
+//    }
+
     private Long countQuery(StoreSearchCond cond) {
         return jpaQueryFactory.select(Wildcard.count)
                 .from(store)
-                .rightJoin(storeLiked)
-                .on(store.eq(storeLiked.store))
+                .leftJoin(store.storeLikedList, storeLiked)
                 .where(
                         likedUserIdEq(cond.getLikedUserId()),
                         minTotalPriceLoe(cond.getMinTotalPriceLoe()),
@@ -112,6 +149,10 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom{
 
     private BooleanExpression checkStoreStatus() {
         return store.status.eq(StoreStatus.ENABLE);
+    }
+
+    private BooleanExpression checkMenuStatus() {
+        return menu.menuStatus.eq(MenuStatus.ENABLE);
     }
 
 }
